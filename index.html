@@ -201,7 +201,7 @@ h1 small{display:block;font-family:var(--font);font-size:max(11px,1.9cqw);letter
     <p class="fine">Run across China’s famous mountains and rivers with a hero from Chinese myth. Collect sounds, build characters, words, sentences and poems, and hear them spoken.<span class="zh">和中国神话英雄一起奔跑在祖国的山河间，收集拼音，拼出汉字、词语、句子和古诗。</span></p>
     <div class="row"><button class="btn" id="bStart">Start 开始</button><button class="btn ghost" id="bLevels">Levels 选关</button><button class="btn gold" id="bFood">Food Zone 食物区</button><button class="btn gold" id="bShop">Hero Shop 角色商店 · <span id="tCoins"><i class="coin"></i> 0</span></button></div>
     <div class="row"><button class="btn ghost sm" id="bDone">✋ I’m done for today 今天玩够了</button><button class="btn ghost sm" id="bParent">🔒 Parents 家长</button></div>
-    <p class="fine">← → or A D to run · Space / ↑ to jump, hold in the air to fly · on phones use the on-screen buttons<span class="zh">Free for every child 免费，为每一个孩子 · v1.0</span></p>
+    <p class="fine">← → or A D to run · Space / ↑ to jump, hold in the air to fly · on phones use the on-screen buttons<span class="zh">Free for every child 免费，为每一个孩子 · v1.2</span></p>
   </section>
 
   <section class="panel" id="intro" hidden>
@@ -252,7 +252,7 @@ h1 small{display:block;font-family:var(--font);font-size:max(11px,1.9cqw);letter
 
   <section class="panel" id="food" hidden>
     <div class="heroTop"><h2>Food Zone<small>食物区</small></h2><span class="coinbadge" id="fCoins"></span></div>
-    <div class="tabs" id="foodTabs"></div>
+    <div class="heroTools"><div class="tabs" id="foodTabs"></div><input id="foodSearch" placeholder="Search 搜索" autocomplete="off" aria-label="Search foods"><span class="fine" id="foodCount"></span></div>
     <div class="heroGrid foodGrid" id="foodGrid"></div>
     <div class="heroInfo" id="foodInfo"></div>
     <p class="fine" id="packLine"></p>
@@ -1337,7 +1337,7 @@ const LEVELS_ALL = [
   Sn(7,"👩‍🏫","This is my teacher.",[["这", "zhè", "this"], ["是", "shì", "is"], ["我", "wǒ", "my"], ["的", "de", "('s)"], ["老师", "lǎoshī", "teacher"]]),
   Sn(7,"🧧","This is my red envelope.",[["这", "zhè", "this"], ["是", "shì", "is"], ["我", "wǒ", "my"], ["的", "de", "('s)"], ["红包", "hóngbāo", "red envelope"]]),
 ];
-const LEVELS = LEVELS_ALL.slice(0, 500);   // the first 500 levels are released; the rest are written and waiting
+const LEVELS = LEVELS_ALL;
 const TOKEN_POOL = { sent: LEVELS.filter(l => l.type === 'sent').flatMap(l => l.tokens), poem: LEVELS.filter(l => l.type === 'poem').flatMap(l => l.tokens) };
 const fullPinyin = d => d.type === 'syl' || d.type === 'word' ? d.syls.map(syllable).join(' ') : d.tokens.map(t => t.py).join(' ');
 const CONTOUR = [null, [350,350,350,350], [410,380,350,320], [350,395,395,350], [320,350,380,410]];
@@ -1850,6 +1850,506 @@ const GEN = [
   an("huangniu","黄牛","Huángniú","Yellow Ox","creature",{"b": "#c98a4a", "l": "#f0dcc0", "e": "floppy", "s": "short", "t": "tuft", "x": ["horns"], "ac": "#f0e0c0"},"A strong, hard-working ox.","强壮又勤劳的黄牛。"),
   an("yezhu","野猪","Yězhū","Wild Boar","creature",{"b": "#6a5a4a", "l": "#a89880", "e": "floppy", "s": "pig", "t": "curl", "x": ["horns"], "ac": "#ffffff"},"A sturdy boar with tusks.","长着獠牙的强壮野猪。"),
   fh("xia","虾","Xiā","Shrimp","creature",{"b": "#f4a090", "ac": "#e5483a", "fn": "#f2b134"},"A little shrimp that swims backwards.","会向后游的小虾。"),
+  hu("eth00","汉族","Hànzú","Han Child","culture",{"hs": "bun", "hat": "flower", "hc": "#7a4aa0", "robe": "#c8372d", "sash": "#e2a93b", "item": "scroll", "skin": "#ffd9b3"},"A child of the Han people, one of China’s 56 ethnic groups.","汉族的孩子，是中国 56 个民族之一。"),
+  hu("eth01","蒙古族","Měnggǔzú","Mongol Child","culture",{"hs": "topknot", "hat": "band", "hc": "#e8742a", "robe": "#3a8fc9", "sash": "#ffffff", "item": "fan", "skin": "#f6cfa8"},"A child of the Mongol people, one of China’s 56 ethnic groups.","蒙古族的孩子，是中国 56 个民族之一。"),
+  hu("eth02","回族","Huízú","Hui Child","culture",{"hs": "long", "hat": "taoist", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#c8372d", "item": "lotus", "skin": "#e8b890"},"A child of the Hui people, one of China’s 56 ethnic groups.","回族的孩子，是中国 56 个民族之一。"),
+  hu("eth03","藏族","Zàngzú","Tibetan Child","culture",{"hs": "short", "hat": "conical", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#2f7d6b", "item": "basket", "skin": "#ffd9b3"},"A child of the Tibetan people, one of China’s 56 ethnic groups.","藏族的孩子，是中国 56 个民族之一。"),
+  hu("eth04","维吾尔族","Wéiwú’ěrzú","Uyghur Child","culture",{"hs": "bun", "hat": "leaf", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#3a8fc9", "item": "flute", "skin": "#f6cfa8"},"A child of the Uyghur people, one of China’s 56 ethnic groups.","维吾尔族的孩子，是中国 56 个民族之一。"),
+  hu("eth05","苗族","Miáozú","Miao Child","culture",{"hs": "topknot", "hat": "scholar", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#f4a6b0", "item": "bag", "skin": "#e8b890"},"A child of the Miao people, one of China’s 56 ethnic groups.","苗族的孩子，是中国 56 个民族之一。"),
+  hu("eth06","彝族","Yízú","Yi Child","culture",{"hs": "long", "hat": "crown", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "ribbon", "skin": "#ffd9b3"},"A child of the Yi people, one of China’s 56 ethnic groups.","彝族的孩子，是中国 56 个民族之一。"),
+  hu("eth07","壮族","Zhuàngzú","Zhuang Child","culture",{"hs": "short", "hat": "flower", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#ffffff", "item": "sprout", "skin": "#f6cfa8"},"A child of the Zhuang people, one of China’s 56 ethnic groups.","壮族的孩子，是中国 56 个民族之一。"),
+  hu("eth08","布依族","Bùyīzú","Buyi Child","culture",{"hs": "bun", "hat": "band", "hc": "#2e3a5a", "robe": "#e2a93b", "sash": "#c8372d", "item": "scroll", "skin": "#e8b890"},"A child of the Buyi people, one of China’s 56 ethnic groups.","布依族的孩子，是中国 56 个民族之一。"),
+  hu("eth09","朝鲜族","Cháoxiǎnzú","Korean Child","culture",{"hs": "topknot", "hat": "taoist", "hc": "#c8372d", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "fan", "skin": "#ffd9b3"},"A child of the Korean people, one of China’s 56 ethnic groups.","朝鲜族的孩子，是中国 56 个民族之一。"),
+  hu("eth10","满族","Mǎnzú","Manchu Child","culture",{"hs": "long", "hat": "conical", "hc": "#3a8fc9", "robe": "#6aa84f", "sash": "#3a8fc9", "item": "lotus", "skin": "#f6cfa8"},"A child of the Manchu people, one of China’s 56 ethnic groups.","满族的孩子，是中国 56 个民族之一。"),
+  hu("eth11","侗族","Dòngzú","Dong Child","culture",{"hs": "short", "hat": "leaf", "hc": "#2f7d6b", "robe": "#2e3a5a", "sash": "#f4a6b0", "item": "basket", "skin": "#e8b890"},"A child of the Dong people, one of China’s 56 ethnic groups.","侗族的孩子，是中国 56 个民族之一。"),
+  hu("eth12","瑶族","Yáozú","Yao Child","culture",{"hs": "bun", "hat": "scholar", "hc": "#7a4aa0", "robe": "#c8372d", "sash": "#e2a93b", "item": "flute", "skin": "#ffd9b3"},"A child of the Yao people, one of China’s 56 ethnic groups.","瑶族的孩子，是中国 56 个民族之一。"),
+  hu("eth13","白族","Báizú","Bai Child","culture",{"hs": "topknot", "hat": "crown", "hc": "#e8742a", "robe": "#3a8fc9", "sash": "#ffffff", "item": "bag", "skin": "#f6cfa8"},"A child of the Bai people, one of China’s 56 ethnic groups.","白族的孩子，是中国 56 个民族之一。"),
+  hu("eth14","土家族","Tǔjiāzú","Tujia Child","culture",{"hs": "long", "hat": "flower", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#c8372d", "item": "ribbon", "skin": "#e8b890"},"A child of the Tujia people, one of China’s 56 ethnic groups.","土家族的孩子，是中国 56 个民族之一。"),
+  hu("eth15","哈尼族","Hānízú","Hani Child","culture",{"hs": "short", "hat": "band", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#2f7d6b", "item": "sprout", "skin": "#ffd9b3"},"A child of the Hani people, one of China’s 56 ethnic groups.","哈尼族的孩子，是中国 56 个民族之一。"),
+  hu("eth16","哈萨克族","Hāsàkèzú","Kazakh Child","culture",{"hs": "bun", "hat": "taoist", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#3a8fc9", "item": "scroll", "skin": "#f6cfa8"},"A child of the Kazakh people, one of China’s 56 ethnic groups.","哈萨克族的孩子，是中国 56 个民族之一。"),
+  hu("eth17","傣族","Dǎizú","Dai Child","culture",{"hs": "topknot", "hat": "conical", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#f4a6b0", "item": "fan", "skin": "#e8b890"},"A child of the Dai people, one of China’s 56 ethnic groups.","傣族的孩子，是中国 56 个民族之一。"),
+  hu("eth18","黎族","Lízú","Li Child","culture",{"hs": "long", "hat": "leaf", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "lotus", "skin": "#ffd9b3"},"A child of the Li people, one of China’s 56 ethnic groups.","黎族的孩子，是中国 56 个民族之一。"),
+  hu("eth19","傈僳族","Lìsùzú","Lisu Child","culture",{"hs": "short", "hat": "scholar", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#ffffff", "item": "basket", "skin": "#f6cfa8"},"A child of the Lisu people, one of China’s 56 ethnic groups.","傈僳族的孩子，是中国 56 个民族之一。"),
+  hu("eth20","佤族","Wǎzú","Wa Child","culture",{"hs": "bun", "hat": "crown", "hc": "#2e3a5a", "robe": "#e2a93b", "sash": "#c8372d", "item": "flute", "skin": "#e8b890"},"A child of the Wa people, one of China’s 56 ethnic groups.","佤族的孩子，是中国 56 个民族之一。"),
+  hu("eth21","畲族","Shēzú","She Child","culture",{"hs": "topknot", "hat": "flower", "hc": "#c8372d", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "bag", "skin": "#ffd9b3"},"A child of the She people, one of China’s 56 ethnic groups.","畲族的孩子，是中国 56 个民族之一。"),
+  hu("eth22","高山族","Gāoshānzú","Gaoshan Child","culture",{"hs": "long", "hat": "band", "hc": "#3a8fc9", "robe": "#6aa84f", "sash": "#3a8fc9", "item": "ribbon", "skin": "#f6cfa8"},"A child of the Gaoshan people, one of China’s 56 ethnic groups.","高山族的孩子，是中国 56 个民族之一。"),
+  hu("eth23","拉祜族","Lāhùzú","Lahu Child","culture",{"hs": "short", "hat": "taoist", "hc": "#2f7d6b", "robe": "#2e3a5a", "sash": "#f4a6b0", "item": "sprout", "skin": "#e8b890"},"A child of the Lahu people, one of China’s 56 ethnic groups.","拉祜族的孩子，是中国 56 个民族之一。"),
+  hu("eth24","水族","Shuǐzú","Shui Child","culture",{"hs": "bun", "hat": "conical", "hc": "#7a4aa0", "robe": "#c8372d", "sash": "#e2a93b", "item": "scroll", "skin": "#ffd9b3"},"A child of the Shui people, one of China’s 56 ethnic groups.","水族的孩子，是中国 56 个民族之一。"),
+  hu("eth25","东乡族","Dōngxiāngzú","Dongxiang Child","culture",{"hs": "topknot", "hat": "leaf", "hc": "#e8742a", "robe": "#3a8fc9", "sash": "#ffffff", "item": "fan", "skin": "#f6cfa8"},"A child of the Dongxiang people, one of China’s 56 ethnic groups.","东乡族的孩子，是中国 56 个民族之一。"),
+  hu("eth26","纳西族","Nàxīzú","Naxi Child","culture",{"hs": "long", "hat": "scholar", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#c8372d", "item": "lotus", "skin": "#e8b890"},"A child of the Naxi people, one of China’s 56 ethnic groups.","纳西族的孩子，是中国 56 个民族之一。"),
+  hu("eth27","景颇族","Jǐngpōzú","Jingpo Child","culture",{"hs": "short", "hat": "crown", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#2f7d6b", "item": "basket", "skin": "#ffd9b3"},"A child of the Jingpo people, one of China’s 56 ethnic groups.","景颇族的孩子，是中国 56 个民族之一。"),
+  hu("eth28","柯尔克孜族","Kē’ěrkèzīzú","Kyrgyz Child","culture",{"hs": "bun", "hat": "flower", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#3a8fc9", "item": "flute", "skin": "#f6cfa8"},"A child of the Kyrgyz people, one of China’s 56 ethnic groups.","柯尔克孜族的孩子，是中国 56 个民族之一。"),
+  hu("eth29","土族","Tǔzú","Tu Child","culture",{"hs": "topknot", "hat": "band", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#f4a6b0", "item": "bag", "skin": "#e8b890"},"A child of the Tu people, one of China’s 56 ethnic groups.","土族的孩子，是中国 56 个民族之一。"),
+  hu("eth30","达斡尔族","Dáwò’ěrzú","Daur Child","culture",{"hs": "long", "hat": "taoist", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "ribbon", "skin": "#ffd9b3"},"A child of the Daur people, one of China’s 56 ethnic groups.","达斡尔族的孩子，是中国 56 个民族之一。"),
+  hu("eth31","仫佬族","Mùlǎozú","Mulao Child","culture",{"hs": "short", "hat": "conical", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#ffffff", "item": "sprout", "skin": "#f6cfa8"},"A child of the Mulao people, one of China’s 56 ethnic groups.","仫佬族的孩子，是中国 56 个民族之一。"),
+  hu("eth32","羌族","Qiāngzú","Qiang Child","culture",{"hs": "bun", "hat": "leaf", "hc": "#2e3a5a", "robe": "#e2a93b", "sash": "#c8372d", "item": "scroll", "skin": "#e8b890"},"A child of the Qiang people, one of China’s 56 ethnic groups.","羌族的孩子，是中国 56 个民族之一。"),
+  hu("eth33","布朗族","Bùlǎngzú","Blang Child","culture",{"hs": "topknot", "hat": "scholar", "hc": "#c8372d", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "fan", "skin": "#ffd9b3"},"A child of the Blang people, one of China’s 56 ethnic groups.","布朗族的孩子，是中国 56 个民族之一。"),
+  hu("eth34","撒拉族","Sālāzú","Salar Child","culture",{"hs": "long", "hat": "crown", "hc": "#3a8fc9", "robe": "#6aa84f", "sash": "#3a8fc9", "item": "lotus", "skin": "#f6cfa8"},"A child of the Salar people, one of China’s 56 ethnic groups.","撒拉族的孩子，是中国 56 个民族之一。"),
+  hu("eth35","毛南族","Máonánzú","Maonan Child","culture",{"hs": "short", "hat": "flower", "hc": "#2f7d6b", "robe": "#2e3a5a", "sash": "#f4a6b0", "item": "basket", "skin": "#e8b890"},"A child of the Maonan people, one of China’s 56 ethnic groups.","毛南族的孩子，是中国 56 个民族之一。"),
+  hu("eth36","仡佬族","Gēlǎozú","Gelao Child","culture",{"hs": "bun", "hat": "band", "hc": "#7a4aa0", "robe": "#c8372d", "sash": "#e2a93b", "item": "flute", "skin": "#ffd9b3"},"A child of the Gelao people, one of China’s 56 ethnic groups.","仡佬族的孩子，是中国 56 个民族之一。"),
+  hu("eth37","锡伯族","Xíbózú","Xibe Child","culture",{"hs": "topknot", "hat": "taoist", "hc": "#e8742a", "robe": "#3a8fc9", "sash": "#ffffff", "item": "bag", "skin": "#f6cfa8"},"A child of the Xibe people, one of China’s 56 ethnic groups.","锡伯族的孩子，是中国 56 个民族之一。"),
+  hu("eth38","阿昌族","Āchāngzú","Achang Child","culture",{"hs": "long", "hat": "conical", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#c8372d", "item": "ribbon", "skin": "#e8b890"},"A child of the Achang people, one of China’s 56 ethnic groups.","阿昌族的孩子，是中国 56 个民族之一。"),
+  hu("eth39","普米族","Pǔmǐzú","Pumi Child","culture",{"hs": "short", "hat": "leaf", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#2f7d6b", "item": "sprout", "skin": "#ffd9b3"},"A child of the Pumi people, one of China’s 56 ethnic groups.","普米族的孩子，是中国 56 个民族之一。"),
+  hu("eth40","塔吉克族","Tǎjíkèzú","Tajik Child","culture",{"hs": "bun", "hat": "scholar", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#3a8fc9", "item": "scroll", "skin": "#f6cfa8"},"A child of the Tajik people, one of China’s 56 ethnic groups.","塔吉克族的孩子，是中国 56 个民族之一。"),
+  hu("eth41","怒族","Nùzú","Nu Child","culture",{"hs": "topknot", "hat": "crown", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#f4a6b0", "item": "fan", "skin": "#e8b890"},"A child of the Nu people, one of China’s 56 ethnic groups.","怒族的孩子，是中国 56 个民族之一。"),
+  hu("eth42","乌孜别克族","Wūzībiékèzú","Uzbek Child","culture",{"hs": "long", "hat": "flower", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "lotus", "skin": "#ffd9b3"},"A child of the Uzbek people, one of China’s 56 ethnic groups.","乌孜别克族的孩子，是中国 56 个民族之一。"),
+  hu("eth43","俄罗斯族","Éluósīzú","Russian Child","culture",{"hs": "short", "hat": "band", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#ffffff", "item": "basket", "skin": "#f6cfa8"},"A child of the Russian people, one of China’s 56 ethnic groups.","俄罗斯族的孩子，是中国 56 个民族之一。"),
+  hu("eth44","鄂温克族","Èwēnkèzú","Ewenki Child","culture",{"hs": "bun", "hat": "taoist", "hc": "#2e3a5a", "robe": "#e2a93b", "sash": "#c8372d", "item": "flute", "skin": "#e8b890"},"A child of the Ewenki people, one of China’s 56 ethnic groups.","鄂温克族的孩子，是中国 56 个民族之一。"),
+  hu("eth45","德昂族","Déángzú","De’ang Child","culture",{"hs": "topknot", "hat": "conical", "hc": "#c8372d", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "bag", "skin": "#ffd9b3"},"A child of the De’ang people, one of China’s 56 ethnic groups.","德昂族的孩子，是中国 56 个民族之一。"),
+  hu("eth46","保安族","Bǎo’ānzú","Bonan Child","culture",{"hs": "long", "hat": "leaf", "hc": "#3a8fc9", "robe": "#6aa84f", "sash": "#3a8fc9", "item": "ribbon", "skin": "#f6cfa8"},"A child of the Bonan people, one of China’s 56 ethnic groups.","保安族的孩子，是中国 56 个民族之一。"),
+  hu("eth47","裕固族","Yùgùzú","Yugur Child","culture",{"hs": "short", "hat": "scholar", "hc": "#2f7d6b", "robe": "#2e3a5a", "sash": "#f4a6b0", "item": "sprout", "skin": "#e8b890"},"A child of the Yugur people, one of China’s 56 ethnic groups.","裕固族的孩子，是中国 56 个民族之一。"),
+  hu("eth48","京族","Jīngzú","Jing Child","culture",{"hs": "bun", "hat": "crown", "hc": "#7a4aa0", "robe": "#c8372d", "sash": "#e2a93b", "item": "scroll", "skin": "#ffd9b3"},"A child of the Jing people, one of China’s 56 ethnic groups.","京族的孩子，是中国 56 个民族之一。"),
+  hu("eth49","塔塔尔族","Tǎtǎ’ěrzú","Tatar Child","culture",{"hs": "topknot", "hat": "flower", "hc": "#e8742a", "robe": "#3a8fc9", "sash": "#ffffff", "item": "fan", "skin": "#f6cfa8"},"A child of the Tatar people, one of China’s 56 ethnic groups.","塔塔尔族的孩子，是中国 56 个民族之一。"),
+  hu("eth50","独龙族","Dúlóngzú","Derung Child","culture",{"hs": "long", "hat": "band", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#c8372d", "item": "lotus", "skin": "#e8b890"},"A child of the Derung people, one of China’s 56 ethnic groups.","独龙族的孩子，是中国 56 个民族之一。"),
+  hu("eth51","鄂伦春族","Èlúnchūnzú","Oroqen Child","culture",{"hs": "short", "hat": "taoist", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#2f7d6b", "item": "basket", "skin": "#ffd9b3"},"A child of the Oroqen people, one of China’s 56 ethnic groups.","鄂伦春族的孩子，是中国 56 个民族之一。"),
+  hu("eth52","赫哲族","Hèzhézú","Hezhen Child","culture",{"hs": "bun", "hat": "conical", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#3a8fc9", "item": "flute", "skin": "#f6cfa8"},"A child of the Hezhen people, one of China’s 56 ethnic groups.","赫哲族的孩子，是中国 56 个民族之一。"),
+  hu("eth53","门巴族","Ménbāzú","Monba Child","culture",{"hs": "topknot", "hat": "leaf", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#f4a6b0", "item": "bag", "skin": "#e8b890"},"A child of the Monba people, one of China’s 56 ethnic groups.","门巴族的孩子，是中国 56 个民族之一。"),
+  hu("eth54","珞巴族","Luòbāzú","Lhoba Child","culture",{"hs": "long", "hat": "scholar", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "ribbon", "skin": "#ffd9b3"},"A child of the Lhoba people, one of China’s 56 ethnic groups.","珞巴族的孩子，是中国 56 个民族之一。"),
+  hu("eth55","基诺族","Jīnuòzú","Jino Child","culture",{"hs": "short", "hat": "crown", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#ffffff", "item": "sprout", "skin": "#f6cfa8"},"A child of the Jino people, one of China’s 56 ethnic groups.","基诺族的孩子，是中国 56 个民族之一。"),
+  hu("prov00","北京","Běijīng","Beijing Friend","culture",{"hs": "topknot", "hat": "scholar", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#e2a93b", "item": "basket"},"The capital, home to the Forbidden City.","首都，故宫就在这里。"),
+  hu("prov01","天津","Tiānjīn","Tianjin Friend","culture",{"hs": "bun", "hat": "band", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#ffffff", "item": "flute"},"A port city famous for its twisted fried dough, mahua.","港口城市，以麻花出名。"),
+  hu("prov02","上海","Shànghǎi","Shanghai Friend","culture",{"hs": "short", "hat": "flower", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#c8372d", "item": "bag"},"A big port city by the sea.","海边的大港口城市。"),
+  hu("prov03","重庆","Chóngqìng","Chongqing Friend","culture",{"hs": "long", "hat": "taoist", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#2f7d6b", "item": "ribbon"},"The hilly city famous for hotpot.","依山而建，以火锅出名的城市。"),
+  hu("prov04","河北","Héběi","Hebei Friend","culture",{"hs": "topknot", "hat": "conical", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#3a8fc9", "item": "sprout"},"The province around Beijing, with parts of the Great Wall.","环绕北京，有一段长城。"),
+  hu("prov05","山西","Shānxī","Shanxi Friend","culture",{"hs": "bun", "hat": "scholar", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#f4a6b0", "item": "scroll"},"Famous for ancient towns and vinegar.","以古城和醋出名。"),
+  hu("prov06","辽宁","Liáoníng","Liaoning Friend","culture",{"hs": "short", "hat": "band", "hc": "#2e3a5a", "robe": "#e2a93b", "sash": "#e2a93b", "item": "fan"},"A northeastern province with a long coast.","有长长海岸线的东北省份。"),
+  hu("prov07","吉林","Jílín","Jilin Friend","culture",{"hs": "long", "hat": "flower", "hc": "#c8372d", "robe": "#9ad0ee", "sash": "#ffffff", "item": "lotus"},"Known for snowy forests.","以雪林出名。"),
+  hu("prov08","黑龙江","Hēilóngjiāng","Heilongjiang Friend","culture",{"hs": "topknot", "hat": "taoist", "hc": "#3a8fc9", "robe": "#6aa84f", "sash": "#c8372d", "item": "basket"},"The northernmost province, famous for ice and snow.","最北边的省份，以冰雪出名。"),
+  hu("prov09","江苏","Jiāngsū","Jiangsu Friend","culture",{"hs": "bun", "hat": "conical", "hc": "#2f7d6b", "robe": "#2e3a5a", "sash": "#2f7d6b", "item": "flute"},"Famous for the gardens of Suzhou.","以苏州园林出名。"),
+  hu("prov10","浙江","Zhèjiāng","Zhejiang Friend","culture",{"hs": "short", "hat": "scholar", "hc": "#7a4aa0", "robe": "#c8372d", "sash": "#3a8fc9", "item": "bag"},"Home of West Lake and silk.","西湖和丝绸的故乡。"),
+  hu("prov11","安徽","Ānhuī","Anhui Friend","culture",{"hs": "long", "hat": "band", "hc": "#e8742a", "robe": "#3a8fc9", "sash": "#f4a6b0", "item": "ribbon"},"Home of Huangshan.","黄山的故乡。"),
+  hu("prov12","福建","Fújiàn","Fujian Friend","culture",{"hs": "topknot", "hat": "flower", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#e2a93b", "item": "sprout"},"Famous for tea and round earth buildings.","以茶和圆形土楼出名。"),
+  hu("prov13","江西","Jiāngxī","Jiangxi Friend","culture",{"hs": "bun", "hat": "taoist", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#ffffff", "item": "scroll"},"Famous for porcelain from Jingdezhen.","以景德镇瓷器出名。"),
+  hu("prov14","山东","Shāndōng","Shandong Friend","culture",{"hs": "short", "hat": "conical", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#c8372d", "item": "fan"},"Home of Mount Tai and Confucius’s hometown.","泰山和孔子的故乡。"),
+  hu("prov15","河南","Hénán","Henan Friend","culture",{"hs": "long", "hat": "scholar", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#2f7d6b", "item": "lotus"},"A cradle of ancient Chinese culture, home of Shaolin.","中华古文化的摇篮，有少林寺。"),
+  hu("prov16","湖北","Húběi","Hubei Friend","culture",{"hs": "topknot", "hat": "band", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#3a8fc9", "item": "basket"},"The land of lakes, crossed by the Yangtze.","湖泊很多，长江穿过。"),
+  hu("prov17","湖南","Húnán","Hunan Friend","culture",{"hs": "bun", "hat": "flower", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#f4a6b0", "item": "flute"},"Home of Zhangjiajie and spicy food.","张家界和辣味美食的故乡。"),
+  hu("prov18","广东","Guǎngdōng","Guangdong Friend","culture",{"hs": "short", "hat": "taoist", "hc": "#2e3a5a", "robe": "#e2a93b", "sash": "#e2a93b", "item": "bag"},"Famous for dim sum.","以早茶点心出名。"),
+  hu("prov19","海南","Hǎinán","Hainan Friend","culture",{"hs": "long", "hat": "conical", "hc": "#c8372d", "robe": "#9ad0ee", "sash": "#ffffff", "item": "ribbon"},"A tropical island province.","热带岛屿省份。"),
+  hu("prov20","四川","Sìchuān","Sichuan Friend","culture",{"hs": "topknot", "hat": "scholar", "hc": "#3a8fc9", "robe": "#6aa84f", "sash": "#c8372d", "item": "sprout"},"Home of the giant panda and spicy food.","大熊猫和麻辣美食的故乡。"),
+  hu("prov21","贵州","Guìzhōu","Guizhou Friend","culture",{"hs": "bun", "hat": "band", "hc": "#2f7d6b", "robe": "#2e3a5a", "sash": "#2f7d6b", "item": "scroll"},"The land of mountains and waterfalls.","山多瀑布多的地方。"),
+  hu("prov22","云南","Yúnnán","Yunnan Friend","culture",{"hs": "short", "hat": "flower", "hc": "#7a4aa0", "robe": "#c8372d", "sash": "#3a8fc9", "item": "fan"},"South of the clouds, with many peoples and flowers.","彩云之南，民族多、花也多。"),
+  hu("prov23","陕西","Shǎnxī","Shaanxi Friend","culture",{"hs": "long", "hat": "taoist", "hc": "#e8742a", "robe": "#3a8fc9", "sash": "#f4a6b0", "item": "lotus"},"Home of the Terracotta Army.","兵马俑的故乡。"),
+  hu("prov24","甘肃","Gānsù","Gansu Friend","culture",{"hs": "topknot", "hat": "conical", "hc": "#3fa37a", "robe": "#2f7d6b", "sash": "#e2a93b", "item": "basket"},"Home of the Dunhuang caves.","敦煌石窟的故乡。"),
+  hu("prov25","青海","Qīnghǎi","Qinghai Friend","culture",{"hs": "bun", "hat": "scholar", "hc": "#2e5f8a", "robe": "#7a4aa0", "sash": "#ffffff", "item": "flute"},"Home of Qinghai Lake and the sources of great rivers.","青海湖和大河源头的故乡。"),
+  hu("prov26","内蒙古","Nèiměnggǔ","Inner Mongolia Friend","culture",{"hs": "short", "hat": "band", "hc": "#f4a6b0", "robe": "#e8742a", "sash": "#c8372d", "item": "bag"},"Wide grasslands and galloping horses.","辽阔的草原和奔跑的骏马。"),
+  hu("prov27","广西","Guǎngxī","Guangxi Friend","culture",{"hs": "long", "hat": "flower", "hc": "#e2a93b", "robe": "#3fa37a", "sash": "#2f7d6b", "item": "ribbon"},"Home of Guilin’s hills and rivers.","桂林山水的故乡。"),
+  hu("prov28","西藏","Xīzàng","Tibet Friend","culture",{"hs": "topknot", "hat": "taoist", "hc": "#9ad0ee", "robe": "#2e5f8a", "sash": "#3a8fc9", "item": "sprout"},"Home of the Potala Palace and the high mountains.","布达拉宫和高山的故乡。"),
+  hu("prov29","宁夏","Níngxià","Ningxia Friend","culture",{"hs": "bun", "hat": "conical", "hc": "#6aa84f", "robe": "#f4a6b0", "sash": "#f4a6b0", "item": "scroll"},"Known for wolfberries and the Yellow River.","以枸杞和黄河出名。"),
+  hu("prov30","新疆","Xīnjiāng","Xinjiang Friend","culture",{"hs": "short", "hat": "scholar", "hc": "#2e3a5a", "robe": "#e2a93b", "sash": "#e2a93b", "item": "fan"},"Famous for grapes, melons and the Silk Road.","以葡萄、哈密瓜和丝绸之路出名。"),
+  hu("prov31","香港","Xiānggǎng","Hong Kong Friend","culture",{"hs": "long", "hat": "band", "hc": "#c8372d", "robe": "#9ad0ee", "sash": "#ffffff", "item": "lotus"},"A bright harbour city.","明亮的海港城市。"),
+  hu("prov32","澳门","Àomén","Macao Friend","culture",{"hs": "topknot", "hat": "flower", "hc": "#3a8fc9", "robe": "#6aa84f", "sash": "#c8372d", "item": "basket"},"A small, lively city by the sea.","海边小而热闹的城市。"),
+  hu("term00","立春","Lìchūn","Start of Spring","culture",{"hs": "long", "hat": "flower", "robe": "#6aa84f", "sash": "#ffffff", "item": "sprout", "fx": "rgba(235,245,255,.95)"},"The first day of spring; the weather begins to warm.","春天开始，天气慢慢变暖。"),
+  hu("term01","雨水","Yǔshuǐ","Rain Water","culture",{"hs": "bun", "hat": "leaf", "robe": "#9ad0ee", "sash": "#e2a93b", "item": "bag", "fx": "rgba(235,245,255,.95)"},"Spring rain falls and the ice melts.","春雨落下，冰雪融化。"),
+  hu("term02","惊蛰","Jīngzhé","Awakening of Insects","culture",{"hs": "long", "hat": "flower", "robe": "#6aa84f", "sash": "#f4a6b0", "item": "hammer", "fx": "rgba(235,245,255,.95)"},"Spring thunder wakes the sleeping insects.","春雷把冬眠的小虫叫醒。"),
+  hu("term03","春分","Chūnfēn","Spring Equinox","culture",{"hs": "bun", "hat": "leaf", "robe": "#f4a6b0", "sash": "#2f7d6b", "item": "ribbon", "fx": "rgba(235,245,255,.95)"},"Day and night are equally long.","白天和黑夜一样长。"),
+  hu("term04","清明","Qīngmíng","Clear and Bright","culture",{"hs": "long", "hat": "flower", "robe": "#6aa84f", "sash": "#ffffff", "item": "ribbon", "fx": "rgba(235,245,255,.95)"},"Time to sweep tombs and go on spring outings.","扫墓和踏青的时节。"),
+  hu("term05","谷雨","Gǔyǔ","Grain Rain","culture",{"hs": "bun", "hat": "leaf", "robe": "#3fa37a", "sash": "#e2a93b", "item": "sprout", "fx": "rgba(235,245,255,.95)"},"Rain helps the grain grow.","雨水帮助谷物生长。"),
+  hu("term06","立夏","Lìxià","Start of Summer","culture",{"hs": "long", "hat": "flower", "robe": "#c8372d", "sash": "#f4a6b0", "item": "fan", "fx": "rgba(235,245,255,.95)"},"Summer begins and the days get hot.","夏天开始，天气变热。"),
+  hu("term07","小满","Xiǎomǎn","Grain Buds","culture",{"hs": "bun", "hat": "leaf", "robe": "#e2a93b", "sash": "#2f7d6b", "item": "sprout", "fx": "rgba(235,245,255,.95)"},"Summer grain begins to fill out.","夏天的谷物开始饱满。"),
+  hu("term08","芒种","Mángzhòng","Grain in Ear","culture",{"hs": "long", "hat": "flower", "robe": "#e2a93b", "sash": "#ffffff", "item": "spade", "fx": "rgba(235,245,255,.95)"},"A busy time of harvest and planting.","忙着收割和播种的时候。"),
+  hu("term09","夏至","Xiàzhì","Summer Solstice","culture",{"hs": "bun", "hat": "leaf", "robe": "#e8742a", "sash": "#e2a93b", "item": "fan", "fx": "rgba(235,245,255,.95)"},"The longest day of the year.","一年里白天最长的一天。"),
+  hu("term10","小暑","Xiǎoshǔ","Minor Heat","culture",{"hs": "long", "hat": "flower", "robe": "#c8372d", "sash": "#f4a6b0", "item": "fan", "fx": "rgba(235,245,255,.95)"},"The hot weather begins.","炎热的天气开始了。"),
+  hu("term11","大暑","Dàshǔ","Major Heat","culture",{"hs": "bun", "hat": "leaf", "robe": "#e8742a", "sash": "#2f7d6b", "item": "fan", "fx": "rgba(235,245,255,.95)"},"The hottest time of the year.","一年里最热的时候。"),
+  hu("term12","立秋","Lìqiū","Start of Autumn","culture",{"hs": "long", "hat": "flower", "robe": "#e8742a", "sash": "#ffffff", "item": "basket", "fx": "rgba(235,245,255,.95)"},"Autumn begins and the air starts to cool.","秋天开始，天气渐凉。"),
+  hu("term13","处暑","Chǔshǔ","End of Heat","culture",{"hs": "bun", "hat": "leaf", "robe": "#d9a441", "sash": "#e2a93b", "item": "fan", "fx": "rgba(235,245,255,.95)"},"The summer heat starts to go away.","夏天的暑热慢慢退去。"),
+  hu("term14","白露","Báilù","White Dew","culture",{"hs": "long", "hat": "flower", "robe": "#ffffff", "sash": "#f4a6b0", "item": "bag", "fx": "rgba(235,245,255,.95)"},"Cool mornings bring white dew.","早晨变凉，草叶上有白露。"),
+  hu("term15","秋分","Qiūfēn","Autumn Equinox","culture",{"hs": "bun", "hat": "leaf", "robe": "#d9a441", "sash": "#2f7d6b", "item": "basket", "fx": "rgba(235,245,255,.95)"},"Day and night are equally long again.","白天和黑夜又一样长。"),
+  hu("term16","寒露","Hánlù","Cold Dew","culture",{"hs": "long", "hat": "flower", "robe": "#9ad0ee", "sash": "#ffffff", "item": "bag", "fx": "rgba(235,245,255,.95)"},"The dew turns cold.","露水变得更凉。"),
+  hu("term17","霜降","Shuāngjiàng","Frost’s Descent","culture",{"hs": "bun", "hat": "leaf", "robe": "#ffffff", "sash": "#e2a93b", "item": "bag", "fx": "rgba(235,245,255,.95)"},"The first frost appears.","第一场霜出现了。"),
+  hu("term18","立冬","Lìdōng","Start of Winter","culture",{"hs": "long", "hat": "flower", "robe": "#3a8fc9", "sash": "#f4a6b0", "item": "bag", "fx": "rgba(235,245,255,.95)"},"Winter begins.","冬天开始。"),
+  hu("term19","小雪","Xiǎoxuě","Minor Snow","culture",{"hs": "bun", "hat": "leaf", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "bag", "fx": "rgba(235,245,255,.95)"},"The first light snow may fall.","可能下第一场小雪。"),
+  hu("term20","大雪","Dàxuě","Major Snow","culture",{"hs": "long", "hat": "flower", "robe": "#ffffff", "sash": "#ffffff", "item": "bag", "fx": "rgba(235,245,255,.95)"},"Heavy snow may fall.","可能下大雪。"),
+  hu("term21","冬至","Dōngzhì","Winter Solstice","culture",{"hs": "bun", "hat": "leaf", "robe": "#3a8fc9", "sash": "#e2a93b", "item": "basket", "fx": "rgba(235,245,255,.95)"},"The longest night; many families eat dumplings.","一年里夜晚最长，很多人吃饺子。"),
+  hu("term22","小寒","Xiǎohán","Minor Cold","culture",{"hs": "long", "hat": "flower", "robe": "#3a8fc9", "sash": "#f4a6b0", "item": "bag", "fx": "rgba(235,245,255,.95)"},"The cold weather begins.","寒冷的天气开始了。"),
+  hu("term23","大寒","Dàhán","Major Cold","culture",{"hs": "bun", "hat": "leaf", "robe": "#2e3a5a", "sash": "#2f7d6b", "item": "bag", "fx": "rgba(235,245,255,.95)"},"The coldest time of the year.","一年里最冷的时候。"),
+  hu("flower00","梅","Méi","Plum Blossom Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#f4a6b0", "sash": "#2f7d6b", "item": "lotus", "fx": "rgba(255,230,240,.95)"},"It blooms bravely in the cold of winter.","在寒冬里勇敢开放。"),
+  hu("flower01","兰","Lán","Orchid Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#7a4aa0", "sash": "#ffffff", "item": "sprout", "fx": "rgba(255,230,240,.95)"},"A quiet flower with a gentle fragrance.","安静又幽香的花。"),
+  hu("flower02","竹","Zhú","Bamboo Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#6aa84f", "sash": "#e2a93b", "item": "fan", "fx": "rgba(255,230,240,.95)"},"It stays green all year and bends but does not break.","四季常青，弯而不折。"),
+  hu("flower03","菊","Jú","Chrysanthemum Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#e2a93b", "sash": "#2f7d6b", "item": "lotus", "fx": "rgba(255,230,240,.95)"},"The flower of autumn.","秋天的花。"),
+  hu("flower04","松","Sōng","Pine Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#3fa37a", "sash": "#ffffff", "item": "sprout", "fx": "rgba(255,230,240,.95)"},"It stands tall in snow and wind.","在风雪里挺立。"),
+  hu("flower05","牡丹","Mǔdān","Peony Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#c8372d", "sash": "#e2a93b", "item": "fan", "fx": "rgba(255,230,240,.95)"},"Called the king of flowers.","被称为花中之王。"),
+  hu("flower06","荷花","Héhuā","Lotus Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#f4a6b0", "sash": "#2f7d6b", "item": "lotus", "fx": "rgba(255,230,240,.95)"},"It grows clean out of muddy water.","出淤泥而不染。"),
+  hu("flower07","桂花","Guìhuā","Osmanthus Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#d9a441", "sash": "#ffffff", "item": "sprout", "fx": "rgba(255,230,240,.95)"},"Its sweet smell fills the Mid-Autumn air.","香味飘满中秋的夜。"),
+  hu("flower08","桃花","Táohuā","Peach Blossom Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#f4a6b0", "sash": "#e2a93b", "item": "fan", "fx": "rgba(255,230,240,.95)"},"Pink blossoms of spring.","春天粉色的花。"),
+  hu("flower09","梨花","Líhuā","Pear Blossom Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#ffffff", "sash": "#2f7d6b", "item": "lotus", "fx": "rgba(255,230,240,.95)"},"White blossoms like spring snow.","像春雪一样的白花。"),
+  hu("flower10","杏花","Xìnghuā","Apricot Blossom Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#f4a6b0", "sash": "#ffffff", "item": "sprout", "fx": "rgba(255,230,240,.95)"},"Early spring flowers on the branches.","枝头早春的花。"),
+  hu("flower11","海棠","Hǎitáng","Crabapple Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#f4a6b0", "sash": "#e2a93b", "item": "fan", "fx": "rgba(255,230,240,.95)"},"Bright pink blossoms of spring.","春天鲜艳的粉花。"),
+  hu("flower12","茉莉","Mòlì","Jasmine Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#ffffff", "sash": "#2f7d6b", "item": "lotus", "fx": "rgba(255,230,240,.95)"},"A small white flower, loved for tea.","可以泡茶的小白花。"),
+  hu("flower13","水仙","Shuǐxiān","Narcissus Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#ffffff", "sash": "#ffffff", "item": "sprout", "fx": "rgba(255,230,240,.95)"},"A New Year flower grown in water.","过年时水养的花。"),
+  hu("flower14","杜鹃","Dùjuān","Azalea Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#c8372d", "sash": "#e2a93b", "item": "fan", "fx": "rgba(255,230,240,.95)"},"Red flowers across the hills in spring.","春天开满山坡的红花。"),
+  hu("flower15","樱花","Yīnghuā","Cherry Blossom Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#f4a6b0", "sash": "#2f7d6b", "item": "lotus", "fx": "rgba(255,230,240,.95)"},"Soft pink flowers that fall like snow.","像雪一样落下的粉色花。"),
+  hu("flower16","紫藤","Zǐténg","Wisteria Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#7a4aa0", "sash": "#ffffff", "item": "sprout", "fx": "rgba(255,230,240,.95)"},"Purple flowers that hang like curtains.","像帘子一样垂下的紫花。"),
+  hu("flower17","向日葵","Xiàngrìkuí","Sunflower Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#e2a93b", "sash": "#e2a93b", "item": "fan", "fx": "rgba(255,230,240,.95)"},"It always turns to face the sun.","总是朝着太阳。"),
+  hu("flower18","芍药","Sháoyao","Herbaceous Peony Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#f4a6b0", "sash": "#2f7d6b", "item": "lotus", "fx": "rgba(255,230,240,.95)"},"A graceful flower of late spring.","暮春优雅的花。"),
+  hu("flower19","栀子","Zhīzi","Gardenia Spirit","culture",{"hs": "long", "hat": "flower", "robe": "#ffffff", "sash": "#ffffff", "item": "sprout", "fx": "rgba(255,230,240,.95)"},"A white flower with a strong sweet scent.","香气浓郁的白花。"),
+  hu("inst00","古琴","Gǔqín","Guqin Player","culture",{"hs": "topknot", "hat": "scholar", "hc": "#c8372d", "robe": "#e8742a", "sash": "#e2a93b", "item": "flute"},"An ancient seven-string zither.","古老的七弦琴。"),
+  hu("inst01","琵琶","Pípa","Pipa Player","culture",{"hs": "bun", "hat": "band", "hc": "#3a8fc9", "robe": "#3fa37a", "sash": "#ffffff", "item": "flute"},"A pear-shaped lute played with the fingers.","梨形的弹拨乐器。"),
+  hu("inst02","二胡","Èrhú","Erhu Player","culture",{"hs": "topknot", "hat": "none", "hc": "#2f7d6b", "robe": "#2e5f8a", "sash": "#c8372d", "item": "flute"},"A two-string fiddle with a singing voice.","声音像唱歌的两弦胡琴。"),
+  hu("inst03","笛子","Dízi","Bamboo Flute Player","culture",{"hs": "bun", "hat": "scholar", "hc": "#7a4aa0", "robe": "#f4a6b0", "sash": "#2f7d6b", "item": "flute"},"A bright flute made of bamboo.","用竹子做的明亮的笛子。"),
+  hu("inst04","箫","Xiāo","Xiao Player","culture",{"hs": "topknot", "hat": "band", "hc": "#e8742a", "robe": "#e2a93b", "sash": "#3a8fc9", "item": "flute"},"A soft vertical bamboo flute.","声音柔和的竖笛。"),
+  hu("inst05","古筝","Gǔzhēng","Guzheng Player","culture",{"hs": "bun", "hat": "none", "hc": "#3fa37a", "robe": "#9ad0ee", "sash": "#f4a6b0", "item": "flute"},"A long zither with many strings.","有很多弦的长琴。"),
+  hu("inst06","笙","Shēng","Sheng Player","culture",{"hs": "topknot", "hat": "scholar", "hc": "#2e5f8a", "robe": "#6aa84f", "sash": "#e2a93b", "item": "flute"},"A mouth organ with bamboo pipes.","用竹管做成的吹奏乐器。"),
+  hu("inst07","唢呐","Suǒnà","Suona Player","culture",{"hs": "bun", "hat": "band", "hc": "#f4a6b0", "robe": "#2e3a5a", "sash": "#ffffff", "item": "flute"},"A loud horn for festivals.","节日里响亮的喇叭。"),
+  hu("inst08","编钟","Biānzhōng","Chime Bells Player","culture",{"hs": "topknot", "hat": "none", "hc": "#e2a93b", "robe": "#c8372d", "sash": "#c8372d", "item": "drum"},"A set of ancient bronze bells.","一套古老的青铜钟。"),
+  hu("inst09","鼓","Gǔ","Drum Player","culture",{"hs": "bun", "hat": "scholar", "hc": "#9ad0ee", "robe": "#3a8fc9", "sash": "#2f7d6b", "item": "drum"},"The heartbeat of the dragon boat race.","龙舟比赛的心跳。"),
+  hu("inst10","锣","Luó","Gong Player","culture",{"hs": "topknot", "hat": "band", "hc": "#6aa84f", "robe": "#2f7d6b", "sash": "#3a8fc9", "item": "drum"},"A bright, round bronze gong.","圆圆的铜锣。"),
+  hu("inst11","扬琴","Yángqín","Yangqin Player","culture",{"hs": "bun", "hat": "none", "hc": "#2e3a5a", "robe": "#7a4aa0", "sash": "#f4a6b0", "item": "hammer"},"A dulcimer played with two small hammers.","用两根小槌敲的琴。"),
+  hu("inst12","马头琴","Mǎtóuqín","Morin Khuur Player","culture",{"hs": "topknot", "hat": "scholar", "hc": "#c8372d", "robe": "#e8742a", "sash": "#e2a93b", "item": "flute"},"The horse-head fiddle of the Mongolian grasslands.","蒙古草原的马头琴。"),
+  hu("inst13","葫芦丝","Húlusī","Hulusi Player","culture",{"hs": "bun", "hat": "band", "hc": "#3a8fc9", "robe": "#3fa37a", "sash": "#ffffff", "item": "flute"},"A gourd flute with a gentle sound.","声音温柔的葫芦笛。"),
+  hu("inst14","埙","Xūn","Xun Player","culture",{"hs": "topknot", "hat": "none", "hc": "#2f7d6b", "robe": "#2e5f8a", "sash": "#c8372d", "item": "flute"},"An ancient clay ocarina.","古老的陶土乐器。"),
+  hu("inst15","三弦","Sānxián","Sanxian Player","culture",{"hs": "bun", "hat": "scholar", "hc": "#7a4aa0", "robe": "#f4a6b0", "sash": "#2f7d6b", "item": "flute"},"A three-string lute.","三根弦的弹拨乐器。"),
+  hu("craft00","剪纸","Jiǎnzhǐ","Paper-Cutting","culture",{"hs": "topknot", "hat": "band", "hc": "#2f7d6b", "robe": "#3a8fc9", "sash": "#c8372d", "item": "scroll"},"Red paper cut into pictures for the New Year.","把红纸剪成图案，过年用。"),
+  hu("craft01","风筝","Fēngzheng","Kite Maker","culture",{"hs": "bun", "hat": "taoist", "hc": "#7a4aa0", "robe": "#2f7d6b", "sash": "#2f7d6b", "item": "ribbon"},"A maker of colourful kites.","做彩色风筝的人。"),
+  hu("craft02","皮影","Píyǐng","Shadow Puppets","culture",{"hs": "short", "hat": "scholar", "hc": "#e8742a", "robe": "#7a4aa0", "sash": "#3a8fc9", "item": "fan"},"Leather puppets that tell stories by lamplight.","在灯光下讲故事的皮影人。"),
+  hu("craft03","泥人","Nírén","Clay Figures","culture",{"hs": "topknot", "hat": "none", "hc": "#3fa37a", "robe": "#e8742a", "sash": "#f4a6b0", "item": "brush"},"Little clay figures shaped by hand.","用手捏出来的小泥人。"),
+  hu("craft04","扎染","Zārǎn","Tie-Dye","culture",{"hs": "bun", "hat": "band", "hc": "#2e5f8a", "robe": "#3fa37a", "sash": "#e2a93b", "item": "bag"},"Blue cloth tied and dyed in patterns.","扎好再染成花纹的蓝布。"),
+  hu("craft05","刺绣","Cìxiù","Embroidery","culture",{"hs": "short", "hat": "taoist", "hc": "#f4a6b0", "robe": "#2e5f8a", "sash": "#ffffff", "item": "ribbon"},"Pictures sewn with colourful silk thread.","用彩色丝线绣出的图画。"),
+  hu("craft06","陶瓷","Táocí","Porcelain","culture",{"hs": "topknot", "hat": "scholar", "hc": "#e2a93b", "robe": "#f4a6b0", "sash": "#c8372d", "item": "basket"},"Shiny pots and bowls made from clay.","用泥土烧成的闪亮碗罐。"),
+  hu("craft07","漆器","Qīqì","Lacquerware","culture",{"hs": "bun", "hat": "none", "hc": "#9ad0ee", "robe": "#e2a93b", "sash": "#2f7d6b", "item": "basket"},"Boxes and cups with shiny lacquer.","涂着亮漆的盒子和杯子。"),
+  hu("craft08","景泰蓝","Jǐngtàilán","Cloisonné","culture",{"hs": "short", "hat": "band", "hc": "#6aa84f", "robe": "#9ad0ee", "sash": "#3a8fc9", "item": "tablet"},"Bronze decorated with bright blue enamel.","铜器上有鲜艳的蓝釉。"),
+  hu("craft09","年画","Niánhuà","New Year Picture","culture",{"hs": "topknot", "hat": "taoist", "hc": "#2e3a5a", "robe": "#6aa84f", "sash": "#f4a6b0", "item": "scroll"},"Colourful pictures hung on doors at New Year.","过年贴在门上的彩色画。"),
+  hu("craft10","书法","Shūfǎ","Calligraphy","culture",{"hs": "bun", "hat": "scholar", "hc": "#c8372d", "robe": "#2e3a5a", "sash": "#e2a93b", "item": "brush"},"The art of beautiful writing with a brush.","用毛笔写出美丽的字。"),
+  hu("craft11","国画","Guóhuà","Ink Painting","culture",{"hs": "short", "hat": "none", "hc": "#3a8fc9", "robe": "#c8372d", "sash": "#ffffff", "item": "brush"},"Paintings made with brush and ink.","用毛笔和墨画的画。"),
+  hu("craft12","篆刻","Zhuànkè","Seal Carving","culture",{"hs": "topknot", "hat": "band", "hc": "#2f7d6b", "robe": "#3a8fc9", "sash": "#c8372d", "item": "axe"},"Names carved into small stone seals.","在小石章上刻名字。"),
+  hu("craft13","脸谱","Liǎnpǔ","Opera Mask","culture",{"hs": "bun", "hat": "taoist", "hc": "#7a4aa0", "robe": "#2f7d6b", "sash": "#2f7d6b", "item": "fan"},"Painted faces that show a role’s character.","用颜色表现人物性格的脸。"),
+  hu("craft14","杂技","Zájì","Acrobatics","culture",{"hs": "short", "hat": "scholar", "hc": "#e8742a", "robe": "#7a4aa0", "sash": "#3a8fc9", "item": "ribbon"},"Daring flips and balancing acts.","惊险的翻腾和平衡表演。"),
+  hu("craft15","相声","Xiàngsheng","Crosstalk","culture",{"hs": "topknot", "hat": "none", "hc": "#3fa37a", "robe": "#e8742a", "sash": "#f4a6b0", "item": "fan"},"A funny talk show performed by two people.","两个人表演的逗笑节目。"),
+  hu("craft16","太极","Tàijí","Tai Chi","culture",{"hs": "bun", "hat": "band", "hc": "#2e5f8a", "robe": "#3fa37a", "sash": "#e2a93b", "item": "none"},"Slow, flowing exercise.","缓慢流畅的运动。"),
+  hu("craft17","围棋","Wéiqí","Go","culture",{"hs": "short", "hat": "taoist", "hc": "#f4a6b0", "robe": "#2e5f8a", "sash": "#ffffff", "item": "tablet"},"A board game of black and white stones.","黑白棋子的棋盘游戏。"),
+  hu("craft18","象棋","Xiàngqí","Chinese Chess","culture",{"hs": "topknot", "hat": "scholar", "hc": "#e2a93b", "robe": "#f4a6b0", "sash": "#c8372d", "item": "tablet"},"A board game with a river across the middle.","中间有一条河的棋盘游戏。"),
+  hu("craft19","中国结","Zhōngguójié","Chinese Knot","culture",{"hs": "bun", "hat": "none", "hc": "#9ad0ee", "robe": "#e2a93b", "sash": "#2f7d6b", "item": "ribbon"},"A lucky red knot made of cord.","用红绳编的吉祥结。"),
+  hu("craft20","竹编","Zhúbiān","Bamboo Weaving","culture",{"hs": "short", "hat": "band", "hc": "#6aa84f", "robe": "#9ad0ee", "sash": "#3a8fc9", "item": "basket"},"Baskets woven from bamboo strips.","用竹条编成的篮子。"),
+  hu("craft21","木偶","Mù’ǒu","Puppets","culture",{"hs": "topknot", "hat": "taoist", "hc": "#2e3a5a", "robe": "#6aa84f", "sash": "#f4a6b0", "item": "ribbon"},"Wooden puppets that dance on strings.","用线操控跳舞的木偶。"),
+  hu("craft22","武术","Wǔshù","Martial Arts","culture",{"hs": "bun", "hat": "scholar", "hc": "#c8372d", "robe": "#2e3a5a", "sash": "#e2a93b", "item": "sword"},"Strong, graceful moves.","有力又优美的动作。"),
+  an("food00","饺子","Jiǎozi","Dumpling","culture",{"b": "#fff6e6", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#fff6e6"},"A crescent-shaped dumpling for the New Year.","新年吃的月牙形饺子。"),
+  an("food01","汤圆","Tāngyuán","Tangyuan","culture",{"b": "#ffffff", "l": "#f4f4f4", "e": "none", "s": "short", "t": "none", "ac": "#ffffff"},"Sweet rice balls in soup.","汤里的甜糯米团子。"),
+  an("food02","粽子","Zòngzi","Zongzi","culture",{"b": "#5aa05a", "l": "#cfe8b0", "e": "none", "s": "short", "t": "none", "ac": "#5aa05a"},"Rice wrapped in bamboo leaves.","用竹叶包的糯米。"),
+  an("food03","月饼","Yuèbǐng","Mooncake","culture",{"b": "#c98a3a", "l": "#f0d8a0", "e": "none", "s": "short", "t": "none", "ac": "#c98a3a"},"A round cake for the Mid-Autumn Festival.","中秋节吃的圆饼。"),
+  an("food04","包子","Bāozi","Steamed Bun","culture",{"b": "#fff6e6", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#fff6e6"},"A fluffy bun with tasty filling.","软软的、里面有馅的包子。"),
+  an("food05","馒头","Mántou","Steamed Bread","culture",{"b": "#fffaf0", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#fffaf0"},"A plain, soft white bun.","软软的白馒头。"),
+  an("food06","春卷","Chūnjuǎn","Spring Roll","culture",{"b": "#e2a93b", "l": "#f2d890", "e": "none", "s": "short", "t": "none", "ac": "#e2a93b"},"A crispy roll for the start of spring.","立春时吃的脆卷。"),
+  an("food07","年糕","Niángāo","Rice Cake","culture",{"b": "#f0e0b8", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#f0e0b8"},"A sticky cake that means rising higher each year.","寓意年年高升的糯米糕。"),
+  an("food08","糖葫芦","Tánghúlu","Candied Haws","culture",{"b": "#d9392b", "l": "#f08a8a", "e": "none", "s": "short", "t": "none", "ac": "#d9392b"},"Red hawthorn berries coated in sugar.","裹着糖的红山楂。"),
+  an("food09","烤鸭","Kǎoyā","Roast Duck","culture",{"b": "#c0702a", "l": "#f0c890", "e": "none", "s": "short", "t": "none", "ac": "#c0702a"},"A famous crispy duck from Beijing.","北京有名的脆皮鸭。"),
+  an("food10","火锅","Huǒguō","Hotpot","culture",{"b": "#c8372d", "l": "#f08a6a", "e": "none", "s": "short", "t": "none", "ac": "#c8372d"},"A bubbling pot everyone shares.","大家一起吃的热腾腾的锅。"),
+  an("food11","面条","Miàntiáo","Noodles","culture",{"b": "#f2d890", "l": "#fff2c4", "e": "none", "s": "short", "t": "none", "ac": "#f2d890"},"Long noodles for a long life.","象征长寿的长面条。"),
+  an("food12","米饭","Mǐfàn","Rice","culture",{"b": "#ffffff", "l": "#f4f4f4", "e": "none", "s": "short", "t": "none", "ac": "#ffffff"},"The bowl at the heart of every meal.","每一餐里最重要的一碗。"),
+  an("food13","豆腐","Dòufu","Tofu","culture",{"b": "#fffaf0", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#fffaf0"},"Soft white tofu made from soybeans.","用大豆做的嫩白豆腐。"),
+  an("food14","豆浆","Dòujiāng","Soy Milk","culture",{"b": "#f8f0d8", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#f8f0d8"},"A warm drink for breakfast.","早餐喝的热饮。"),
+  an("food15","油条","Yóutiáo","Fried Dough Stick","culture",{"b": "#e2a93b", "l": "#f2d890", "e": "none", "s": "short", "t": "none", "ac": "#e2a93b"},"A golden stick often eaten with soy milk.","常配豆浆吃的金黄油条。"),
+  an("food16","煎饼","Jiānbing","Pancake Roll","culture",{"b": "#d9b068", "l": "#f0d8a0", "e": "none", "s": "short", "t": "none", "ac": "#d9b068"},"A thin pancake roll sold on the street.","街头卖的薄饼卷。"),
+  an("food17","小笼包","Xiǎolóngbāo","Soup Dumpling","culture",{"b": "#fff6e6", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#fff6e6"},"A small steamed bun full of hot soup.","里面有热汤的小笼包。"),
+  an("food18","馄饨","Húntun","Wonton","culture",{"b": "#fff6e6", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#fff6e6"},"A little dumpling in soup.","汤里的小馄饨。"),
+  an("food19","炒饭","Chǎofàn","Fried Rice","culture",{"b": "#f2d870", "l": "#fff2c4", "e": "none", "s": "short", "t": "none", "ac": "#f2d870"},"Rice stir-fried with egg and vegetables.","加了鸡蛋和蔬菜的炒米饭。"),
+  an("food20","烧饼","Shāobǐng","Sesame Flatbread","culture",{"b": "#c9984a", "l": "#f0d8a0", "e": "none", "s": "short", "t": "none", "ac": "#c9984a"},"A crispy flatbread with sesame seeds.","撒着芝麻的脆饼。"),
+  an("food21","桂花糕","Guìhuāgāo","Osmanthus Cake","culture",{"b": "#f2d878", "l": "#fff2c4", "e": "none", "s": "short", "t": "none", "ac": "#f2d878"},"A sweet cake scented with osmanthus.","桂花香味的甜糕。"),
+  an("food22","绿豆糕","Lǜdòugāo","Mung Bean Cake","culture",{"b": "#9acc7a", "l": "#dff0c8", "e": "none", "s": "short", "t": "none", "ac": "#9acc7a"},"A soft green cake for hot days.","夏天吃的清爽绿糕。"),
+  an("food23","山楂糕","Shānzhāgāo","Hawthorn Cake","culture",{"b": "#c8372d", "l": "#f08a8a", "e": "none", "s": "short", "t": "none", "ac": "#c8372d"},"A sweet-and-sour red jelly.","酸酸甜甜的红色糕。"),
+  an("food24","麻花","Máhuā","Twisted Fried Dough","culture",{"b": "#b8782a", "l": "#e0b870", "e": "none", "s": "short", "t": "none", "ac": "#b8782a"},"A crunchy twisted snack.","脆脆的拧花小吃。"),
+  an("food25","茶叶蛋","Cháyèdàn","Tea Egg","culture",{"b": "#8a6a4a", "l": "#e8d8b8", "e": "none", "s": "short", "t": "none", "ac": "#8a6a4a"},"An egg cooked in tea and spices.","用茶和香料煮的蛋。"),
+  an("food26","皮蛋","Pídàn","Century Egg","culture",{"b": "#4a3a2a", "l": "#8a7a5a", "e": "none", "s": "short", "t": "none", "ac": "#4a3a2a"},"A dark, glossy preserved egg.","黑亮的腌制蛋。"),
+  an("food27","腊肠","Làcháng","Sausage","culture",{"b": "#a8322a", "l": "#d88a7a", "e": "none", "s": "short", "t": "none", "ac": "#a8322a"},"A dried sausage for the New Year.","过年吃的香肠。"),
+  an("food28","红烧肉","Hóngshāoròu","Braised Pork","culture",{"b": "#8a3a1a", "l": "#d89870", "e": "none", "s": "short", "t": "none", "ac": "#8a3a1a"},"A shiny red-cooked pork dish.","红亮的炖肉。"),
+  an("food29","饭团","Fàntuán","Rice Ball","culture",{"b": "#ffffff", "l": "#f4f4f4", "e": "none", "s": "short", "t": "none", "ac": "#ffffff"},"A rice ball with tasty filling.","里面有馅的饭团。"),
+  an("food30","粥","Zhōu","Congee","culture",{"b": "#f8f4ec", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#f8f4ec"},"Warm rice porridge for breakfast.","早餐喝的热米粥。"),
+  an("food31","冰糖","Bīngtáng","Rock Sugar","culture",{"b": "#e8f0f8", "l": "#fff", "e": "none", "s": "short", "t": "none", "ac": "#e8f0f8"},"Clear sweet crystals.","透明的甜冰糖。"),
+  an("food32","豆沙包","Dòushābāo","Red Bean Bun","culture",{"b": "#fff6e6", "l": "#e8b8a8", "e": "none", "s": "short", "t": "none", "ac": "#fff6e6"},"A bun with sweet red-bean paste.","里面是甜豆沙的包子。"),
+  an("food33","芝麻球","Zhīmaqiú","Sesame Ball","culture",{"b": "#d9a050", "l": "#f0d090", "e": "none", "s": "short", "t": "none", "ac": "#d9a050"},"A crispy ball with sticky filling.","外脆里软的芝麻球。"),
+  an("food34","酸梅汤","Suānméitāng","Plum Drink","culture",{"b": "#7a3a3a", "l": "#c89898", "e": "none", "s": "short", "t": "none", "ac": "#7a3a3a"},"A sour, sweet summer drink.","夏天酸酸甜甜的饮料。"),
+  an("food35","凉面","Liángmiàn","Cold Noodles","culture",{"b": "#f2e0a0", "l": "#fff2c4", "e": "none", "s": "short", "t": "none", "ac": "#f2e0a0"},"Cool noodles for summer.","夏天吃的凉面。"),
+  an("food36","拉面","Lāmiàn","Hand-pulled Noodles","culture",{"b": "#f2d890", "l": "#fff2c4", "e": "none", "s": "short", "t": "none", "ac": "#f2d890"},"Noodles pulled by hand into long strands.","用手拉成长条的面。"),
+  an("food37","臭豆腐","Chòudòufu","Stinky Tofu","culture",{"b": "#8a7a4a", "l": "#c8b888", "e": "none", "s": "short", "t": "none", "ac": "#8a7a4a"},"A smelly but loved street snack.","味道很冲却很受欢迎的小吃。"),
+  an("food38","柿饼","Shìbǐng","Dried Persimmon","culture",{"b": "#e8742a", "l": "#f0b878", "e": "none", "s": "short", "t": "none", "ac": "#e8742a"},"A sweet, sticky dried fruit.","甜甜软软的柿子干。"),
+  an("food39","花生糖","Huāshēngtáng","Peanut Candy","culture",{"b": "#c9984a", "l": "#f0d8a0", "e": "none", "s": "short", "t": "none", "ac": "#c9984a"},"A crunchy peanut sweet.","脆脆的花生糖。"),
+  an("fruit00","梨","Lí","Pear Friend","culture",{"b": "#e8e070", "l": "#f8f4b0", "e": "none", "s": "short", "t": "tuft", "ac": "#e8e070", "ei": "#f8f4b0"},"A juicy, sweet fruit.","多汁又香甜的水果。"),
+  an("fruit01","柿子","Shìzi","Persimmon Friend","culture",{"b": "#e8742a", "l": "#f0b878", "e": "round", "s": "short", "t": "none", "ac": "#e8742a", "ei": "#f0b878"},"An orange fruit of autumn.","秋天橙色的果子。"),
+  an("fruit02","石榴","Shíliu","Pomegranate Friend","culture",{"b": "#c8372d", "l": "#f08a8a", "e": "none", "s": "short", "t": "none", "ac": "#c8372d", "ei": "#f08a8a"},"A fruit full of ruby seeds, meaning many children and luck.","里面全是红籽，寓意多子多福。"),
+  an("fruit03","荔枝","Lìzhī","Lychee Friend","culture",{"b": "#d9453a", "l": "#f8e8d8", "e": "round", "s": "short", "t": "tuft", "ac": "#d9453a", "ei": "#f8e8d8"},"A sweet fruit with bumpy red skin.","外皮红红的甜水果。"),
+  an("fruit04","龙眼","Lóngyǎn","Longan Friend","culture",{"b": "#c9a060", "l": "#f8e8d0", "e": "none", "s": "short", "t": "none", "ac": "#c9a060", "ei": "#f8e8d0"},"A small, sweet fruit called the dragon’s eye.","被叫作“龙的眼睛”的小甜果。"),
+  an("fruit05","枇杷","Pípa","Loquat Friend","culture",{"b": "#f2a83a", "l": "#f8d890", "e": "round", "s": "short", "t": "none", "ac": "#f2a83a", "ei": "#f8d890"},"A small golden fruit of early summer.","初夏的金黄小果。"),
+  an("fruit06","柚子","Yòuzi","Pomelo Friend","culture",{"b": "#e8d86a", "l": "#f8f0b0", "e": "none", "s": "short", "t": "tuft", "ac": "#e8d86a", "ei": "#f8f0b0"},"A big, fragrant citrus fruit.","又大又香的柑橘。"),
+  an("fruit07","红枣","Hóngzǎo","Red Date Friend","culture",{"b": "#a8322a", "l": "#d88a7a", "e": "round", "s": "short", "t": "none", "ac": "#a8322a", "ei": "#d88a7a"},"A sweet red date.","甜甜的红枣。"),
+  an("fruit08","板栗","Bǎnlì","Chestnut Friend","culture",{"b": "#8a5a2e", "l": "#d8b890", "e": "none", "s": "short", "t": "none", "ac": "#8a5a2e", "ei": "#d8b890"},"A nut roasted in autumn.","秋天炒的栗子。"),
+  an("fruit09","核桃","Hétao","Walnut Friend","culture",{"b": "#b8885a", "l": "#e8d0a8", "e": "round", "s": "short", "t": "tuft", "ac": "#b8885a", "ei": "#e8d0a8"},"A nut said to be good for the brain.","人们说有益大脑的坚果。"),
+  an("fruit10","樱桃","Yīngtao","Cherry Friend","culture",{"b": "#c8223a", "l": "#f08a9a", "e": "none", "s": "short", "t": "none", "ac": "#c8223a", "ei": "#f08a9a"},"A small, bright red fruit.","小小的鲜红水果。"),
+  an("fruit11","西瓜","Xīguā","Watermelon Friend","culture",{"b": "#3a9a4a", "l": "#e8484a", "e": "round", "s": "short", "t": "none", "ac": "#3a9a4a", "ei": "#e8484a"},"A big, juicy summer treat.","夏天又大又多汁的瓜。"),
+  an("fruit12","白菜","Báicài","Napa Cabbage Friend","culture",{"b": "#cfe8a0", "l": "#f8f8e0", "e": "none", "s": "short", "t": "tuft", "ac": "#cfe8a0", "ei": "#f8f8e0"},"A winter vegetable, called the king of vegetables.","冬天的蔬菜，被叫作菜中之王。"),
+  an("fruit13","萝卜","Luóbo","Radish Friend","culture",{"b": "#f4f4f4", "l": "#f8c8c8", "e": "round", "s": "short", "t": "none", "ac": "#f4f4f4", "ei": "#f8c8c8"},"A crunchy white or red root.","脆脆的白萝卜或红萝卜。"),
+  an("fruit14","土豆","Tǔdòu","Potato Friend","culture",{"b": "#c9a060", "l": "#f0e0b8", "e": "none", "s": "short", "t": "none", "ac": "#c9a060", "ei": "#f0e0b8"},"A round brown root.","圆圆的棕色块茎。"),
+  an("fruit15","茄子","Qiézi","Eggplant Friend","culture",{"b": "#7a3a8a", "l": "#c89ad0", "e": "round", "s": "short", "t": "tuft", "ac": "#7a3a8a", "ei": "#c89ad0"},"A shiny purple vegetable.","紫色发亮的蔬菜。"),
+  an("fruit16","辣椒","Làjiāo","Chilli Friend","culture",{"b": "#d9232a", "l": "#f08a6a", "e": "none", "s": "short", "t": "none", "ac": "#d9232a", "ei": "#f08a6a"},"A small red pepper that makes food spicy.","让菜变辣的小红椒。"),
+  an("fruit17","南瓜","Nánguā","Pumpkin Friend","culture",{"b": "#e8742a", "l": "#f8c888", "e": "round", "s": "short", "t": "none", "ac": "#e8742a", "ei": "#f8c888"},"A big orange squash.","橙色的大南瓜。"),
+  an("fruit18","黄瓜","Huángguā","Cucumber Friend","culture",{"b": "#4aa84a", "l": "#d8f0b8", "e": "none", "s": "short", "t": "tuft", "ac": "#4aa84a", "ei": "#d8f0b8"},"A cool green vegetable.","清凉的绿色蔬菜。"),
+  an("fruit19","番茄","Fānqié","Tomato Friend","culture",{"b": "#e5483a", "l": "#f8a898", "e": "round", "s": "short", "t": "none", "ac": "#e5483a", "ei": "#f8a898"},"A round red vegetable.","圆圆的红色蔬菜。"),
+  an("fruit20","竹笋","Zhúsǔn","Bamboo Shoot Friend","culture",{"b": "#d8c890", "l": "#f8f0d0", "e": "none", "s": "short", "t": "none", "ac": "#d8c890", "ei": "#f8f0d0"},"A young bamboo shoot of spring.","春天刚长出的竹笋。"),
+  an("fruit21","花生","Huāshēng","Peanut Friend","culture",{"b": "#d9b878", "l": "#f8e8c8", "e": "round", "s": "short", "t": "tuft", "ac": "#d9b878", "ei": "#f8e8c8"},"A nut that grows underground.","长在地下的豆子。"),
+  an("fruit22","红薯","Hóngshǔ","Sweet Potato Friend","culture",{"b": "#b8584a", "l": "#f0b890", "e": "none", "s": "short", "t": "none", "ac": "#b8584a", "ei": "#f0b890"},"A sweet root, roasted in winter.","冬天烤着吃的甜薯。"),
+  an("fruit23","大蒜","Dàsuàn","Garlic Friend","culture",{"b": "#f4f0e8", "l": "#fff", "e": "round", "s": "short", "t": "none", "ac": "#f4f0e8", "ei": "#fff"},"A white bulb with a strong flavour.","味道浓烈的白色蒜头。"),
+  an("fruit24","蘑菇","Mógu","Mushroom Friend","culture",{"b": "#c9a888", "l": "#f8f0e0", "e": "none", "s": "short", "t": "tuft", "ac": "#c9a888", "ei": "#f8f0e0"},"A little mushroom of the forest.","森林里的小蘑菇。"),
+  an("fruit25","芋头","Yùtou","Taro Friend","culture",{"b": "#9a7a8a", "l": "#e8d8e0", "e": "round", "s": "short", "t": "none", "ac": "#9a7a8a", "ei": "#e8d8e0"},"A starchy root with soft insides.","里面软软糯糯的块茎。"),
+  an("fruit26","豌豆","Wāndòu","Pea Friend","culture",{"b": "#7acc5a", "l": "#d8f0b0", "e": "none", "s": "short", "t": "none", "ac": "#7acc5a", "ei": "#d8f0b0"},"A little green seed in a pod.","豆荚里的绿色小豆子。"),
+  hu("job2_00","木匠","Mùjiàng","Carpenter","job",{"hs": "short", "hat": "none", "hc": "#c8372d", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "axe"},"Builds things from wood.","用木头做东西。"),
+  hu("job2_01","铁匠","Tiějiàng","Blacksmith","job",{"hs": "topknot", "hat": "scholar", "hc": "#3a8fc9", "robe": "#f4a6b0", "sash": "#ffffff", "item": "hammer"},"Shapes hot iron with a hammer.","用锤子打造烧红的铁。"),
+  hu("job2_02","裁缝","Cáifeng","Tailor","job",{"hs": "bun", "hat": "conical", "hc": "#2f7d6b", "robe": "#e2a93b", "sash": "#c8372d", "item": "ribbon"},"Sews clothes that fit well.","缝制合身的衣服。"),
+  hu("job2_03","渔夫","Yúfū","Fisherman","job",{"hs": "short", "hat": "helmet", "hc": "#7a4aa0", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "trident"},"Catches fish in the river.","在河里捕鱼。"),
+  hu("job2_04","樵夫","Qiáofū","Woodcutter","job",{"hs": "topknot", "hat": "band", "hc": "#e8742a", "robe": "#6aa84f", "sash": "#3a8fc9", "item": "axe"},"Cuts firewood in the hills.","在山上砍柴。"),
+  hu("job2_05","书生","Shūshēng","Scholar","job",{"hs": "bun", "hat": "none", "hc": "#3fa37a", "robe": "#2e3a5a", "sash": "#f4a6b0", "item": "scroll"},"A student who loves books.","爱读书的读书人。"),
+  hu("job2_06","商人","Shāngrén","Merchant","job",{"hs": "short", "hat": "scholar", "hc": "#2e5f8a", "robe": "#c8372d", "sash": "#e2a93b", "item": "ingot"},"Travels to sell goods.","到处旅行卖东西。"),
+  hu("job2_07","武师","Wǔshī","Martial Arts Master","job",{"hs": "topknot", "hat": "conical", "hc": "#f4a6b0", "robe": "#3a8fc9", "sash": "#ffffff", "item": "sword"},"Teaches kung fu.","教功夫的师傅。"),
+  hu("job2_08","大夫","Dàifu","Village Doctor","job",{"hs": "bun", "hat": "helmet", "hc": "#e2a93b", "robe": "#2f7d6b", "sash": "#c8372d", "item": "sprout"},"Treats people with herbs.","用草药给人看病。"),
+  hu("job2_09","茶农","Chánóng","Tea Farmer","job",{"hs": "short", "hat": "band", "hc": "#9ad0ee", "robe": "#7a4aa0", "sash": "#2f7d6b", "item": "basket"},"Picks tea leaves on the hills.","在山上采茶叶。"),
+  hu("job2_10","蚕农","Cánnóng","Silk Farmer","job",{"hs": "topknot", "hat": "none", "hc": "#6aa84f", "robe": "#e8742a", "sash": "#3a8fc9", "item": "basket"},"Raises silkworms for silk.","养蚕取丝。"),
+  hu("job2_11","教练","Jiàoliàn","Coach","job",{"hs": "bun", "hat": "scholar", "hc": "#2e3a5a", "robe": "#3fa37a", "sash": "#f4a6b0", "item": "none"},"Helps players get better.","帮助队员进步。"),
+  hu("job2_12","记者","Jìzhě","Reporter","job",{"hs": "short", "hat": "conical", "hc": "#c8372d", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "brush"},"Finds and tells the news.","寻找和报道新闻。"),
+  hu("job2_13","摄影师","Shèyǐngshī","Photographer","job",{"hs": "topknot", "hat": "helmet", "hc": "#3a8fc9", "robe": "#f4a6b0", "sash": "#ffffff", "item": "bag"},"Takes pictures of special moments.","拍下特别的时刻。"),
+  hu("job2_14","程序员","Chéngxùyuán","Programmer","job",{"hs": "bun", "hat": "band", "hc": "#2f7d6b", "robe": "#e2a93b", "sash": "#c8372d", "item": "tablet"},"Writes instructions for computers.","给电脑写指令。"),
+  hu("job2_15","设计师","Shèjìshī","Designer","job",{"hs": "short", "hat": "none", "hc": "#7a4aa0", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "brush"},"Draws plans and ideas.","画出设计和想法。"),
+  hu("job2_16","建筑师","Jiànzhùshī","Architect","job",{"hs": "topknot", "hat": "scholar", "hc": "#e8742a", "robe": "#6aa84f", "sash": "#3a8fc9", "item": "scroll"},"Designs buildings.","设计房子和大楼。"),
+  hu("job2_17","律师","Lǜshī","Lawyer","job",{"hs": "bun", "hat": "conical", "hc": "#3fa37a", "robe": "#2e3a5a", "sash": "#f4a6b0", "item": "tablet"},"Helps people understand the law.","帮助人们懂法律。"),
+  hu("job2_18","法官","Fǎguān","Judge","job",{"hs": "short", "hat": "helmet", "hc": "#2e5f8a", "robe": "#c8372d", "sash": "#e2a93b", "item": "tablet"},"Makes fair decisions.","做出公平的决定。"),
+  hu("job2_19","海员","Hǎiyuán","Sailor","job",{"hs": "topknot", "hat": "band", "hc": "#f4a6b0", "robe": "#3a8fc9", "sash": "#ffffff", "item": "trident"},"Works on ships at sea.","在海上的船上工作。"),
+  hu("job2_20","船长","Chuánzhǎng","Captain","job",{"hs": "bun", "hat": "none", "hc": "#e2a93b", "robe": "#2f7d6b", "sash": "#c8372d", "item": "scroll"},"Leads a ship across the sea.","带领船只穿过大海。"),
+  hu("job2_21","潜水员","Qiánshuǐyuán","Diver","job",{"hs": "short", "hat": "scholar", "hc": "#9ad0ee", "robe": "#7a4aa0", "sash": "#2f7d6b", "item": "trident"},"Swims deep under the sea.","潜到很深的海里。"),
+  hu("job2_22","登山者","Dēngshānzhě","Mountain Climber","job",{"hs": "topknot", "hat": "conical", "hc": "#6aa84f", "robe": "#e8742a", "sash": "#3a8fc9", "item": "staff"},"Climbs high peaks.","攀登高高的山峰。"),
+  hu("job2_23","园丁","Yuándīng","Gardener","job",{"hs": "bun", "hat": "helmet", "hc": "#2e3a5a", "robe": "#3fa37a", "sash": "#f4a6b0", "item": "spade"},"Looks after plants and flowers.","照顾花草。"),
+  hu("job2_24","牧民","Mùmín","Herder","job",{"hs": "short", "hat": "band", "hc": "#c8372d", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "staff"},"Looks after sheep on the grassland.","在草原上放羊。"),
+  hu("job2_25","渔民","Yúmín","Fisher","job",{"hs": "topknot", "hat": "none", "hc": "#3a8fc9", "robe": "#f4a6b0", "sash": "#ffffff", "item": "trident"},"Fishes on the sea.","在海上打鱼。"),
+  hu("job2_26","清洁工","Qīngjiégōng","Cleaner","job",{"hs": "bun", "hat": "scholar", "hc": "#2f7d6b", "robe": "#e2a93b", "sash": "#c8372d", "item": "staff"},"Keeps our streets clean.","让街道保持干净。"),
+  hu("job2_27","志愿者","Zhìyuànzhě","Volunteer","job",{"hs": "short", "hat": "conical", "hc": "#7a4aa0", "robe": "#9ad0ee", "sash": "#2f7d6b", "item": "basket"},"Helps others for free.","免费帮助别人。"),
+  hu("job2_28","图书管理员","Túshūguǎnlǐyuán","Librarian","job",{"hs": "topknot", "hat": "helmet", "hc": "#e8742a", "robe": "#6aa84f", "sash": "#3a8fc9", "item": "scroll"},"Looks after the books.","管理图书。"),
+  hu("job2_29","面点师","Miàndiǎnshī","Pastry Chef","job",{"hs": "bun", "hat": "band", "hc": "#3fa37a", "robe": "#2e3a5a", "sash": "#f4a6b0", "item": "basket"},"Makes buns and dumplings.","做包子和饺子。"),
+  hu("job2_30","陶艺家","Táoyìjiā","Potter","job",{"hs": "short", "hat": "none", "hc": "#2e5f8a", "robe": "#c8372d", "sash": "#e2a93b", "item": "basket"},"Shapes clay into pots.","把泥做成罐子。"),
+  hu("job2_31","兽医","Shòuyī","Vet","job",{"hs": "topknot", "hat": "scholar", "hc": "#f4a6b0", "robe": "#3a8fc9", "sash": "#ffffff", "item": "sprout"},"Takes care of animals.","照顾动物。"),
+  an("nat00","太阳","Tàiyáng","Sun Friend","culture",{"b": "#f2b134", "l": "#fff2c4", "e": "none", "s": "short", "t": "none", "ac": "#f2b134", "x": ["mane"], "fx": "rgba(255,255,255,.93)"},"The bright sun that warms the world.","温暖世界的明亮太阳。"),
+  an("nat01","月亮","Yuèliang","Moon Friend","culture",{"b": "#f0e8b0", "l": "#fff8d8", "e": "none", "s": "short", "t": "none", "ac": "#f0e8b0", "x": [], "fx": "rgba(255,255,255,.93)"},"The moon that glows at night.","夜里发光的月亮。"),
+  an("nat02","星星","Xīngxing","Star Friend","culture",{"b": "#f2d84a", "l": "#fff8b0", "e": "none", "s": "short", "t": "none", "ac": "#f2d84a", "x": [], "fx": "rgba(255,255,255,.93)"},"A little star twinkling in the sky.","天空里一闪一闪的小星星。"),
+  an("nat03","白云","Báiyún","Cloud Friend","culture",{"b": "#f4f8ff", "l": "#ffffff", "e": "none", "s": "short", "t": "none", "ac": "#f4f8ff", "x": [], "fx": "rgba(255,255,255,.93)"},"A soft white cloud.","软软的白云。"),
+  an("nat04","小雨","Xiǎoyǔ","Raindrop Friend","culture",{"b": "#7ac0f0", "l": "#c8e4ff", "e": "none", "s": "short", "t": "none", "ac": "#7ac0f0", "x": [], "fx": "rgba(255,255,255,.93)"},"A tiny drop of rain.","一滴小小的雨。"),
+  an("nat05","清风","Qīngfēng","Breeze Friend","culture",{"b": "#c8e8f0", "l": "#f0fcff", "e": "none", "s": "short", "t": "none", "ac": "#c8e8f0", "x": [], "fx": "rgba(255,255,255,.93)"},"A cool breeze.","凉爽的风。"),
+  an("nat06","雪花","Xuěhuā","Snowflake Friend","culture",{"b": "#eaf4ff", "l": "#ffffff", "e": "none", "s": "short", "t": "none", "ac": "#eaf4ff", "x": [], "fx": "rgba(255,255,255,.93)"},"A six-sided snowflake.","六角形的雪花。"),
+  an("nat07","雷电","Léidiàn","Lightning Friend","culture",{"b": "#f2e84a", "l": "#fffbb0", "e": "none", "s": "short", "t": "none", "ac": "#f2e84a", "x": [], "fx": "rgba(255,255,255,.93)"},"A flash of lightning.","一道闪电。"),
+  an("nat08","彩虹","Cǎihóng","Rainbow Friend","culture",{"b": "#f08a8a", "l": "#c8e8a8", "e": "none", "s": "short", "t": "none", "ac": "#f08a8a", "x": [], "fx": "rgba(255,255,255,.93)"},"A bright arch of colours after the rain.","雨后明亮的彩色拱桥。"),
+  an("nat09","高山","Gāoshān","Mountain Friend","culture",{"b": "#8a7a6a", "l": "#c8c0b0", "e": "none", "s": "short", "t": "none", "ac": "#8a7a6a", "x": [], "fx": "rgba(255,255,255,.93)"},"A tall, strong mountain.","又高又稳的大山。"),
+  an("nat10","小河","Xiǎohé","Stream Friend","culture",{"b": "#5aaae8", "l": "#a8d8f8", "e": "none", "s": "short", "t": "none", "ac": "#5aaae8", "x": [], "fx": "rgba(255,255,255,.93)"},"A little stream that never stops.","不停流动的小河。"),
+  an("nat11","大海","Dàhǎi","Ocean Friend","culture",{"b": "#3a8ad8", "l": "#98c8f0", "e": "none", "s": "short", "t": "none", "ac": "#3a8ad8", "x": [], "fx": "rgba(255,255,255,.93)"},"The wide blue sea.","辽阔的蓝色大海。"),
+  an("nat12","小树","Xiǎoshù","Little Tree Friend","culture",{"b": "#5aaa4a", "l": "#b8e0a0", "e": "none", "s": "short", "t": "none", "ac": "#5aaa4a", "x": [], "fx": "rgba(255,255,255,.93)"},"A little tree growing taller.","慢慢长高的小树。"),
+  an("nat13","火苗","Huǒmiáo","Flame Friend","culture",{"b": "#f2742a", "l": "#fcd88a", "e": "none", "s": "short", "t": "none", "ac": "#f2742a", "x": [], "fx": "rgba(255,255,255,.93)"},"A small, warm flame.","小小的温暖火苗。"),
+  hu("num00","一","Yī","Number One","culture",{"hs": "short", "hat": "band", "hc": "#c8372d", "robe": "#3a8fc9", "sash": "#ffffff", "item": "none"},"The number one: 一.","数字一。"),
+  hu("num01","二","Èr","Number Two","culture",{"hs": "short", "hat": "band", "hc": "#3a8fc9", "robe": "#2f7d6b", "sash": "#ffffff", "item": "none"},"The number two: 二.","数字二。"),
+  hu("num02","三","Sān","Number Three","culture",{"hs": "short", "hat": "band", "hc": "#2f7d6b", "robe": "#7a4aa0", "sash": "#ffffff", "item": "none"},"The number three: 三.","数字三。"),
+  hu("num03","四","Sì","Number Four","culture",{"hs": "short", "hat": "band", "hc": "#7a4aa0", "robe": "#e8742a", "sash": "#ffffff", "item": "none"},"The number four: 四.","数字四。"),
+  hu("num04","五","Wǔ","Number Five","culture",{"hs": "short", "hat": "band", "hc": "#e8742a", "robe": "#3fa37a", "sash": "#ffffff", "item": "none"},"The number five: 五.","数字五。"),
+  hu("num05","六","Liù","Number Six","culture",{"hs": "short", "hat": "band", "hc": "#3fa37a", "robe": "#2e5f8a", "sash": "#ffffff", "item": "none"},"The number six: 六.","数字六。"),
+  hu("num06","七","Qī","Number Seven","culture",{"hs": "short", "hat": "band", "hc": "#2e5f8a", "robe": "#f4a6b0", "sash": "#ffffff", "item": "none"},"The number seven: 七.","数字七。"),
+  hu("num07","八","Bā","Number Eight","culture",{"hs": "short", "hat": "band", "hc": "#f4a6b0", "robe": "#e2a93b", "sash": "#ffffff", "item": "none"},"The number eight: 八.","数字八。"),
+  hu("num08","九","Jiǔ","Number Nine","culture",{"hs": "short", "hat": "band", "hc": "#e2a93b", "robe": "#9ad0ee", "sash": "#ffffff", "item": "none"},"The number nine: 九.","数字九。"),
+  hu("num09","十","Shí","Number Ten","culture",{"hs": "short", "hat": "band", "hc": "#9ad0ee", "robe": "#6aa84f", "sash": "#ffffff", "item": "none"},"The number ten: 十.","数字十。"),
+  hu("col00","红","Hóng","Colour Red","culture",{"hs": "short", "hat": "band", "hc": "#c8372d", "robe": "#c8372d", "sash": "#ffffff", "item": "none"},"The colour red: 红.","颜色红。"),
+  hu("col01","橙","Chéng","Colour Orange","culture",{"hs": "short", "hat": "band", "hc": "#e8742a", "robe": "#e8742a", "sash": "#ffffff", "item": "none"},"The colour orange: 橙.","颜色橙。"),
+  hu("col02","黄","Huáng","Colour Yellow","culture",{"hs": "short", "hat": "band", "hc": "#e2a93b", "robe": "#e2a93b", "sash": "#ffffff", "item": "none"},"The colour yellow: 黄.","颜色黄。"),
+  hu("col03","绿","Lǜ","Colour Green","culture",{"hs": "short", "hat": "band", "hc": "#6aa84f", "robe": "#6aa84f", "sash": "#ffffff", "item": "none"},"The colour green: 绿.","颜色绿。"),
+  hu("col04","青","Qīng","Colour Cyan","culture",{"hs": "short", "hat": "band", "hc": "#3fa37a", "robe": "#3fa37a", "sash": "#ffffff", "item": "none"},"The colour cyan: 青.","颜色青。"),
+  hu("col05","蓝","Lán","Colour Blue","culture",{"hs": "short", "hat": "band", "hc": "#3a8fc9", "robe": "#3a8fc9", "sash": "#ffffff", "item": "none"},"The colour blue: 蓝.","颜色蓝。"),
+  hu("col06","紫","Zǐ","Colour Purple","culture",{"hs": "short", "hat": "band", "hc": "#7a4aa0", "robe": "#7a4aa0", "sash": "#ffffff", "item": "none"},"The colour purple: 紫.","颜色紫。"),
+  hu("col07","黑","Hēi","Colour Black","culture",{"hs": "short", "hat": "band", "hc": "#2a2320", "robe": "#2a2320", "sash": "#ffffff", "item": "none"},"The colour black: 黑.","颜色黑。"),
+  hu("col08","白","Bái","Colour White","culture",{"hs": "short", "hat": "band", "hc": "#ffffff", "robe": "#ffffff", "sash": "#8d867b", "item": "none"},"The colour white: 白.","颜色白。"),
+  hu("col09","灰","Huī","Colour Grey","culture",{"hs": "short", "hat": "band", "hc": "#8d867b", "robe": "#8d867b", "sash": "#ffffff", "item": "none"},"The colour grey: 灰.","颜色灰。"),
+  hu("dir00","东","Dōng","Direction East","culture",{"hs": "short", "hat": "crown", "hc": "#3fa37a", "robe": "#3fa37a", "sash": "#e2a93b", "item": "none"},"The direction of the rising sun.","太阳升起的方向。"),
+  hu("dir01","南","Nán","Direction South","culture",{"hs": "short", "hat": "crown", "hc": "#c8372d", "robe": "#c8372d", "sash": "#e2a93b", "item": "none"},"The direction of warm winds.","吹来暖风的方向。"),
+  hu("dir02","西","Xī","Direction West","culture",{"hs": "short", "hat": "crown", "hc": "#ffffff", "robe": "#ffffff", "sash": "#e2a93b", "item": "none"},"The direction of the setting sun.","太阳落下的方向。"),
+  hu("dir03","北","Běi","Direction North","culture",{"hs": "short", "hat": "crown", "hc": "#2e3a5a", "robe": "#2e3a5a", "sash": "#e2a93b", "item": "none"},"The direction of cold winds.","吹来寒风的方向。"),
+  an("jiaolong","蛟龙","Jiāolóng","Flood Dragon","creature",{"b": "#4a8ab8", "l": "#cfe8ff", "e": "none", "s": "long", "t": "long", "x": ["horns", "whisk"], "ac": "#9ad0ee"},"A water dragon that lives in rivers and lakes.","住在江河湖里的水龙。"),
+  an("panlong","蟠龙","Pánlóng","Coiled Dragon","creature",{"b": "#d9a441", "l": "#fff2c4", "e": "none", "s": "long", "t": "long", "x": ["horns", "whisk"], "ac": "#c8372d"},"A dragon curled up and waiting in the clouds.","盘卷着、等在云里的龙。"),
+  an("qiulong","虬龙","Qiúlóng","Curled Horn Dragon","creature",{"b": "#5aa8a0", "l": "#d8f0e8", "e": "none", "s": "long", "t": "long", "x": ["horns"], "ac": "#e2a93b"},"A young dragon with curling horns.","长着卷角的小龙。"),
+  an("kuilong","夔龙","Kuílóng","Kui Dragon","creature",{"b": "#6a8a5a", "l": "#d8e8c8", "e": "none", "s": "long", "t": "long", "x": ["horns", "whisk"], "ac": "#d9a441"},"A one-legged dragon pattern on old bronze.","古代青铜器上的一条腿的龙纹。"),
+  an("chilong","螭龙","Chīlóng","Chi Dragon","creature",{"b": "#9ac8b8", "l": "#e8f8f0", "e": "none", "s": "long", "t": "long", "x": ["whisk"], "ac": "#9ad0ee"},"A hornless dragon carved on jade.","玉器上雕刻的无角龙。"),
+  an("feilong","飞龙","Fēilóng","Flying Dragon","creature",{"b": "#c8372d", "l": "#f2b134", "e": "none", "s": "long", "t": "long", "x": ["horns", "wings", "whisk"], "ac": "#e2a93b"},"A dragon that soars in the sky.","在天上飞的龙。"),
+  an("huolong","火龙","Huǒlóng","Fire Dragon","creature",{"b": "#e8541a", "l": "#f2d84a", "e": "none", "s": "long", "t": "long", "x": ["horns", "whisk"], "ac": "#f2b134", "fx": "rgba(255,170,100,.95)"},"A dragon wrapped in warm flames.","裹着暖暖火焰的龙。"),
+  an("shuilong","水龙","Shuǐlóng","Water Dragon","creature",{"b": "#3a8fc9", "l": "#cfe8ff", "e": "none", "s": "long", "t": "long", "x": ["horns", "whisk"], "ac": "#ffffff", "fx": "rgba(160,220,240,.95)"},"A dragon that brings rain.","带来雨水的龙。"),
+  an("zhuyin","烛阴","Zhúyīn","Zhuyin","creature",{"b": "#5a4a8a", "l": "#c8b8e8", "e": "none", "s": "long", "t": "long", "x": ["horns", "whisk"], "ac": "#e2a93b"},"A dragon of the far north whose eyes bring day and night.","北方的神龙，睁眼是白天，闭眼是黑夜。"),
+  an("tianwu","天吴","Tiānwú","Tianwu","creature",{"b": "#4a8ab8", "l": "#cfe8ff", "e": "round", "s": "short", "t": "long", "m": "stripes", "ac": "#2a2320"},"A water god with the body of a tiger and many heads.","水神，传说是虎身、有很多头。"),
+  an("jiuying","九婴","Jiǔyīng","Jiuying","creature",{"b": "#8a4a6a", "l": "#e8b8d0", "e": "point", "s": "long", "t": "nine", "x": ["horns"], "ac": "#c8372d"},"A nine-headed water-and-fire beast in old stories.","古老传说里的九头水火怪兽。"),
+  bd("manman","蛮蛮","Mánmán","Manman","creature",{"b": "#d9a441", "l": "#fff2c4", "bk": "#e2a93b", "w": "#e8742a", "c": "#e5483a"},"A bird with one wing and one eye, that flies only with a partner.","只有一只翅膀、一只眼睛，要两只一起才能飞的鸟。"),
+  an("yonghe","雍和","Yōnghé","Yonghe","creature",{"b": "#c8a060", "l": "#f8e0b8", "e": "round", "s": "short", "t": "curl", "ei": "#e5483a"},"A red-faced ape that appears when the land is in trouble.","传说国家有麻烦时才出现的红脸猿。"),
+  sn("mingshe","鸣蛇","Míngshé","Mingshe","creature",{"b": "#6a8ab8", "l": "#d8e8f8", "ac": "#e2a93b"},"A winged snake whose cry sounds like a stone chime.","叫声像石磬的有翅膀的蛇。"),
+  bd("xuanniao","玄鸟","Xuánniǎo","Dark Bird","creature",{"b": "#2a2a40", "l": "#fff2d8", "bk": "#2a2320", "w": "#2e3a5a", "c": "#3a3a60"},"The bird of legend said to be an ancestor of the Shang people.","传说是商人祖先的神鸟。"),
+  hu("star0","天枢","Tiānshū","Dubhe Star","hero",{"hs": "bun", "hat": "flower", "robe": "#3a8fc9", "sash": "#e2a93b", "item": "fan", "fx": "rgba(190,210,255,.95)"},"Star number 1 of the Big Dipper, called 天枢 in Chinese.","北斗七星的第 1 颗，中文叫天枢。"),
+  hu("star1","天璇","Tiānxuán","Merak Star","hero",{"hs": "bun", "hat": "flower", "robe": "#2e3a5a", "sash": "#e2a93b", "item": "fan", "fx": "rgba(190,210,255,.95)"},"Star number 2 of the Big Dipper, called 天璇 in Chinese.","北斗七星的第 2 颗，中文叫天璇。"),
+  hu("star2","天玑","Tiānjī","Phecda Star","hero",{"hs": "bun", "hat": "flower", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "fan", "fx": "rgba(190,210,255,.95)"},"Star number 3 of the Big Dipper, called 天玑 in Chinese.","北斗七星的第 3 颗，中文叫天玑。"),
+  hu("star3","天权","Tiānquán","Megrez Star","hero",{"hs": "bun", "hat": "flower", "robe": "#7a4aa0", "sash": "#e2a93b", "item": "fan", "fx": "rgba(190,210,255,.95)"},"Star number 4 of the Big Dipper, called 天权 in Chinese.","北斗七星的第 4 颗，中文叫天权。"),
+  hu("star4","玉衡","Yùhéng","Alioth Star","hero",{"hs": "bun", "hat": "flower", "robe": "#3a8fc9", "sash": "#e2a93b", "item": "fan", "fx": "rgba(190,210,255,.95)"},"Star number 5 of the Big Dipper, called 玉衡 in Chinese.","北斗七星的第 5 颗，中文叫玉衡。"),
+  hu("star5","开阳","Kāiyáng","Mizar Star","hero",{"hs": "bun", "hat": "flower", "robe": "#2e3a5a", "sash": "#e2a93b", "item": "fan", "fx": "rgba(190,210,255,.95)"},"Star number 6 of the Big Dipper, called 开阳 in Chinese.","北斗七星的第 6 颗，中文叫开阳。"),
+  hu("star6","摇光","Yáoguāng","Alkaid Star","hero",{"hs": "bun", "hat": "flower", "robe": "#2e5f8a", "sash": "#e2a93b", "item": "fan", "fx": "rgba(190,210,255,.95)"},"Star number 7 of the Big Dipper, called 摇光 in Chinese.","北斗七星的第 7 颗，中文叫摇光。"),
+  hu("mt0","泰山神","Tàishān Shén","Mount Tai Spirit","hero",{"hat": "crown", "beard": "short", "robe": "#c8372d", "sash": "#e2a93b", "item": "staff"},"Spirit of the Eastern Mountain.","东岳泰山的山神。"),
+  hu("mt1","华山神","Huàshān Shén","Mount Hua Spirit","hero",{"hat": "crown", "beard": "short", "robe": "#ffffff", "sash": "#e2a93b", "item": "staff"},"Spirit of the steep Western Mountain.","险峻的西岳华山的山神。"),
+  hu("mt2","衡山神","Héngshān Shén","Mount Heng (South) Spirit","hero",{"hat": "crown", "beard": "short", "robe": "#e8742a", "sash": "#e2a93b", "item": "staff"},"Spirit of the Southern Mountain.","南岳衡山的山神。"),
+  hu("mt3","恒山神","Héngshān Shén","Mount Heng (North) Spirit","hero",{"hat": "crown", "beard": "short", "robe": "#2e3a5a", "sash": "#e2a93b", "item": "staff"},"Spirit of the Northern Mountain.","北岳恒山的山神。"),
+  hu("mt4","嵩山神","Sōngshān Shén","Mount Song Spirit","hero",{"hat": "crown", "beard": "short", "robe": "#e2a93b", "sash": "#e2a93b", "item": "staff"},"Spirit of the Central Mountain.","中岳嵩山的山神。"),
+  hu("gua0","乾","Qián","Heaven Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#ffffff", "sash": "#e2a93b", "item": "scroll"},"The trigram of the sky.","天的卦。"),
+  hu("gua1","坤","Kūn","Earth Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#8a5a2e", "sash": "#e2a93b", "item": "scroll"},"The trigram of the earth.","地的卦。"),
+  hu("gua2","震","Zhèn","Thunder Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#3a8fc9", "sash": "#e2a93b", "item": "scroll"},"The trigram of thunder.","雷的卦。"),
+  hu("gua3","巽","Xùn","Wind Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#6aa84f", "sash": "#e2a93b", "item": "scroll"},"The trigram of wind.","风的卦。"),
+  hu("gua4","坎","Kǎn","Water Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#2e3a5a", "sash": "#e2a93b", "item": "scroll"},"The trigram of water.","水的卦。"),
+  hu("gua5","离","Lí","Fire Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#c8372d", "sash": "#e2a93b", "item": "scroll"},"The trigram of fire.","火的卦。"),
+  hu("gua6","艮","Gèn","Mountain Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#8d867b", "sash": "#e2a93b", "item": "scroll"},"The trigram of mountains.","山的卦。"),
+  hu("gua7","兑","Duì","Lake Trigram","hero",{"hat": "taoist", "hc": "#2a2320", "beard": "short", "robe": "#9ad0ee", "sash": "#e2a93b", "item": "scroll"},"The trigram of lakes.","泽的卦。"),
+  hu("wx0","金","Jīn","Metal Element","hero",{"hat": "band", "hc": "#d9a441", "hs": "short", "robe": "#d9a441", "sash": "#ffffff", "item": "none"},"Metal, one of the Five Elements.","金，五行之一。"),
+  hu("wx1","木","Mù","Wood Element","hero",{"hat": "band", "hc": "#6aa84f", "hs": "short", "robe": "#6aa84f", "sash": "#ffffff", "item": "none"},"Wood, one of the Five Elements.","木，五行之一。"),
+  hu("wx2","水","Shuǐ","Water Element","hero",{"hat": "band", "hc": "#3a8fc9", "hs": "short", "robe": "#3a8fc9", "sash": "#ffffff", "item": "none"},"Water, one of the Five Elements.","水，五行之一。"),
+  hu("wx3","火","Huǒ","Fire Element","hero",{"hat": "band", "hc": "#c8372d", "hs": "short", "robe": "#c8372d", "sash": "#ffffff", "item": "none"},"Fire, one of the Five Elements.","火，五行之一。"),
+  hu("wx4","土","Tǔ","Earth Element","hero",{"hat": "band", "hc": "#8a5a2e", "hs": "short", "robe": "#8a5a2e", "sash": "#ffffff", "item": "none"},"Earth, one of the Five Elements.","土，五行之一。"),
+  hu("guanzhong","管仲","Guǎn Zhòng","Guan Zhong","history",{"robe": "#3fa37a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"A wise minister who helped the state of Qi grow strong.","帮助齐国强大起来的智慧大臣。"),
+  hu("yanying","晏婴","Yàn Yīng","Yan Ying","history",{"robe": "#2e5f8a", "sash": "#c8372d", "beard": "none", "item": "tablet", "hat": "scholar"},"A clever, witty minister of Qi.","机智幽默的齐国大臣。"),
+  hu("zichan","子产","Zǐchǎn","Zi Chan","history",{"robe": "#f4a6b0", "sash": "#2f7d6b", "beard": "long", "item": "sprout", "hat": "scholar"},"A wise leader of the state of Zheng.","郑国有智慧的领导人。"),
+  hu("goujian","勾践","Gōujiàn","Goujian","history",{"robe": "#3a8fc9", "sash": "#e2a93b", "item": "tablet", "hat": "crown", "beard": "short"},"The king of Yue who endured hardship to rebuild his state.","忍受苦难、重建国家的越王。"),
+  hu("fuchai","夫差","Fūchāi","Fuchai","history",{"robe": "#2f7d6b", "sash": "#c8372d", "item": "none", "hat": "crown", "beard": "short"},"The king of Wu who fought against Yue.","和越国作战的吴王。"),
+  hu("wuzixu","伍子胥","Wǔ Zǐxū","Wu Zixu","history",{"robe": "#3fa37a", "sash": "#f4a6b0", "beard": "none", "item": "sword", "hat": "helmet"},"A loyal strategist of the state of Wu.","忠诚的吴国谋略家。"),
+  hu("fanli","范蠡","Fàn Lǐ","Fan Li","history",{"robe": "#2e3a5a", "sash": "#ffffff", "beard": "short", "item": "sprout", "hat": "scholar"},"An adviser who later became a successful merchant.","后来成为成功商人的谋士。"),
+  hu("sunbin","孙膑","Sūn Bìn","Sun Bin","history",{"robe": "#f4a6b0", "sash": "#ffffff", "beard": "none", "item": "bow", "hat": "helmet"},"A great strategist of the Warring States.","战国时期的大军事家。"),
+  hu("shangyang","商鞅","Shāng Yāng","Shang Yang","history",{"robe": "#3a8fc9", "sash": "#2f7d6b", "beard": "long", "item": "scroll", "hat": "scholar"},"A reformer who changed the laws of Qin.","改变秦国法律的改革家。"),
+  hu("wuqi","吴起","Wú Qǐ","Wu Qi","history",{"robe": "#9ad0ee", "sash": "#2f7d6b", "beard": "none", "item": "hammer", "hat": "helmet"},"A general and reformer of the Warring States.","战国时的将军和改革家。"),
+  hu("suqin","苏秦","Sū Qín","Su Qin","history",{"robe": "#7a4aa0", "sash": "#f4a6b0", "beard": "none", "item": "sprout", "hat": "scholar"},"A persuader who brought states together against Qin.","劝说各国联合对抗秦国的说客。"),
+  hu("zhangyi","张仪","Zhāng Yí","Zhang Yi","history",{"robe": "#e8742a", "sash": "#e2a93b", "beard": "long", "item": "bag", "hat": "scholar"},"A persuader who served the state of Qin.","为秦国效力的说客。"),
+  hu("linxiangru","蔺相如","Lìn Xiàngrú","Lin Xiangru","history",{"robe": "#3fa37a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"The brave minister who brought the jade back whole.","把玉璧完整带回来的勇敢大臣。"),
+  hu("lianpo","廉颇","Lián Pō","Lian Po","history",{"robe": "#3a8fc9", "sash": "#ffffff", "beard": "none", "item": "axe", "hat": "helmet"},"An old general who said sorry to Lin Xiangru.","向蔺相如赔罪的老将军。"),
+  hu("jingke","荆轲","Jīng Kē","Jing Ke","history",{"robe": "#2f7d6b", "sash": "#c8372d", "beard": "long", "item": "hammer", "hat": "helmet"},"A hero famous for a daring mission against the king of Qin.","因一次冒险行动出名的英雄。"),
+  hu("xinlingjun","信陵君","Xìnlíng Jūn","Lord Xinling","history",{"robe": "#e2a93b", "sash": "#3a8fc9", "beard": "short", "item": "bag", "hat": "scholar"},"One of the Four Lords who welcomed talented guests.","欢迎有才之士的战国四公子之一。"),
+  hu("mengchangjun","孟尝君","Mèngcháng Jūn","Lord Mengchang","history",{"robe": "#9ad0ee", "sash": "#f4a6b0", "beard": "none", "item": "scroll", "hat": "scholar"},"One of the Four Lords who welcomed talented guests.","欢迎有才之士的战国四公子之一。"),
+  hu("pingyuanjun","平原君","Píngyuán Jūn","Lord Pingyuan","history",{"robe": "#6aa84f", "sash": "#e2a93b", "beard": "long", "item": "tablet", "hat": "scholar"},"One of the Four Lords who welcomed talented guests.","欢迎有才之士的战国四公子之一。"),
+  hu("chunshenjun","春申君","Chūnshēn Jūn","Lord Chunshen","history",{"robe": "#2e3a5a", "sash": "#ffffff", "beard": "short", "item": "sprout", "hat": "scholar"},"One of the Four Lords who welcomed talented guests.","欢迎有才之士的战国四公子之一。"),
+  hu("baiqi","白起","Bái Qǐ","Bai Qi","history",{"robe": "#f4a6b0", "sash": "#ffffff", "beard": "none", "item": "hammer", "hat": "helmet"},"A famous general of Qin.","秦国有名的将军。"),
+  hu("wangjian","王翦","Wáng Jiǎn","Wang Jian","history",{"robe": "#e2a93b", "sash": "#c8372d", "beard": "short", "item": "sword", "hat": "helmet"},"A Qin general who helped unify China.","帮助统一中国的秦国将军。"),
+  hu("lisi","李斯","Lǐ Sī","Li Si","history",{"robe": "#2f7d6b", "sash": "#3a8fc9", "beard": "short", "item": "tablet", "hat": "scholar"},"The Qin chancellor who helped standardise writing.","帮助统一文字的秦朝丞相。"),
+  hu("mengtian","蒙恬","Méng Tián","Meng Tian","history",{"robe": "#6aa84f", "sash": "#3a8fc9", "beard": "long", "item": "bow", "hat": "helmet"},"A Qin general said to have improved the writing brush.","传说改进了毛笔的秦朝将军。"),
+  hu("fusu","扶苏","Fúsū","Fu Su","history",{"robe": "#2e3a5a", "sash": "#ffffff", "item": "tablet", "hat": "crown", "beard": "short"},"The eldest son of Qin Shi Huang.","秦始皇的长子。"),
+  hu("chensheng","陈胜","Chén Shèng","Chen Sheng","history",{"robe": "#c8372d", "sash": "#e2a93b", "beard": "short", "item": "hammer", "hat": "helmet"},"A leader of the first big uprising of farmers.","第一次农民大起义的领袖。"),
+  hu("wuguang","吴广","Wú Guǎng","Wu Guang","history",{"robe": "#3a8fc9", "sash": "#ffffff", "beard": "none", "item": "sword", "hat": "helmet"},"Chen Sheng’s partner in the uprising.","陈胜起义的伙伴。"),
+  hu("fankuai","樊哙","Fán Kuài","Fan Kuai","history",{"robe": "#2f7d6b", "sash": "#c8372d", "beard": "long", "item": "trident", "hat": "helmet"},"A fearless guard of Liu Bang.","刘邦勇敢的卫士。"),
+  hu("zhouyafu","周亚夫","Zhōu Yàfū","Zhou Yafu","history",{"robe": "#7a4aa0", "sash": "#2f7d6b", "beard": "none", "item": "bow", "hat": "helmet"},"A Han general known for strict discipline.","以军纪严明出名的汉朝将军。"),
+  hu("liguang","李广","Lǐ Guǎng","Li Guang","history",{"robe": "#e8742a", "sash": "#3a8fc9", "beard": "short", "item": "axe", "hat": "helmet"},"The Flying General, a famous archer.","被称为飞将军的神射手。"),
+  hu("simaxiangru","司马相如","Sīmǎ Xiàngrú","Sima Xiangru","history",{"robe": "#e2a93b", "sash": "#f4a6b0", "beard": "short", "item": "scroll", "hat": "scholar"},"A Han writer famous for grand poems.","以宏大辞赋出名的汉朝作家。"),
+  hu("zhuowenjun","卓文君","Zhuó Wénjūn","Zhuo Wenjun","history",{"robe": "#9ad0ee", "sash": "#e2a93b", "beard": "none", "item": "flute", "hat": "scholar"},"A talented Han woman who loved music and poetry.","爱音乐和诗的汉朝才女。"),
+  hu("bangu","班固","Bān Gù","Ban Gu","history",{"robe": "#c8372d", "sash": "#c8372d", "beard": "none", "item": "bag", "hat": "scholar"},"The historian who wrote the Book of Han.","写下《汉书》的历史学家。"),
+  hu("banzhao","班昭","Bān Zhāo","Ban Zhao","history",{"robe": "#3a8fc9", "sash": "#2f7d6b", "beard": "long", "item": "scroll", "hat": "scholar"},"A Han woman scholar who finished the Book of Han.","帮助完成《汉书》的汉朝女学者。"),
+  hu("dongzhongshu","董仲舒","Dǒng Zhòngshū","Dong Zhongshu","history",{"robe": "#2f7d6b", "sash": "#3a8fc9", "beard": "short", "item": "tablet", "hat": "scholar"},"A Han thinker who shaped how Confucian teaching was used.","影响儒家思想传播的汉朝思想家。"),
+  hu("jiayi","贾谊","Jiǎ Yì","Jia Yi","history",{"robe": "#3a8fc9", "sash": "#3a8fc9", "beard": "none", "item": "flute", "hat": "scholar"},"A talented young Han writer.","有才华的汉朝年轻作家。"),
+  hu("zhengxuan","郑玄","Zhèng Xuán","Zheng Xuan","history",{"robe": "#e8742a", "sash": "#e2a93b", "beard": "long", "item": "bag", "hat": "scholar"},"A great scholar of the old classics.","研究古代经书的大学者。"),
+  hu("liuxiu","刘秀","Liú Xiù","Liu Xiu","history",{"robe": "#c8372d", "sash": "#e2a93b", "item": "none", "hat": "crown", "beard": "short"},"The founder of the Eastern Han dynasty.","东汉的开国皇帝。"),
+  hu("mayuan","马援","Mǎ Yuán","Ma Yuan","history",{"robe": "#3a8fc9", "sash": "#ffffff", "beard": "none", "item": "bow", "hat": "helmet"},"A veteran Han general, still bold in old age.","年纪大了依然勇敢的汉朝老将。"),
+  hu("wangchong","王充","Wáng Chōng","Wang Chong","history",{"robe": "#f4a6b0", "sash": "#2f7d6b", "beard": "long", "item": "sprout", "hat": "scholar"},"A Han thinker who asked hard questions about old beliefs.","对旧说法提出疑问的汉朝思想家。"),
+  hu("zhangzhongjing","张仲景","Zhāng Zhòngjǐng","Zhang Zhongjing","history",{"robe": "#e2a93b", "sash": "#3a8fc9", "beard": "short", "item": "bag", "hat": "scholar"},"A famous Han doctor called the Medical Sage.","被称为“医圣”的汉朝名医。"),
+  hu("caiyong","蔡邕","Cài Yōng","Cai Yong","history",{"robe": "#f4a6b0", "sash": "#3a8fc9", "beard": "none", "item": "brush", "hat": "scholar"},"A Han scholar and calligrapher.","汉朝的学者和书法家。"),
+  hu("liuxiang","刘向","Liú Xiàng","Liu Xiang","history",{"robe": "#6aa84f", "sash": "#e2a93b", "beard": "long", "item": "tablet", "hat": "scholar"},"A Han scholar who sorted and collected old books.","整理古书的汉朝学者。"),
+  hu("songyu","宋玉","Sòng Yù","Song Yu","history",{"robe": "#9ad0ee", "sash": "#e2a93b", "beard": "none", "item": "flute", "hat": "scholar"},"A poet of the state of Chu.","楚国的诗人。"),
+  hu("tianji","田忌","Tián Jì","Tian Ji","history",{"robe": "#f4a6b0", "sash": "#ffffff", "beard": "none", "item": "axe", "hat": "helmet"},"A Qi general famous for the horse-racing story.","因赛马故事出名的齐国将军。"),
+  hu("maosui","毛遂","Máo Suì","Mao Sui","history",{"robe": "#3a8fc9", "sash": "#2f7d6b", "beard": "long", "item": "scroll", "hat": "scholar"},"The man who offered himself for an important mission.","主动请求担当重任的人。"),
+  hu("caogui","曹刿","Cáo Guì","Cao Gui","history",{"robe": "#2f7d6b", "sash": "#3a8fc9", "beard": "short", "item": "tablet", "hat": "scholar"},"A thinker who helped win a battle with careful timing.","靠把握时机帮助打赢仗的谋士。"),
+  hu("jiezitui","介子推","Jièzǐtuī","Jie Zitui","history",{"robe": "#7a4aa0", "sash": "#f4a6b0", "beard": "none", "item": "sprout", "hat": "scholar"},"A loyal man remembered at the Cold Food Festival.","寒食节纪念的忠诚的人。"),
+  hu("chonger","重耳","Chóng’ěr","Chong’er","history",{"robe": "#2e3a5a", "sash": "#ffffff", "item": "tablet", "hat": "crown", "beard": "short"},"Duke Wen of Jin, who wandered for years before ruling.","流亡多年才当上国君的晋文公。"),
+  hu("baoshuya","鲍叔牙","Bào Shūyá","Bao Shuya","history",{"robe": "#3fa37a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"Guan Zhong’s loyal friend.","管仲忠诚的好朋友。"),
+  hu("qihuangong","齐桓公","Qí Huángōng","Duke Huan of Qi","history",{"robe": "#e2a93b", "sash": "#c8372d", "item": "sword", "hat": "crown", "beard": "short"},"The first of the Five Hegemons.","春秋五霸中的第一位。"),
+  hu("chuzhuangwang","楚庄王","Chǔ Zhuāngwáng","King Zhuang of Chu","history",{"robe": "#7a4aa0", "sash": "#ffffff", "item": "scroll", "hat": "crown", "beard": "short"},"He did nothing for years, then astonished everyone by ruling well.","多年不鸣，一鸣惊人的楚国国君。"),
+  hu("qinmugong","秦穆公","Qín Mùgōng","Duke Mu of Qin","history",{"robe": "#3a8fc9", "sash": "#e2a93b", "item": "tablet", "hat": "crown", "beard": "short"},"A Qin duke who valued talented people.","重视人才的秦国国君。"),
+  hu("zhaowulingwang","赵武灵王","Zhào Wǔlíngwáng","King Wuling of Zhao","history",{"robe": "#2f7d6b", "sash": "#c8372d", "item": "none", "hat": "crown", "beard": "short"},"The king who had soldiers wear short clothes and ride horses.","让士兵穿短衣、骑马射箭的赵王。"),
+  hu("yueyi","乐毅","Yuè Yì","Yue Yi","history",{"robe": "#3fa37a", "sash": "#f4a6b0", "beard": "none", "item": "axe", "hat": "helmet"},"A general of Yan who won many battles.","打了很多胜仗的燕国将军。"),
+  hu("tiandan","田单","Tián Dān","Tian Dan","history",{"robe": "#2e5f8a", "sash": "#e2a93b", "beard": "long", "item": "hammer", "hat": "helmet"},"The Qi general famous for the fire-ox plan.","以火牛阵出名的齐国将军。"),
+  hu("ximenbao","西门豹","Xīmén Bào","Ximen Bao","history",{"robe": "#c8372d", "sash": "#c8372d", "beard": "none", "item": "bag", "hat": "scholar"},"An official who stopped a harmful custom and built canals.","废除坏习俗、修水渠的官员。"),
+  hu("limu","李牧","Lǐ Mù","Li Mu","history",{"robe": "#e2a93b", "sash": "#c8372d", "beard": "short", "item": "trident", "hat": "helmet"},"A Zhao general who guarded the north.","守卫北方的赵国将军。"),
+  hu("liyuan","李渊","Lǐ Yuān","Li Yuan","history",{"robe": "#3a8fc9", "sash": "#e2a93b", "item": "sword", "hat": "crown", "beard": "short"},"The founder of the Tang dynasty.","唐朝的开国皇帝。"),
+  hu("weizheng","魏征","Wèi Zhēng","Wei Zheng","history",{"robe": "#7a4aa0", "sash": "#f4a6b0", "beard": "none", "item": "sprout", "hat": "scholar"},"A minister who dared to speak honestly to the emperor.","敢对皇帝说真话的大臣。"),
+  hu("fangxuanling","房玄龄","Fáng Xuánlíng","Fang Xuanling","history",{"robe": "#e8742a", "sash": "#e2a93b", "beard": "long", "item": "bag", "hat": "scholar"},"A wise Tang minister.","有智慧的唐朝大臣。"),
+  hu("durahui","杜如晦","Dù Rúhuì","Du Ruhui","history",{"robe": "#3fa37a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"A decisive Tang minister.","做事果断的唐朝大臣。"),
+  hu("direnjie","狄仁杰","Dí Rénjié","Di Renjie","history",{"robe": "#2e5f8a", "sash": "#c8372d", "beard": "none", "item": "tablet", "hat": "scholar"},"A famous Tang judge and minister.","有名的唐朝法官和大臣。"),
+  hu("guoziyi","郭子仪","Guō Zǐyí","Guo Ziyi","history",{"robe": "#2f7d6b", "sash": "#c8372d", "beard": "long", "item": "bow", "hat": "helmet"},"A Tang general who protected the empire.","保卫唐朝的将军。"),
+  hu("yanzhenqing","颜真卿","Yán Zhēnqīng","Yan Zhenqing","history",{"robe": "#2e5f8a", "sash": "#2f7d6b", "beard": "long", "item": "brush", "hat": "scholar"},"A Tang calligrapher with a bold, strong style.","书法雄浑有力的唐朝书法家。"),
+  hu("liugongquan","柳公权","Liǔ Gōngquán","Liu Gongquan","history",{"robe": "#f4a6b0", "sash": "#3a8fc9", "beard": "none", "item": "brush", "hat": "scholar"},"A Tang calligrapher whose writing is clear and strong.","字体清晰有力的唐朝书法家。"),
+  hu("ouyangxun","欧阳询","Ōuyáng Xún","Ouyang Xun","history",{"robe": "#e2a93b", "sash": "#f4a6b0", "beard": "short", "item": "scroll", "hat": "scholar"},"A Tang calligrapher famous for tidy characters.","以工整字体出名的唐朝书法家。"),
+  hu("yushinan","虞世南","Yú Shìnán","Yu Shinan","history",{"robe": "#9ad0ee", "sash": "#e2a93b", "beard": "none", "item": "flute", "hat": "scholar"},"A Tang calligrapher and scholar.","唐朝的书法家和学者。"),
+  hu("zhangxu","张旭","Zhāng Xù","Zhang Xu","history",{"robe": "#6aa84f", "sash": "#ffffff", "beard": "long", "item": "brush", "hat": "scholar"},"A Tang master of wild, flowing cursive.","擅长狂放草书的唐朝书法家。"),
+  hu("huaisu","怀素","Huáisù","Huaisu","history",{"robe": "#2e3a5a", "sash": "#c8372d", "beard": "none", "item": "brush", "hat": "scholar"},"A monk famous for cursive writing.","以草书出名的和尚。"),
+  hu("qinqiong","秦琼","Qín Qióng","Qin Qiong","history",{"robe": "#9ad0ee", "sash": "#2f7d6b", "beard": "none", "item": "hammer", "hat": "helmet"},"A brave Tang general, later honoured as a door god.","勇敢的唐朝将军，后来成为门神。"),
+  hu("yuchigong","尉迟恭","Yùchí Gōng","Yuchi Gong","history",{"robe": "#6aa84f", "sash": "#3a8fc9", "beard": "long", "item": "sword", "hat": "helmet"},"A Tang general, later honoured as a door god.","唐朝将军，后来成为门神。"),
+  hu("xuerengui","薛仁贵","Xuē Rénguì","Xue Rengui","history",{"robe": "#2e3a5a", "sash": "#f4a6b0", "beard": "none", "item": "trident", "hat": "helmet"},"A Tang general famous in folk tales.","在民间故事里很有名的唐朝将军。"),
+  hu("shangguanwaner","上官婉儿","Shàngguān Wǎn’ér","Shangguan Wan’er","history",{"robe": "#7a4aa0", "sash": "#e2a93b", "beard": "none", "item": "brush", "hat": "scholar"},"A Tang woman poet and palace official.","唐朝的女诗人和宫廷官员。"),
+  hu("luyu","陆羽","Lù Yǔ","Lu Yu","history",{"robe": "#2e5f8a", "sash": "#c8372d", "beard": "none", "item": "tablet", "hat": "scholar"},"The Tang scholar known as the Sage of Tea.","被称为“茶圣”的唐朝学者。"),
+  hu("zhangjiuling","张九龄","Zhāng Jiǔlíng","Zhang Jiuling","history",{"robe": "#3fa37a", "sash": "#c8372d", "beard": "none", "item": "flute", "hat": "scholar"},"A Tang minister and poet.","唐朝的大臣和诗人。"),
+  hu("weiyingwu","韦应物","Wéi Yìngwù","Wei Yingwu","history",{"robe": "#2e5f8a", "sash": "#2f7d6b", "beard": "long", "item": "brush", "hat": "scholar"},"A Tang poet of quiet nature scenes.","写安静自然风景的唐朝诗人。"),
+  hu("yuanzhen","元稹","Yuán Zhěn","Yuan Zhen","history",{"robe": "#f4a6b0", "sash": "#3a8fc9", "beard": "none", "item": "brush", "hat": "scholar"},"A Tang poet and friend of Bai Juyi.","白居易的好朋友，唐朝诗人。"),
+  hu("wentingyun","温庭筠","Wēn Tíngyún","Wen Tingyun","history",{"robe": "#e2a93b", "sash": "#f4a6b0", "beard": "short", "item": "scroll", "hat": "scholar"},"A Tang poet of rich, colourful verses.","诗词华丽的唐朝诗人。"),
+  hu("zhaokuangyin","赵匡胤","Zhào Kuāngyìn","Zhao Kuangyin","history",{"robe": "#c8372d", "sash": "#e2a93b", "item": "scroll", "hat": "crown", "beard": "short"},"The founder of the Song dynasty.","宋朝的开国皇帝。"),
+  hu("kouzhun","寇准","Kòu Zhǔn","Kou Zhun","history",{"robe": "#c8372d", "sash": "#c8372d", "beard": "none", "item": "bag", "hat": "scholar"},"A brave Song prime minister.","勇敢的宋朝宰相。"),
+  hu("suxun","苏洵","Sū Xún","Su Xun","history",{"robe": "#2e3a5a", "sash": "#c8372d", "beard": "none", "item": "brush", "hat": "scholar"},"The father of Su Shi and Su Zhe.","苏轼和苏辙的父亲。"),
+  hu("suzhe","苏辙","Sū Zhé","Su Zhe","history",{"robe": "#c8372d", "sash": "#2f7d6b", "beard": "short", "item": "scroll", "hat": "scholar"},"Su Shi’s younger brother and a Song writer.","苏轼的弟弟，宋朝作家。"),
+  hu("huangtingjian","黄庭坚","Huáng Tíngjiān","Huang Tingjian","history",{"robe": "#3a8fc9", "sash": "#3a8fc9", "beard": "none", "item": "flute", "hat": "scholar"},"A Song poet and calligrapher.","宋朝的诗人和书法家。"),
+  hu("qinguan","秦观","Qín Guān","Qin Guan","history",{"robe": "#2f7d6b", "sash": "#f4a6b0", "beard": "long", "item": "brush", "hat": "scholar"},"A Song poet of tender verses.","写词温柔细腻的宋朝词人。"),
+  hu("liuyong","柳永","Liǔ Yǒng","Liu Yong","history",{"robe": "#7a4aa0", "sash": "#e2a93b", "beard": "none", "item": "brush", "hat": "scholar"},"A Song poet whose songs everyone sang.","词曲人人会唱的宋朝词人。"),
+  hu("yanshu","晏殊","Yàn Shū","Yan Shu","history",{"robe": "#e8742a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"A Song poet and minister.","宋朝的词人和大臣。"),
+  hu("zhoudunyi","周敦颐","Zhōu Dūnyí","Zhou Dunyi","history",{"robe": "#f4a6b0", "sash": "#2f7d6b", "beard": "long", "item": "sprout", "hat": "scholar"},"A Song thinker who loved lotus flowers.","爱莲花的宋朝思想家。"),
+  hu("hanshizhong","韩世忠","Hán Shìzhōng","Han Shizhong","history",{"robe": "#7a4aa0", "sash": "#2f7d6b", "beard": "none", "item": "bow", "hat": "helmet"},"A Song general who fought bravely.","英勇作战的宋朝将军。"),
+  hu("lianghongyu","梁红玉","Liáng Hóngyù","Liang Hongyu","history",{"robe": "#e8742a", "sash": "#3a8fc9", "beard": "short", "item": "axe", "hat": "helmet"},"A Song heroine who beat the war drum.","擂鼓助战的宋朝女英雄。"),
+  hu("mifu","米芾","Mǐ Fú","Mi Fu","history",{"robe": "#e2a93b", "sash": "#f4a6b0", "beard": "short", "item": "scroll", "hat": "scholar"},"A Song calligrapher who loved strange rocks.","爱奇石的宋朝书法家。"),
+  hu("caixiang","蔡襄","Cài Xiāng","Cai Xiang","history",{"robe": "#9ad0ee", "sash": "#e2a93b", "beard": "none", "item": "flute", "hat": "scholar"},"A Song calligrapher and tea expert.","宋朝的书法家，也懂茶。"),
+  hu("yangye","杨业","Yáng Yè","Yang Ye","history",{"robe": "#f4a6b0", "sash": "#ffffff", "beard": "none", "item": "trident", "hat": "helmet"},"The first of the famous Yang family generals.","杨家将里的第一代将军。"),
+  hu("jiangkui","姜夔","Jiāng Kuí","Jiang Kui","history",{"robe": "#2e3a5a", "sash": "#c8372d", "beard": "none", "item": "brush", "hat": "scholar"},"A Song poet and musician.","宋朝的词人和音乐家。"),
+  hu("fanchengda","范成大","Fàn Chéngdà","Fan Chengda","history",{"robe": "#c8372d", "sash": "#2f7d6b", "beard": "short", "item": "scroll", "hat": "scholar"},"A Song poet of village life.","写乡村生活的宋朝诗人。"),
+  hu("guanhanqing","关汉卿","Guān Hànqīng","Guan Hanqing","history",{"robe": "#3a8fc9", "sash": "#3a8fc9", "beard": "none", "item": "flute", "hat": "scholar"},"A Yuan playwright of great plays.","写过许多名剧的元朝剧作家。"),
+  hu("wangshifu","王实甫","Wáng Shífǔ","Wang Shifu","history",{"robe": "#2f7d6b", "sash": "#f4a6b0", "beard": "long", "item": "brush", "hat": "scholar"},"The Yuan playwright of Romance of the Western Chamber.","写《西厢记》的元朝剧作家。"),
+  hu("zhaomengfu","赵孟頫","Zhào Mèngfǔ","Zhao Mengfu","history",{"robe": "#7a4aa0", "sash": "#e2a93b", "beard": "none", "item": "brush", "hat": "scholar"},"A Yuan painter and calligrapher.","元朝的画家和书法家。"),
+  hu("huanggongwang","黄公望","Huáng Gōngwàng","Huang Gongwang","history",{"robe": "#e8742a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"A Yuan landscape painter.","元朝的山水画家。"),
+  hu("mazhiyuan","马致远","Mǎ Zhìyuǎn","Ma Zhiyuan","history",{"robe": "#3fa37a", "sash": "#c8372d", "beard": "none", "item": "flute", "hat": "scholar"},"A Yuan poet famous for Autumn Thoughts.","以《秋思》出名的元朝诗人。"),
+  hu("wangyangming","王阳明","Wáng Yángmíng","Wang Yangming","history",{"robe": "#e2a93b", "sash": "#3a8fc9", "beard": "short", "item": "bag", "hat": "scholar"},"A Ming thinker who taught knowing and doing go together.","主张知行合一的明朝思想家。"),
+  hu("yuqian","于谦","Yú Qiān","Yu Qian","history",{"robe": "#9ad0ee", "sash": "#f4a6b0", "beard": "none", "item": "scroll", "hat": "scholar"},"A Ming minister who defended Beijing.","保卫北京的明朝大臣。"),
+  hu("hairui","海瑞","Hǎi Ruì","Hai Rui","history",{"robe": "#6aa84f", "sash": "#e2a93b", "beard": "long", "item": "tablet", "hat": "scholar"},"An honest Ming official.","清廉的明朝官员。"),
+  hu("zhangjuzheng","张居正","Zhāng Jūzhèng","Zhang Juzheng","history",{"robe": "#2e3a5a", "sash": "#ffffff", "beard": "short", "item": "sprout", "hat": "scholar"},"A Ming chief minister who reformed taxes.","改革税收的明朝首辅。"),
+  hu("xuguangqi","徐光启","Xú Guāngqǐ","Xu Guangqi","history",{"robe": "#c8372d", "sash": "#c8372d", "beard": "none", "item": "bag", "hat": "scholar"},"A Ming scholar of farming and mathematics.","研究农业和数学的明朝学者。"),
+  hu("songyingxing","宋应星","Sòng Yìngxīng","Song Yingxing","history",{"robe": "#3a8fc9", "sash": "#2f7d6b", "beard": "long", "item": "scroll", "hat": "scholar"},"The Ming author of a book on Chinese crafts.","写了一本讲中国手工技术的书的明朝人。"),
+  hu("tangbohu","唐伯虎","Táng Bóhǔ","Tang Bohu","history",{"robe": "#c8372d", "sash": "#2f7d6b", "beard": "short", "item": "scroll", "hat": "scholar"},"A Ming painter and poet.","明朝的画家和诗人。"),
+  hu("wenzhengming","文徵明","Wén Zhēngmíng","Wen Zhengming","history",{"robe": "#3a8fc9", "sash": "#3a8fc9", "beard": "none", "item": "flute", "hat": "scholar"},"A Ming painter and calligrapher.","明朝的画家和书法家。"),
+  hu("tangxianzu","汤显祖","Tāng Xiǎnzǔ","Tang Xianzu","history",{"robe": "#2f7d6b", "sash": "#f4a6b0", "beard": "long", "item": "brush", "hat": "scholar"},"The Ming playwright of The Peony Pavilion.","写《牡丹亭》的明朝剧作家。"),
+  hu("fengmenglong","冯梦龙","Féng Mènglóng","Feng Menglong","history",{"robe": "#7a4aa0", "sash": "#e2a93b", "beard": "none", "item": "brush", "hat": "scholar"},"A Ming writer who collected folk stories.","收集民间故事的明朝作家。"),
+  hu("yuanchonghuan","袁崇焕","Yuán Chónghuàn","Yuan Chonghuan","history",{"robe": "#3a8fc9", "sash": "#ffffff", "beard": "none", "item": "hammer", "hat": "helmet"},"A Ming general who defended the northern border.","守卫北方边境的明朝将军。"),
+  hu("zengguofan","曾国藩","Zēng Guófān","Zeng Guofan","history",{"robe": "#f4a6b0", "sash": "#2f7d6b", "beard": "long", "item": "sprout", "hat": "scholar"},"A Qing official and scholar.","清朝的官员和学者。"),
+  hu("zuozongtang","左宗棠","Zuǒ Zōngtáng","Zuo Zongtang","history",{"robe": "#7a4aa0", "sash": "#2f7d6b", "beard": "none", "item": "trident", "hat": "helmet"},"A Qing general who helped protect Xinjiang.","帮助守卫新疆的清朝将军。"),
+  hu("lihongzhang","李鸿章","Lǐ Hóngzhāng","Li Hongzhang","history",{"robe": "#9ad0ee", "sash": "#f4a6b0", "beard": "none", "item": "scroll", "hat": "scholar"},"A Qing statesman who started modern factories.","创办现代工厂的清朝政治家。"),
+  hu("kangyouwei","康有为","Kāng Yǒuwéi","Kang Youwei","history",{"robe": "#6aa84f", "sash": "#e2a93b", "beard": "long", "item": "tablet", "hat": "scholar"},"A Qing reformer and thinker.","清朝的改革者和思想家。"),
+  hu("liangqichao","梁启超","Liáng Qǐchāo","Liang Qichao","history",{"robe": "#2e3a5a", "sash": "#ffffff", "beard": "short", "item": "sprout", "hat": "scholar"},"A writer and reformer who loved new ideas.","爱新思想的作家和改革者。"),
+  hu("yanfu","严复","Yán Fù","Yan Fu","history",{"robe": "#c8372d", "sash": "#c8372d", "beard": "none", "item": "bag", "hat": "scholar"},"A scholar who translated Western books.","翻译西方著作的学者。"),
+  hu("dengshichang","邓世昌","Dèng Shìchāng","Deng Shichang","history",{"robe": "#e2a93b", "sash": "#c8372d", "beard": "short", "item": "trident", "hat": "helmet"},"A navy captain who fought bravely.","英勇作战的海军舰长。"),
+  hu("qiujin","秋瑾","Qiū Jǐn","Qiu Jin","history",{"robe": "#c8372d", "sash": "#2f7d6b", "beard": "short", "item": "scroll", "hat": "scholar"},"A woman poet and a fighter for new ideas.","为新思想奋斗的女诗人。"),
+  hu("caie","蔡锷","Cài È","Cai E","history",{"robe": "#6aa84f", "sash": "#3a8fc9", "beard": "long", "item": "axe", "hat": "helmet"},"A general who fought to protect the republic.","为保卫共和而战的将军。"),
+  hu("zhouenlai","周恩来","Zhōu Ēnlái","Zhou Enlai","history",{"robe": "#e8742a", "sash": "#e2a93b", "beard": "long", "item": "bag", "hat": "scholar"},"The first premier of the People’s Republic of China.","中华人民共和国第一任总理。"),
+  hu("songqingling","宋庆龄","Sòng Qìnglíng","Soong Ching-ling","history",{"robe": "#3fa37a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"A great woman leader who cared for children.","关心儿童的杰出女领袖。"),
+  hu("guomoruo","郭沫若","Guō Mòruò","Guo Moruo","history",{"robe": "#e8742a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"A modern writer, poet and scholar.","现代作家、诗人和学者。"),
+  hu("bajin","巴金","Bā Jīn","Ba Jin","history",{"robe": "#3fa37a", "sash": "#c8372d", "beard": "none", "item": "flute", "hat": "scholar"},"A modern writer of the novel Family.","写《家》的现代作家。"),
+  hu("laoshe","老舍","Lǎo Shě","Lao She","history",{"robe": "#2e5f8a", "sash": "#2f7d6b", "beard": "long", "item": "brush", "hat": "scholar"},"A modern writer of Teahouse and Camel Xiangzi.","写《茶馆》《骆驼祥子》的现代作家。"),
+  hu("maodun","茅盾","Máo Dùn","Mao Dun","history",{"robe": "#f4a6b0", "sash": "#3a8fc9", "beard": "none", "item": "brush", "hat": "scholar"},"A modern Chinese novelist.","现代小说家。"),
+  hu("bingxin","冰心","Bīng Xīn","Bing Xin","history",{"robe": "#e2a93b", "sash": "#f4a6b0", "beard": "short", "item": "scroll", "hat": "scholar"},"A writer of warm poems and stories for children.","写温暖的儿童诗和故事的作家。"),
+  hu("xuzhimo","徐志摩","Xú Zhìmó","Xu Zhimo","history",{"robe": "#9ad0ee", "sash": "#e2a93b", "beard": "none", "item": "flute", "hat": "scholar"},"A modern poet who wrote about Cambridge.","写过康桥的现代诗人。"),
+  hu("zhuziqing","朱自清","Zhū Zìqīng","Zhu Ziqing","history",{"robe": "#6aa84f", "sash": "#ffffff", "beard": "long", "item": "brush", "hat": "scholar"},"The writer of Moonlight over the Lotus Pond.","写下《荷塘月色》的作家。"),
+  hu("shencongwen","沈从文","Shěn Cóngwén","Shen Congwen","history",{"robe": "#2e3a5a", "sash": "#c8372d", "beard": "none", "item": "brush", "hat": "scholar"},"A writer of stories about the Xiangxi countryside.","写湘西乡村故事的作家。"),
+  hu("fengzikai","丰子恺","Fēng Zǐkǎi","Feng Zikai","history",{"robe": "#c8372d", "sash": "#2f7d6b", "beard": "short", "item": "scroll", "hat": "scholar"},"A cartoonist and writer who loved children.","爱孩子的漫画家和作家。"),
+  hu("liangsicheng","梁思成","Liáng Sīchéng","Liang Sicheng","history",{"robe": "#7a4aa0", "sash": "#f4a6b0", "beard": "none", "item": "sprout", "hat": "scholar"},"An architect who studied old Chinese buildings.","研究中国古建筑的建筑学家。"),
+  hu("linhuiyin","林徽因","Lín Huīyīn","Lin Huiyin","history",{"robe": "#2f7d6b", "sash": "#f4a6b0", "beard": "long", "item": "brush", "hat": "scholar"},"An architect, poet and writer.","建筑学家、诗人和作家。"),
+  hu("qianzhongshu","钱钟书","Qián Zhōngshū","Qian Zhongshu","history",{"robe": "#7a4aa0", "sash": "#e2a93b", "beard": "none", "item": "brush", "hat": "scholar"},"A modern scholar and writer of Fortress Besieged.","写《围城》的现代学者和作家。"),
+  hu("yangjiang","杨绛","Yáng Jiàng","Yang Jiang","history",{"robe": "#e8742a", "sash": "#ffffff", "beard": "short", "item": "scroll", "hat": "scholar"},"A writer and translator.","作家和翻译家。"),
+  hu("jixianlin","季羡林","Jì Xiànlín","Ji Xianlin","history",{"robe": "#f4a6b0", "sash": "#2f7d6b", "beard": "long", "item": "sprout", "hat": "scholar"},"A scholar of languages and old Indian texts.","研究语言和古印度文献的学者。"),
+  hu("wuguanzhong","吴冠中","Wú Guànzhōng","Wu Guanzhong","history",{"robe": "#2e5f8a", "sash": "#2f7d6b", "beard": "long", "item": "brush", "hat": "scholar"},"A painter who loved the scenery of the south.","爱画江南风景的画家。"),
+  hu("lishutong","李叔同","Lǐ Shūtóng","Li Shutong","history",{"robe": "#f4a6b0", "sash": "#3a8fc9", "beard": "none", "item": "brush", "hat": "scholar"},"An artist who later became the monk Master Hongyi.","后来出家成为弘一法师的艺术家。"),
+  hu("chenjingrun","陈景润","Chén Jǐngrùn","Chen Jingrun","history",{"robe": "#6aa84f", "sash": "#e2a93b", "beard": "long", "item": "tablet", "hat": "scholar"},"A mathematician who worked hard on number problems.","刻苦研究数学难题的数学家。"),
+  hu("qiansanqiang","钱三强","Qián Sānqiáng","Qian Sanqiang","history",{"robe": "#2e3a5a", "sash": "#ffffff", "beard": "short", "item": "sprout", "hat": "scholar"},"A scientist who helped build China’s nuclear science.","帮助建立中国核科学的科学家。"),
+  hu("fam_yeye","爷爷","Yéye","Grandpa","culture",{"hair": "#ffffff", "hs": "bun", "hat": "none", "robe": "#2f7d6b", "sash": "#e2a93b", "item": "none"},"Your dad’s father.","爸爸的爸爸。"),
+  hu("fam_nainai","奶奶","Nǎinai","Grandma","culture",{"hair": "#ffffff", "hs": "short", "hat": "none", "robe": "#7a4aa0", "sash": "#ffffff", "item": "none"},"Your dad’s mother.","爸爸的妈妈。"),
+  hu("fam_baba","爸爸","Bàba","Dad","culture",{"hair": "#2a2320", "hs": "short", "hat": "none", "robe": "#e8742a", "sash": "#c8372d", "item": "none"},"Your father.","你的父亲。"),
+  hu("fam_mama","妈妈","Māma","Mum","culture",{"hair": "#2a2320", "hs": "long", "hat": "none", "robe": "#3fa37a", "sash": "#2f7d6b", "item": "none"},"Your mother.","你的母亲。"),
+  hu("fam_gege","哥哥","Gēge","Big Brother","culture",{"hair": "#2a2320", "hs": "short", "hat": "none", "robe": "#2e5f8a", "sash": "#3a8fc9", "item": "none"},"Your older brother.","比你大的哥哥。"),
+  hu("fam_jiejie","姐姐","Jiějie","Big Sister","culture",{"hair": "#2a2320", "hs": "long", "hat": "none", "robe": "#f4a6b0", "sash": "#f4a6b0", "item": "none"},"Your older sister.","比你大的姐姐。"),
+  hu("fam_didi","弟弟","Dìdi","Little Brother","culture",{"hair": "#2a2320", "hs": "short", "hat": "none", "robe": "#e2a93b", "sash": "#e2a93b", "item": "none"},"Your younger brother.","比你小的弟弟。"),
+  hu("fam_meimei","妹妹","Mèimei","Little Sister","culture",{"hair": "#2a2320", "hs": "long", "hat": "none", "robe": "#9ad0ee", "sash": "#ffffff", "item": "none"},"Your younger sister.","比你小的妹妹。"),
+  hu("season_chun","春","Chūn","Season Spring","culture",{"hs": "long", "hat": "flower", "robe": "#6aa84f", "sash": "#ffffff", "item": "sprout", "fx": "rgba(235,245,255,.95)"},"Flowers bloom and everything wakes up.","花开了，万物苏醒。"),
+  hu("season_xia","夏","Xià","Season Summer","culture",{"hs": "long", "hat": "flower", "robe": "#c8372d", "sash": "#ffffff", "item": "fan", "fx": "rgba(235,245,255,.95)"},"Hot days, green leaves and cicadas.","炎热的日子、绿叶和蝉鸣。"),
+  hu("season_qiu","秋","Qiū","Season Autumn","culture",{"hs": "long", "hat": "flower", "robe": "#e8742a", "sash": "#ffffff", "item": "basket", "fx": "rgba(235,245,255,.95)"},"Golden leaves and a good harvest.","金黄的树叶和好收成。"),
+  hu("season_dong","冬","Dōng","Season Winter","culture",{"hs": "long", "hat": "flower", "robe": "#3a8fc9", "sash": "#ffffff", "item": "bag", "fx": "rgba(235,245,255,.95)"},"Cold days with snow and warm dumplings.","寒冷的日子，有雪和热饺子。"),
 ];
 const CUSTOM = { id:'custom', cat:'custom', zh:'我的英雄', py:'Wǒ de yīngxióng', en:'My Hero', price:0, story:'Draw your own hero and give it a name!', zhs:'画一个自己的英雄，给它起名字。' };
 const HEROES = [...HAND, ...GEN.map((h, i) => ({ ...h, price:Math.min(80, 15 + 5 * Math.floor(i / 8)) }))].sort((a, b) => a.price - b.price);
@@ -1859,7 +2359,7 @@ const PAL = { k:'#2a2320', y:'#ffd9b3', n:'#8a5a2e', r:'#e5483a', b:'#3a9ee8', g
 const DEF_ROWS = ['....nnnn....','...nnnnnn...','..nnyyyynn..','..nyyyyyyn..','..yykyykyy..','..yyyyyyyy..','..ypyrrypy..','...yyyyyy...','..bbbbbbbb..','.ybboooobby.','..bbbbbbbb..','..kk....kk..'];
 
 /* ---------- save (everything stays on this device) ---------- */
-let prog = { stars:{}, coins:0, streak:0, last:'', seen:{}, owned:{ wukong:true, custom:true }, char:'wukong', custom:null, play:{ date:'', sec:0, locked:false, done:false, why:'' }, settings:{ limit:30, early:20, min:10 }, gift:0, pack:{}, size:1 };
+let prog = { stars:{}, coins:0, streak:0, last:'', seen:{}, owned:{ wukong:true, custom:true }, char:'wukong', custom:null, play:{ date:'', sec:0, locked:false, done:false, why:'' }, settings:{ limit:30, early:20, min:10 }, gift:0, pack:{}, packOrder:[], size:1 };
 try { prog = Object.assign(prog, JSON.parse(localStorage.getItem('cwpy-progress') || '{}')); } catch (e) {}
 if (!prog.custom || !prog.custom.px || prog.custom.px.length !== 144) prog.custom = { name:'My Hero', px:DEF_ROWS.join('').split('').map(c => c === '.' ? '.' : c) };
 if (!prog.owned) prog.owned = { wukong:true, custom:true };
@@ -2274,8 +2774,8 @@ function buildLevel(idx) {
   lv.gateX = x + 120;
   lv.worldW = lv.gateX + 520;
   lv.solids.unshift({ x:-300, y:GY, w:lv.worldW + 600, h:300, ground:true });
-  const nC = Math.round((lv.gateX - 400) / 150);
-  for (let k = 0; k < nC; k++) lv.coins.push({ x:360 + k * 150 + Math.random() * 40, y:GY - [40, 95, 160][Math.floor(Math.random() * 3)], got:false });
+  const nC = Math.max(3, Math.round((lv.gateX - 400) / 300));
+  for (let k = 0; k < nC; k++) lv.coins.push({ x:360 + k * 300 + Math.random() * 40, y:GY - [40, 95, 160][Math.floor(Math.random() * 3)], got:false });
   lv.foods = [];
   const nBad = Math.min(5, 2 + Math.floor(idx / 10)), nOk = 3, kinds = shuffle([...Array(nOk).fill('ok'), ...Array(nBad).fill('bad')]);
   const okPool = shuffle(FOODS_OK);
@@ -2312,9 +2812,997 @@ const FOODS = [
   { id:'toad', draw:'toad', e:'🍄', bad:true, zh:'毒蘑菇', py:'dú mógu', en:'poisonous mushroom', cat:'bad', price:8 },
   { id:'berry', draw:'berry', bad:true, zh:'毒果', py:'dúguǒ', en:'poison berries', cat:'bad', price:6 },
 ];
+const FOOD_PAL = { r:'#d9392b', o:'#e8742a', y:'#f2c14e', g:'#4aa84a', b:'#4a8ad8', p:'#8a4aa8', w:'#f6f0e4', n:'#8a5a32', k:'#3a3028', c:'#e8d8b8', m:'#f4a6b8' };
+const FOOD_DATA = `芒果|mángguǒ|mango|fruit|6|yo|fruit|0
+菠萝|bōluó|pineapple|fruit|6|yg|fruit|0
+柠檬|níngméng|lemon|fruit|6|yy|fruit|0
+猕猴桃|míhóutáo|kiwi fruit|fruit|6|ng|fruit|0
+火龙果|huǒlóngguǒ|dragon fruit|fruit|6|mw|fruit|0
+榴莲|liúlián|durian|fruit|6|yg|fruit|0
+山竹|shānzhú|mangosteen|fruit|6|pw|fruit|0
+椰子|yēzi|coconut|fruit|6|nw|fruit|0
+木瓜|mùguā|papaya|fruit|6|oy|fruit|0
+哈密瓜|hāmìguā|Hami melon|fruit|6|yg|fruit|0
+杨梅|yángméi|bayberry|fruit|6|rp|fruit|0
+桑葚|sāngshèn|mulberry|fruit|6|pk|fruit|0
+蓝莓|lánméi|blueberry|fruit|6|bp|fruit|0
+草莓|cǎoméi|strawberry|fruit|6|rg|fruit|0
+樱桃|yīngtáo|cherry|fruit|6|rk|fruit|0
+荔枝|lìzhī|lychee|fruit|6|rw|fruit|0
+龙眼|lóngyǎn|longan|fruit|6|nw|fruit|0
+枇杷|pípa|loquat|fruit|6|oy|fruit|0
+柚子|yòuzi|pomelo|fruit|6|yg|fruit|0
+红枣|hóngzǎo|red date|fruit|6|rn|fruit|0
+梨|lí|pear|fruit|6|yg|fruit|0
+柿子|shìzi|persimmon|fruit|6|or|fruit|0
+石榴|shíliu|pomegranate|fruit|6|rm|fruit|0
+杏|xìng|apricot|fruit|6|oy|fruit|0
+李子|lǐzi|plum|fruit|6|pp|fruit|0
+蜜桃|mìtáo|honey peach|fruit|6|mo|fruit|0
+甘蔗|gānzhe|sugar cane|fruit|6|pg|fruit|0
+橘子|júzi|tangerine|fruit|6|oo|fruit|0
+金桔|jīnjú|kumquat|fruit|6|oy|fruit|0
+西柚|xīyòu|grapefruit|fruit|6|rm|fruit|0
+香瓜|xiāngguā|sweet melon|fruit|6|yw|fruit|0
+白兰瓜|báilánguā|white melon|fruit|6|wg|fruit|0
+荸荠|bíqí|water chestnut|fruit|6|nw|fruit|0
+莲子|liánzǐ|lotus seed|fruit|6|wy|fruit|0
+栗子|lìzi|chestnut|fruit|6|nn|nut|0
+核桃|hétao|walnut|fruit|6|nn|nut|0
+杏仁|xìngrén|almond|fruit|6|cn|nut|0
+松子|sōngzǐ|pine nut|fruit|6|cn|nut|0
+瓜子|guāzǐ|sunflower seeds|fruit|6|kc|nut|0
+腰果|yāoguǒ|cashew|fruit|6|yc|nut|0
+开心果|kāixīnguǒ|pistachio|fruit|6|gy|nut|0
+葡萄干|pútaogān|raisins|fruit|6|pk|fruit|0
+蜜枣|mìzǎo|candied date|fruit|6|no|fruit|0
+山楂|shānzhā|hawthorn|fruit|6|rw|fruit|0
+青梅|qīngméi|green plum|fruit|6|gg|fruit|0
+哈密瓜干|hāmìguāgān|dried melon|fruit|6|yo|fruit|0
+菠萝蜜|bōluómì|jackfruit|fruit|6|yn|fruit|0
+蛇果|shéguǒ|red delicious apple|fruit|6|rk|fruit|0
+香梨|xiānglí|fragrant pear|fruit|6|yg|fruit|0
+菠菜|bōcài|spinach|veg|5|g|veg|0
+芹菜|qíncài|celery|veg|5|g|veg|0
+韭菜|jiǔcài|chives|veg|5|g|veg|0
+生菜|shēngcài|lettuce|veg|5|g|veg|0
+油菜|yóucài|rapeseed greens|veg|5|g|veg|0
+青菜|qīngcài|green vegetables|veg|5|g|veg|0
+西兰花|xīlánhuā|broccoli|veg|5|g|veg|0
+花菜|huācài|cauliflower|veg|5|w|veg|0
+莲藕|lián’ǒu|lotus root|veg|5|nw|veg|0
+山药|shānyào|Chinese yam|veg|5|wn|veg|0
+冬瓜|dōngguā|winter melon|veg|5|gw|veg|0
+丝瓜|sīguā|loofah|veg|5|gy|veg|0
+苦瓜|kǔguā|bitter melon|veg|5|gy|veg|0
+青椒|qīngjiāo|green pepper|veg|5|g|veg|0
+洋葱|yángcōng|onion|veg|5|pw|veg|0
+胡萝卜|húluóbo|carrot|veg|5|o|veg|0
+豆角|dòujiǎo|green beans|veg|5|g|veg|0
+毛豆|máodòu|edamame|veg|5|g|veg|0
+香菇|xiānggū|shiitake mushroom|veg|5|nn|veg|0
+金针菇|jīnzhēngū|enoki mushroom|veg|5|wy|veg|0
+木耳|mù’ěr|wood ear fungus|veg|5|kk|veg|0
+银耳|yín’ěr|white fungus|veg|5|wy|veg|0
+海带|hǎidài|kelp|veg|5|gk|veg|0
+紫菜|zǐcài|laver seaweed|veg|5|kp|veg|0
+豆芽|dòuyá|bean sprouts|veg|5|wy|veg|0
+豆苗|dòumiáo|pea shoots|veg|5|g|veg|0
+荠菜|jìcài|shepherd’s purse|veg|5|g|veg|0
+空心菜|kōngxīncài|water spinach|veg|5|g|veg|0
+茼蒿|tónghāo|crown daisy|veg|5|g|veg|0
+芥菜|jiècài|mustard greens|veg|5|g|veg|0
+莴笋|wōsǔn|celtuce|veg|5|g|veg|0
+茭白|jiāobái|water bamboo|veg|5|wg|veg|0
+芦笋|lúsǔn|asparagus|veg|5|g|veg|0
+四季豆|sìjìdòu|runner beans|veg|5|g|veg|0
+土豆|tǔdòu|potato|veg|5|yn|veg|0
+红薯|hóngshǔ|sweet potato|veg|5|on|veg|0
+紫薯|zǐshǔ|purple sweet potato|veg|5|pp|veg|0
+南瓜|nánguā|pumpkin|veg|5|o|veg|0
+黄瓜|huángguā|cucumber|veg|5|g|veg|0
+番茄|fānqié|tomato|veg|5|r|veg|0
+茄子|qiézi|eggplant|veg|5|p|veg|0
+辣椒|làjiāo|chilli|veg|5|r|veg|0
+大蒜|dàsuàn|garlic|veg|5|w|veg|0
+生姜|shēngjiāng|ginger|veg|5|yn|veg|0
+大葱|dàcōng|scallion|veg|5|gw|veg|0
+萝卜|luóbo|radish|veg|5|w|veg|0
+白菜|báicài|Napa cabbage|veg|5|gw|veg|0
+竹笋|zhúsǔn|bamboo shoot|veg|5|yn|veg|0
+芋头|yùtou|taro|veg|5|pw|veg|0
+西葫芦|xīhúlu|zucchini|veg|5|gy|veg|0
+荷兰豆|hélándòu|snow peas|veg|5|g|veg|0
+蚕豆|cándòu|broad beans|veg|5|g|veg|0
+豌豆|wāndòu|peas|veg|5|g|veg|0
+炒饭|chǎofàn|fried rice|meal|6|yw|bowl|0
+蛋炒饭|dànchǎofàn|egg fried rice|meal|6|yw|bowl|0
+扬州炒饭|Yángzhōu chǎofàn|Yangzhou fried rice|meal|6|yr|bowl|0
+盖浇饭|gàijiāofàn|rice with topping|meal|6|nw|bowl|0
+糯米饭|nuòmǐfàn|sticky rice|meal|6|ww|bowl|0
+八宝饭|bābǎofàn|eight-treasure rice|meal|6|rw|bowl|0
+竹筒饭|zhútǒngfàn|bamboo-tube rice|meal|6|gw|bowl|0
+煲仔饭|bāozǎifàn|clay-pot rice|meal|6|nw|bowl|0
+刀削面|dāoxiāomiàn|knife-cut noodles|meal|6|yw|bowl|0
+米线|mǐxiàn|rice noodles|meal|6|ww|bowl|0
+米粉|mǐfěn|rice vermicelli|meal|6|ww|bowl|0
+河粉|héfěn|flat rice noodles|meal|6|ww|bowl|0
+炒面|chǎomiàn|fried noodles|meal|6|yn|bowl|0
+担担面|dàndànmiàn|dandan noodles|meal|6|ro|bowl|0
+热干面|règānmiàn|hot dry noodles|meal|6|yn|bowl|0
+阳春面|yángchūnmiàn|plain noodle soup|meal|6|wg|bowl|0
+牛肉面|niúròumiàn|beef noodles|meal|6|nr|bowl|0
+番茄鸡蛋面|fānqié jīdànmiàn|tomato egg noodles|meal|6|ry|bowl|0
+花卷|huājuǎn|flower roll|meal|6|ww|bun|0
+烙饼|làobǐng|pan-baked flatbread|meal|6|yn|bun|0
+葱油饼|cōngyóubǐng|scallion pancake|meal|6|yg|bun|0
+手抓饼|shǒuzhuābǐng|hand-grab pancake|meal|6|yn|bun|0
+锅盔|guōkuī|thick flatbread|meal|6|yn|bun|0
+馕|náng|baked flatbread|meal|6|yn|bun|0
+玉米饼|yùmǐbǐng|corn cake|meal|6|yy|bun|0
+杂粮粥|záliángzhōu|mixed-grain porridge|meal|6|ny|bowl|0
+小米粥|xiǎomǐzhōu|millet porridge|meal|6|yy|bowl|0
+八宝粥|bābǎozhōu|eight-treasure porridge|meal|6|rn|bowl|0
+紫米粥|zǐmǐzhōu|purple rice porridge|meal|6|pp|bowl|0
+燕麦片|yànmàipiàn|oatmeal|meal|6|cy|bowl|0
+面包|miànbāo|bread|meal|6|yn|bun|0
+饼干|bǐnggān|biscuit|meal|6|yn|sweet|0
+麦片|màipiàn|cereal|meal|6|yc|bowl|0
+水饺|shuǐjiǎo|boiled dumplings|snack|7|ww|bun|0
+蒸饺|zhēngjiǎo|steamed dumplings|snack|7|ww|bun|0
+煎饺|jiānjiǎo|pan-fried dumplings|snack|7|yn|bun|0
+锅贴|guōtiē|potstickers|snack|7|yn|bun|0
+小笼包|xiǎolóngbāo|soup dumplings|snack|7|ww|bun|0
+生煎包|shēngjiānbāo|pan-fried buns|snack|7|yn|bun|0
+肉包|ròubāo|pork bun|snack|7|ww|bun|0
+菜包|càibāo|vegetable bun|snack|7|wg|bun|0
+奶黄包|nǎihuángbāo|custard bun|snack|7|wy|bun|0
+灌汤包|guàntāngbāo|soup bun|snack|7|ww|bun|0
+烧卖|shāomài|shaomai|snack|7|yw|bun|0
+馄饨|húntun|wonton|snack|7|ww|bowl|0
+抄手|chāoshǒu|Sichuan wonton|snack|7|wr|bowl|0
+汤圆|tāngyuán|glutinous rice balls|snack|7|ww|bowl|0
+糯米鸡|nuòmǐjī|sticky rice chicken|snack|7|gw|bun|0
+肠粉|chángfěn|rice noodle roll|snack|7|ww|bun|0
+虾饺|xiājiǎo|shrimp dumpling|snack|7|wm|bun|0
+烤红薯|kǎohóngshǔ|roast sweet potato|snack|7|on|veg|0
+烤玉米|kǎoyùmǐ|roast corn|snack|7|yn|veg|0
+炒栗子|chǎolìzi|roasted chestnuts|snack|7|nn|nut|0
+爆米花|bàomǐhuā|popcorn|snack|7|wy|bun|0
+羊肉串|yángròuchuàn|lamb skewers|snack|7|nr|meat|0
+烤串|kǎochuàn|grilled skewers|snack|7|nr|meat|0
+臭豆腐|chòudòufu|stinky tofu|snack|7|nk|bun|0
+煎饼果子|jiānbingguǒzi|pancake roll|snack|7|yn|bun|0
+肉夹馍|ròujiāmó|meat burger|snack|7|nw|bun|0
+凉皮|liángpí|cold skin noodles|snack|7|wy|bowl|0
+麻辣烫|málàtàng|spicy hotpot soup|snack|7|rn|bowl|0
+驴打滚|lǘdǎgǔn|rolling donkey sweet|snack|7|yn|sweet|0
+豌豆黄|wāndòuhuáng|pea cake|snack|7|yy|sweet|0
+艾窝窝|àiwōwo|glutinous rice ball|snack|7|wc|bun|0
+炸酱面|zhájiàngmiàn|Beijing noodles|snack|7|nk|bowl|0
+焦圈|jiāoquān|fried ring|snack|7|nn|bun|0
+糖画|tánghuà|sugar painting|snack|7|yn|sweet|0
+棉花糖|miánhuatáng|cotton candy|snack|7|pw|sweet|0
+冰棍|bīnggùn|ice lolly|snack|7|mw|sweet|0
+烤冷面|kǎolěngmiàn|grilled cold noodles|snack|7|yn|bun|0
+关东煮|guāndōngzhǔ|oden|snack|7|wn|bowl|0
+鱼丸|yúwán|fish balls|snack|7|ww|bun|0
+肉丸|ròuwán|meatballs|snack|7|nn|bun|0
+虾片|xiāpiàn|prawn chips|snack|7|wm|bun|0
+薯条|shǔtiáo|fries|snack|7|yy|bun|0
+糯米糍|nuòmǐcí|mochi|snack|7|ww|sweet|0
+酸辣粉|suānlàfěn|hot-and-sour noodles|snack|7|rn|bowl|0
+桂花糕|guìhuāgāo|osmanthus cake|sweet|7|yw|sweet|0
+绿豆糕|lǜdòugāo|mung bean cake|sweet|7|gw|sweet|0
+山楂糕|shānzhāgāo|hawthorn cake|sweet|7|rm|sweet|0
+芝麻糖|zhīmatáng|sesame candy|sweet|7|kc|sweet|0
+花生糖|huāshēngtáng|peanut candy|sweet|7|nc|sweet|0
+酥糖|sūtáng|crisp candy|sweet|7|yc|sweet|0
+软糖|ruǎntáng|soft candy|sweet|7|rp|sweet|0
+麦芽糖|màiyátáng|malt sugar|sweet|7|yn|sweet|0
+糖果|tángguǒ|sweets|sweet|7|ro|sweet|0
+巧克力|qiǎokèlì|chocolate|sweet|7|nk|sweet|0
+牛轧糖|niúzhátáng|nougat|sweet|7|wc|sweet|0
+蜜饯|mìjiàn|candied fruit|sweet|7|ro|sweet|0
+话梅|huàméi|preserved plum|sweet|7|nr|sweet|0
+杏脯|xìngfǔ|dried apricot|sweet|7|oy|sweet|0
+芒果干|mángguǒgān|dried mango|sweet|7|yo|sweet|0
+红豆沙|hóngdòushā|red bean paste|sweet|7|rn|sweet|0
+红豆糕|hóngdòugāo|red bean cake|sweet|7|rm|sweet|0
+凉糕|liánggāo|cool cake|sweet|7|wg|sweet|0
+蛋挞|dàntà|egg tart|sweet|7|yw|sweet|0
+蛋黄酥|dànhuángsū|yolk pastry|sweet|7|yn|sweet|0
+凤梨酥|fènglísū|pineapple cake|sweet|7|yn|sweet|0
+老婆饼|lǎopóbǐng|wife cake|sweet|7|yn|sweet|0
+鲜花饼|xiānhuābǐng|flower cake|sweet|7|pm|sweet|0
+酥饼|sūbǐng|flaky pastry|sweet|7|yn|sweet|0
+雪花酥|xuěhuāsū|snowflake crisp|sweet|7|wc|sweet|0
+糍粑|cíbā|sticky rice cake|sweet|7|ww|sweet|0
+双皮奶|shuāngpínǎi|double-skin milk pudding|sweet|7|wc|sweet|0
+杨枝甘露|yángzhī gānlù|mango pomelo sago|sweet|7|yo|sweet|0
+芋圆|yùyuán|taro balls|sweet|7|pw|sweet|0
+仙草冻|xiāncǎodòng|grass jelly|sweet|7|kk|sweet|0
+冰糖雪梨|bīngtáng xuělí|rock sugar pear|sweet|7|yw|sweet|0
+酒酿圆子|jiǔniàng yuánzi|sweet rice-wine balls|sweet|7|wc|sweet|0
+太阳饼|tàiyángbǐng|sun cake|sweet|7|yn|sweet|0
+枣泥糕|zǎoníbāo|jujube cake|sweet|7|nr|sweet|0
+蛋糕卷|dàngāojuǎn|roll cake|sweet|7|yw|sweet|0
+龙井茶|Lóngjǐngchá|Longjing tea|drink|6|g|cup|0
+铁观音|Tiěguānyīn|Tieguanyin tea|drink|6|ny|cup|0
+普洱茶|Pǔ’ěrchá|Pu’er tea|drink|6|nk|cup|0
+茉莉花茶|mòlì huāchá|jasmine tea|drink|6|yg|cup|0
+大红袍|Dàhóngpáo|Da Hong Pao tea|drink|6|rn|cup|0
+碧螺春|Bìluóchūn|Biluochun tea|drink|6|g|cup|0
+菊花茶|júhuāchá|chrysanthemum tea|drink|6|yy|cup|0
+红茶|hóngchá|black tea|drink|6|rn|cup|0
+绿茶|lǜchá|green tea|drink|6|g|cup|0
+白茶|báichá|white tea|drink|6|wy|cup|0
+乌龙茶|wūlóngchá|oolong tea|drink|6|ny|cup|0
+奶茶|nǎichá|milk tea|drink|6|nc|cup|0
+珍珠奶茶|zhēnzhū nǎichá|bubble tea|drink|6|nk|cup|0
+豆浆|dòujiāng|soy milk|drink|6|wc|cup|0
+酸奶|suānnǎi|yoghurt|drink|6|ww|cup|0
+牛奶|niúnǎi|milk|drink|6|ww|cup|0
+果汁|guǒzhī|fruit juice|drink|6|oo|cup|0
+橙汁|chéngzhī|orange juice|drink|6|oo|cup|0
+苹果汁|píngguǒzhī|apple juice|drink|6|yr|cup|0
+西瓜汁|xīguāzhī|watermelon juice|drink|6|rg|cup|0
+椰子汁|yēzizhī|coconut milk|drink|6|ww|cup|0
+酸梅汤|suānméitāng|sour plum drink|drink|6|nr|cup|0
+绿豆汤|lǜdòutāng|mung bean soup|drink|6|gy|cup|0
+银耳汤|yín’ěrtāng|white fungus soup|drink|6|wy|cup|0
+蜂蜜水|fēngmìshuǐ|honey water|drink|6|yy|cup|0
+柠檬水|níngméngshuǐ|lemonade|drink|6|yy|cup|0
+姜茶|jiāngchá|ginger tea|drink|6|yn|cup|0
+红枣茶|hóngzǎochá|red date tea|drink|6|rn|cup|0
+枸杞茶|gǒuqǐchá|goji tea|drink|6|rn|cup|0
+玫瑰花茶|méiguī huāchá|rose tea|drink|6|pm|cup|0
+山楂水|shānzhāshuǐ|hawthorn drink|drink|6|rm|cup|0
+凉茶|liángchá|herbal tea|drink|6|nk|cup|0
+薏米水|yìmǐshuǐ|barley water|drink|6|wc|cup|0
+热巧克力|rè qiǎokèlì|hot chocolate|drink|6|nk|cup|0
+豆奶|dòunǎi|soy drink|drink|6|wc|cup|0
+矿泉水|kuàngquánshuǐ|mineral water|drink|6|bw|cup|0
+温水|wēnshuǐ|warm water|drink|6|bw|cup|0
+汽水|qìshuǐ|soda|drink|6|bw|cup|0
+冰水|bīngshuǐ|ice water|drink|6|bw|cup|0
+番茄蛋汤|fānqié dàntāng|tomato egg soup|soup|7|ry|bowl|0
+紫菜蛋花汤|zǐcài dànhuātāng|seaweed egg drop soup|soup|7|ky|bowl|0
+冬瓜汤|dōngguātāng|winter melon soup|soup|7|gw|bowl|0
+排骨汤|páigǔtāng|pork rib soup|soup|7|nw|bowl|0
+鸡汤|jītāng|chicken soup|soup|7|yw|bowl|0
+鱼汤|yútāng|fish soup|soup|7|ww|bowl|0
+豆腐汤|dòufutāng|tofu soup|soup|7|ww|bowl|0
+玉米排骨汤|yùmǐ páigǔtāng|corn and rib soup|soup|7|yn|bowl|0
+酸辣汤|suānlàtāng|hot-and-sour soup|soup|7|rn|bowl|0
+羊肉汤|yángròutāng|lamb soup|soup|7|nw|bowl|0
+牛肉汤|niúròutāng|beef soup|soup|7|nn|bowl|0
+菌菇汤|jūngūtāng|mushroom soup|soup|7|nn|bowl|0
+萝卜汤|luóbotāng|radish soup|soup|7|ww|bowl|0
+莲藕汤|lián’ǒutāng|lotus root soup|soup|7|nw|bowl|0
+蛋花汤|dànhuātāng|egg drop soup|soup|7|yy|bowl|0
+馄饨汤|húntuntāng|wonton soup|soup|7|wy|bowl|0
+海鲜汤|hǎixiāntāng|seafood soup|soup|7|or|bowl|0
+老鸭汤|lǎoyātāng|old duck soup|soup|7|nw|bowl|0
+乌鸡汤|wūjītāng|black chicken soup|soup|7|kn|bowl|0
+山药汤|shānyàotāng|yam soup|soup|7|ww|bowl|0
+菠菜汤|bōcàitāng|spinach soup|soup|7|gy|bowl|0
+白菜豆腐汤|báicài dòufutāng|cabbage tofu soup|soup|7|gw|bowl|0
+鱼头豆腐汤|yútóu dòufutāng|fish head tofu soup|soup|7|ww|bowl|0
+西湖牛肉羹|Xīhú niúròugēng|West Lake beef soup|soup|7|ny|bowl|0
+猪肉|zhūròu|pork|protein|8|mn|meat|0
+牛肉|niúròu|beef|protein|8|rn|meat|0
+羊肉|yángròu|lamb|protein|8|rm|meat|0
+鸡肉|jīròu|chicken|protein|8|yw|meat|0
+鸭肉|yāròu|duck|protein|8|nw|meat|0
+鱼|yú|fish|protein|8|bw|fish|0
+虾|xiā|shrimp|protein|8|om|fish|0
+螃蟹|pángxiè|crab|protein|8|ro|fish|0
+鱿鱼|yóuyú|squid|protein|8|wp|fish|0
+海参|hǎishēn|sea cucumber|protein|8|kn|fish|0
+扇贝|shànbèi|scallop|protein|8|wc|fish|0
+蛤蜊|gélí|clams|protein|8|nw|fish|0
+带鱼|dàiyú|hairtail fish|protein|8|bw|fish|0
+黄鱼|huángyú|yellow croaker|protein|8|yw|fish|0
+鲤鱼|lǐyú|carp|protein|8|ow|fish|0
+鲫鱼|jìyú|crucian carp|protein|8|bw|fish|0
+草鱼|cǎoyú|grass carp|protein|8|gw|fish|0
+鳜鱼|guìyú|mandarin fish|protein|8|yw|fish|0
+鸭蛋|yādàn|duck egg|protein|8|gw|egg|0
+鹌鹑蛋|ānchúndàn|quail egg|protein|8|ny|egg|0
+咸鸭蛋|xián yādàn|salted duck egg|protein|8|gw|egg|0
+豆腐|dòufu|tofu|protein|8|ww|sweet|0
+腐竹|fǔzhú|tofu skin|protein|8|yy|meat|0
+豆干|dòugān|dried tofu|protein|8|nn|sweet|0
+牛排|niúpái|steak|protein|8|rn|meat|0
+排骨|páigǔ|ribs|protein|8|nw|meat|0
+猪蹄|zhūtí|pig trotters|protein|8|nw|meat|0
+鸡翅|jīchì|chicken wings|protein|8|on|meat|0
+鸡腿|jītuǐ|chicken leg|protein|8|on|meat|0
+火腿|huǒtuǐ|ham|protein|8|rm|meat|0
+腊肉|làròu|cured pork|protein|8|rn|meat|0
+香肠|xiāngcháng|sausage|protein|8|rn|meat|0
+肉松|ròusōng|pork floss|protein|8|on|nut|0
+培根|péigēn|bacon|protein|8|rm|meat|0
+麻婆豆腐|mápó dòufu|mapo tofu|dish|9|rw|plate|0
+家常豆腐|jiācháng dòufu|home-style tofu|dish|9|nw|plate|0
+红烧豆腐|hóngshāo dòufu|braised tofu|dish|9|nw|plate|0
+煎豆腐|jiān dòufu|pan-fried tofu|dish|9|yw|plate|0
+蒸蛋|zhēngdàn|steamed egg custard|dish|9|yy|plate|0
+西红柿炒蛋|xīhóngshì chǎodàn|tomato scrambled eggs|dish|9|ry|plate|0
+韭菜炒蛋|jiǔcài chǎodàn|chives and eggs|dish|9|gy|plate|0
+青椒炒蛋|qīngjiāo chǎodàn|green pepper and eggs|dish|9|gy|plate|0
+木耳炒蛋|mù’ěr chǎodàn|wood ear and eggs|dish|9|ky|plate|0
+宫保鸡丁|gōngbǎo jīdīng|kung pao chicken|dish|9|rn|plate|0
+鱼香肉丝|yúxiāng ròusī|fish-fragrant pork|dish|9|rn|plate|0
+回锅肉|huíguōròu|twice-cooked pork|dish|9|rn|plate|0
+东坡肉|dōngpōròu|Dongpo pork|dish|9|nr|plate|0
+狮子头|shīzitóu|lion’s head meatball|dish|9|nw|plate|0
+清蒸鲈鱼|qīngzhēng lúyú|steamed sea bass|dish|9|ww|plate|0
+白切鸡|báiqiējī|poached chicken|dish|9|yw|plate|0
+叉烧|chāshāo|char siu pork|dish|9|rm|plate|0
+糖醋排骨|tángcù páigǔ|sweet-and-sour ribs|dish|9|ro|plate|0
+糖醋里脊|tángcù lǐjǐ|sweet-and-sour pork|dish|9|ro|plate|0
+红烧狮子头|hóngshāo shīzitóu|braised meatball|dish|9|nr|plate|0
+京酱肉丝|jīngjiàng ròusī|shredded pork in sweet sauce|dish|9|nk|plate|0
+水煮鱼|shuǐzhǔyú|boiled fish in chilli oil|dish|9|ro|plate|0
+酸菜鱼|suāncàiyú|pickled cabbage fish|dish|9|yy|plate|0
+剁椒鱼头|duòjiāo yútóu|fish head with chopped chilli|dish|9|rw|plate|0
+麻辣香锅|málà xiāngguō|spicy dry pot|dish|9|rn|plate|0
+口水鸡|kǒushuǐjī|mouth-watering chicken|dish|9|ro|plate|0
+夫妻肺片|fūqī fèipiàn|couple’s beef slices|dish|9|rn|plate|0
+蚂蚁上树|mǎyǐ shàngshù|ants climbing a tree|dish|9|rn|plate|0
+地三鲜|dìsānxiān|three earthly treasures|dish|9|yn|plate|0
+干煸豆角|gānbiān dòujiǎo|dry-fried green beans|dish|9|gn|plate|0
+酸辣土豆丝|suānlà tǔdòusī|hot-and-sour potato strips|dish|9|yr|plate|0
+拍黄瓜|pāi huángguā|smashed cucumber|dish|9|gw|plate|0
+凉拌木耳|liángbàn mù’ěr|cold wood ear|dish|9|kk|plate|0
+蒜蓉粉丝虾|suànróng fěnsī xiā|garlic vermicelli shrimp|dish|9|ow|plate|0
+白灼虾|báizhuó xiā|blanched shrimp|dish|9|om|plate|0
+清蒸螃蟹|qīngzhēng pángxiè|steamed crab|dish|9|ro|plate|0
+红烧鲤鱼|hóngshāo lǐyú|braised carp|dish|9|on|plate|0
+松鼠鳜鱼|sōngshǔ guìyú|squirrel fish|dish|9|yr|plate|0
+北京烤鸭卷|Běijīng kǎoyājuǎn|Peking duck wrap|dish|9|nw|plate|0
+葱爆羊肉|cōngbào yángròu|scallion lamb|dish|9|nw|plate|0
+羊肉泡馍|yángròu pàomó|lamb and bread soup|dish|9|nw|bowl|0
+佛跳墙|fótiàoqiáng|Buddha jumps over the wall|dish|9|nk|bowl|0
+盐水鸭|yánshuǐyā|salted duck|dish|9|nw|plate|0
+荷叶鸡|héyèjī|lotus-leaf chicken|dish|9|gn|plate|0
+叫花鸡|jiàohuājī|beggar’s chicken|dish|9|nn|plate|0
+千层饼|qiāncéngbǐng|thousand-layer pancake|dish|9|yn|bun|0
+清炒菠菜|qīngchǎo bōcài|Stir-fried spinach|dish|8|g|plate|0
+蒜蓉菠菜|suànróng bōcài|Garlic spinach|dish|8|g|plate|0
+油焖菠菜|yóumèn bōcài|Oil-braised spinach|dish|8|g|plate|0
+白灼菠菜|báizhuó bōcài|Blanched spinach|dish|8|g|plate|0
+凉拌菠菜|liángbàn bōcài|Cold-dressed spinach|dish|8|g|plate|0
+醋溜菠菜|cùliū bōcài|Vinegar-tossed spinach|dish|8|g|plate|0
+清炒芹菜|qīngchǎo qíncài|Stir-fried celery|dish|8|g|plate|0
+凉拌芹菜|liángbàn qíncài|Cold-dressed celery|dish|8|g|plate|0
+醋溜芹菜|cùliū qíncài|Vinegar-tossed celery|dish|8|g|plate|0
+酸辣芹菜|suānlà qíncài|Hot-and-sour celery|dish|8|g|plate|0
+油焖芹菜|yóumèn qíncài|Oil-braised celery|dish|8|g|plate|0
+蒜蓉芹菜|suànróng qíncài|Garlic celery|dish|8|g|plate|0
+清炒韭菜|qīngchǎo jiǔcài|Stir-fried chives|dish|8|g|plate|0
+蒜蓉韭菜|suànróng jiǔcài|Garlic chives|dish|8|g|plate|0
+油焖韭菜|yóumèn jiǔcài|Oil-braised chives|dish|8|g|plate|0
+白灼韭菜|báizhuó jiǔcài|Blanched chives|dish|8|g|plate|0
+凉拌韭菜|liángbàn jiǔcài|Cold-dressed chives|dish|8|g|plate|0
+醋溜韭菜|cùliū jiǔcài|Vinegar-tossed chives|dish|8|g|plate|0
+清炒生菜|qīngchǎo shēngcài|Stir-fried lettuce|dish|8|g|plate|0
+蒜蓉生菜|suànróng shēngcài|Garlic lettuce|dish|8|g|plate|0
+油焖生菜|yóumèn shēngcài|Oil-braised lettuce|dish|8|g|plate|0
+白灼生菜|báizhuó shēngcài|Blanched lettuce|dish|8|g|plate|0
+凉拌生菜|liángbàn shēngcài|Cold-dressed lettuce|dish|8|g|plate|0
+醋溜生菜|cùliū shēngcài|Vinegar-tossed lettuce|dish|8|g|plate|0
+清炒油菜|qīngchǎo yóucài|Stir-fried rapeseed greens|dish|8|g|plate|0
+蒜蓉油菜|suànróng yóucài|Garlic rapeseed greens|dish|8|g|plate|0
+油焖油菜|yóumèn yóucài|Oil-braised rapeseed greens|dish|8|g|plate|0
+白灼油菜|báizhuó yóucài|Blanched rapeseed greens|dish|8|g|plate|0
+凉拌油菜|liángbàn yóucài|Cold-dressed rapeseed greens|dish|8|g|plate|0
+醋溜油菜|cùliū yóucài|Vinegar-tossed rapeseed greens|dish|8|g|plate|0
+清炒青菜|qīngchǎo qīngcài|Stir-fried green vegetables|dish|8|g|plate|0
+蒜蓉青菜|suànróng qīngcài|Garlic green vegetables|dish|8|g|plate|0
+油焖青菜|yóumèn qīngcài|Oil-braised green vegetables|dish|8|g|plate|0
+白灼青菜|báizhuó qīngcài|Blanched green vegetables|dish|8|g|plate|0
+凉拌青菜|liángbàn qīngcài|Cold-dressed green vegetables|dish|8|g|plate|0
+醋溜青菜|cùliū qīngcài|Vinegar-tossed green vegetables|dish|8|g|plate|0
+清炒西兰花|qīngchǎo xīlánhuā|Stir-fried broccoli|dish|8|g|plate|0
+蒜蓉西兰花|suànróng xīlánhuā|Garlic broccoli|dish|8|g|plate|0
+油焖西兰花|yóumèn xīlánhuā|Oil-braised broccoli|dish|8|g|plate|0
+白灼西兰花|báizhuó xīlánhuā|Blanched broccoli|dish|8|g|plate|0
+凉拌西兰花|liángbàn xīlánhuā|Cold-dressed broccoli|dish|8|g|plate|0
+醋溜西兰花|cùliū xīlánhuā|Vinegar-tossed broccoli|dish|8|g|plate|0
+清炒花菜|qīngchǎo huācài|Stir-fried cauliflower|dish|8|w|plate|0
+凉拌花菜|liángbàn huācài|Cold-dressed cauliflower|dish|8|w|plate|0
+醋溜花菜|cùliū huācài|Vinegar-tossed cauliflower|dish|8|w|plate|0
+酸辣花菜|suānlà huācài|Hot-and-sour cauliflower|dish|8|w|plate|0
+油焖花菜|yóumèn huācài|Oil-braised cauliflower|dish|8|w|plate|0
+蒜蓉花菜|suànróng huācài|Garlic cauliflower|dish|8|w|plate|0
+清炒莲藕|qīngchǎo lián’ǒu|Stir-fried lotus root|dish|8|nw|plate|0
+油焖莲藕|yóumèn lián’ǒu|Oil-braised lotus root|dish|8|nw|plate|0
+醋溜莲藕|cùliū lián’ǒu|Vinegar-tossed lotus root|dish|8|nw|plate|0
+红烧莲藕|hóngshāo lián’ǒu|Braised lotus root|dish|8|nw|plate|0
+酸辣莲藕|suānlà lián’ǒu|Hot-and-sour lotus root|dish|8|nw|plate|0
+蒜蓉莲藕|suànróng lián’ǒu|Garlic lotus root|dish|8|nw|plate|0
+清炒山药|qīngchǎo shānyào|Stir-fried Chinese yam|dish|8|wn|plate|0
+油焖山药|yóumèn shānyào|Oil-braised Chinese yam|dish|8|wn|plate|0
+醋溜山药|cùliū shānyào|Vinegar-tossed Chinese yam|dish|8|wn|plate|0
+红烧山药|hóngshāo shānyào|Braised Chinese yam|dish|8|wn|plate|0
+酸辣山药|suānlà shānyào|Hot-and-sour Chinese yam|dish|8|wn|plate|0
+蒜蓉山药|suànróng shānyào|Garlic Chinese yam|dish|8|wn|plate|0
+清炒冬瓜|qīngchǎo dōngguā|Stir-fried winter melon|dish|8|gw|plate|0
+油焖冬瓜|yóumèn dōngguā|Oil-braised winter melon|dish|8|gw|plate|0
+红烧冬瓜|hóngshāo dōngguā|Braised winter melon|dish|8|gw|plate|0
+白灼冬瓜|báizhuó dōngguā|Blanched winter melon|dish|8|gw|plate|0
+酸辣冬瓜|suānlà dōngguā|Hot-and-sour winter melon|dish|8|gw|plate|0
+醋溜冬瓜|cùliū dōngguā|Vinegar-tossed winter melon|dish|8|gw|plate|0
+清炒丝瓜|qīngchǎo sīguā|Stir-fried loofah|dish|8|gy|plate|0
+油焖丝瓜|yóumèn sīguā|Oil-braised loofah|dish|8|gy|plate|0
+红烧丝瓜|hóngshāo sīguā|Braised loofah|dish|8|gy|plate|0
+白灼丝瓜|báizhuó sīguā|Blanched loofah|dish|8|gy|plate|0
+酸辣丝瓜|suānlà sīguā|Hot-and-sour loofah|dish|8|gy|plate|0
+醋溜丝瓜|cùliū sīguā|Vinegar-tossed loofah|dish|8|gy|plate|0
+清炒苦瓜|qīngchǎo kǔguā|Stir-fried bitter melon|dish|8|gy|plate|0
+油焖苦瓜|yóumèn kǔguā|Oil-braised bitter melon|dish|8|gy|plate|0
+红烧苦瓜|hóngshāo kǔguā|Braised bitter melon|dish|8|gy|plate|0
+白灼苦瓜|báizhuó kǔguā|Blanched bitter melon|dish|8|gy|plate|0
+酸辣苦瓜|suānlà kǔguā|Hot-and-sour bitter melon|dish|8|gy|plate|0
+醋溜苦瓜|cùliū kǔguā|Vinegar-tossed bitter melon|dish|8|gy|plate|0
+清炒青椒|qīngchǎo qīngjiāo|Stir-fried green pepper|dish|8|g|plate|0
+凉拌青椒|liángbàn qīngjiāo|Cold-dressed green pepper|dish|8|g|plate|0
+醋溜青椒|cùliū qīngjiāo|Vinegar-tossed green pepper|dish|8|g|plate|0
+酸辣青椒|suānlà qīngjiāo|Hot-and-sour green pepper|dish|8|g|plate|0
+油焖青椒|yóumèn qīngjiāo|Oil-braised green pepper|dish|8|g|plate|0
+蒜蓉青椒|suànróng qīngjiāo|Garlic green pepper|dish|8|g|plate|0
+清炒洋葱|qīngchǎo yángcōng|Stir-fried onion|dish|8|pw|plate|0
+凉拌洋葱|liángbàn yángcōng|Cold-dressed onion|dish|8|pw|plate|0
+醋溜洋葱|cùliū yángcōng|Vinegar-tossed onion|dish|8|pw|plate|0
+酸辣洋葱|suānlà yángcōng|Hot-and-sour onion|dish|8|pw|plate|0
+油焖洋葱|yóumèn yángcōng|Oil-braised onion|dish|8|pw|plate|0
+蒜蓉洋葱|suànróng yángcōng|Garlic onion|dish|8|pw|plate|0
+清炒胡萝卜|qīngchǎo húluóbo|Stir-fried carrot|dish|8|o|plate|0
+油焖胡萝卜|yóumèn húluóbo|Oil-braised carrot|dish|8|o|plate|0
+醋溜胡萝卜|cùliū húluóbo|Vinegar-tossed carrot|dish|8|o|plate|0
+红烧胡萝卜|hóngshāo húluóbo|Braised carrot|dish|8|o|plate|0
+酸辣胡萝卜|suānlà húluóbo|Hot-and-sour carrot|dish|8|o|plate|0
+蒜蓉胡萝卜|suànróng húluóbo|Garlic carrot|dish|8|o|plate|0
+清炒豆角|qīngchǎo dòujiǎo|Stir-fried green beans|dish|8|g|plate|0
+油焖豆角|yóumèn dòujiǎo|Oil-braised green beans|dish|8|g|plate|0
+蒜蓉豆角|suànróng dòujiǎo|Garlic green beans|dish|8|g|plate|0
+凉拌豆角|liángbàn dòujiǎo|Cold-dressed green beans|dish|8|g|plate|0
+酸辣豆角|suānlà dòujiǎo|Hot-and-sour green beans|dish|8|g|plate|0
+干煸毛豆|gānbiān máodòu|Dry-fried edamame|dish|8|g|plate|0
+清炒毛豆|qīngchǎo máodòu|Stir-fried edamame|dish|8|g|plate|0
+油焖毛豆|yóumèn máodòu|Oil-braised edamame|dish|8|g|plate|0
+蒜蓉毛豆|suànróng máodòu|Garlic edamame|dish|8|g|plate|0
+凉拌毛豆|liángbàn máodòu|Cold-dressed edamame|dish|8|g|plate|0
+酸辣毛豆|suānlà máodòu|Hot-and-sour edamame|dish|8|g|plate|0
+清炒香菇|qīngchǎo xiānggū|Stir-fried shiitake mushroom|dish|8|nn|plate|0
+凉拌香菇|liángbàn xiānggū|Cold-dressed shiitake mushroom|dish|8|nn|plate|0
+油焖香菇|yóumèn xiānggū|Oil-braised shiitake mushroom|dish|8|nn|plate|0
+酸辣香菇|suānlà xiānggū|Hot-and-sour shiitake mushroom|dish|8|nn|plate|0
+蒜蓉香菇|suànróng xiānggū|Garlic shiitake mushroom|dish|8|nn|plate|0
+白灼香菇|báizhuó xiānggū|Blanched shiitake mushroom|dish|8|nn|plate|0
+清炒金针菇|qīngchǎo jīnzhēngū|Stir-fried enoki mushroom|dish|8|wy|plate|0
+凉拌金针菇|liángbàn jīnzhēngū|Cold-dressed enoki mushroom|dish|8|wy|plate|0
+油焖金针菇|yóumèn jīnzhēngū|Oil-braised enoki mushroom|dish|8|wy|plate|0
+酸辣金针菇|suānlà jīnzhēngū|Hot-and-sour enoki mushroom|dish|8|wy|plate|0
+蒜蓉金针菇|suànróng jīnzhēngū|Garlic enoki mushroom|dish|8|wy|plate|0
+白灼金针菇|báizhuó jīnzhēngū|Blanched enoki mushroom|dish|8|wy|plate|0
+清炒木耳|qīngchǎo mù’ěr|Stir-fried wood ear fungus|dish|8|kk|plate|0
+油焖木耳|yóumèn mù’ěr|Oil-braised wood ear fungus|dish|8|kk|plate|0
+酸辣木耳|suānlà mù’ěr|Hot-and-sour wood ear fungus|dish|8|kk|plate|0
+蒜蓉木耳|suànróng mù’ěr|Garlic wood ear fungus|dish|8|kk|plate|0
+白灼木耳|báizhuó mù’ěr|Blanched wood ear fungus|dish|8|kk|plate|0
+清炒银耳|qīngchǎo yín’ěr|Stir-fried white fungus|dish|8|wy|plate|0
+凉拌银耳|liángbàn yín’ěr|Cold-dressed white fungus|dish|8|wy|plate|0
+油焖银耳|yóumèn yín’ěr|Oil-braised white fungus|dish|8|wy|plate|0
+酸辣银耳|suānlà yín’ěr|Hot-and-sour white fungus|dish|8|wy|plate|0
+蒜蓉银耳|suànróng yín’ěr|Garlic white fungus|dish|8|wy|plate|0
+白灼银耳|báizhuó yín’ěr|Blanched white fungus|dish|8|wy|plate|0
+清炒海带|qīngchǎo hǎidài|Stir-fried kelp|dish|8|gk|plate|0
+凉拌海带|liángbàn hǎidài|Cold-dressed kelp|dish|8|gk|plate|0
+油焖海带|yóumèn hǎidài|Oil-braised kelp|dish|8|gk|plate|0
+酸辣海带|suānlà hǎidài|Hot-and-sour kelp|dish|8|gk|plate|0
+蒜蓉海带|suànróng hǎidài|Garlic kelp|dish|8|gk|plate|0
+白灼海带|báizhuó hǎidài|Blanched kelp|dish|8|gk|plate|0
+清炒紫菜|qīngchǎo zǐcài|Stir-fried laver seaweed|dish|8|kp|plate|0
+凉拌紫菜|liángbàn zǐcài|Cold-dressed laver seaweed|dish|8|kp|plate|0
+油焖紫菜|yóumèn zǐcài|Oil-braised laver seaweed|dish|8|kp|plate|0
+酸辣紫菜|suānlà zǐcài|Hot-and-sour laver seaweed|dish|8|kp|plate|0
+蒜蓉紫菜|suànróng zǐcài|Garlic laver seaweed|dish|8|kp|plate|0
+白灼紫菜|báizhuó zǐcài|Blanched laver seaweed|dish|8|kp|plate|0
+清炒豆芽|qīngchǎo dòuyá|Stir-fried bean sprouts|dish|8|wy|plate|0
+凉拌豆芽|liángbàn dòuyá|Cold-dressed bean sprouts|dish|8|wy|plate|0
+醋溜豆芽|cùliū dòuyá|Vinegar-tossed bean sprouts|dish|8|wy|plate|0
+酸辣豆芽|suānlà dòuyá|Hot-and-sour bean sprouts|dish|8|wy|plate|0
+油焖豆芽|yóumèn dòuyá|Oil-braised bean sprouts|dish|8|wy|plate|0
+蒜蓉豆芽|suànróng dòuyá|Garlic bean sprouts|dish|8|wy|plate|0
+清炒豆苗|qīngchǎo dòumiáo|Stir-fried pea shoots|dish|8|g|plate|0
+蒜蓉豆苗|suànróng dòumiáo|Garlic pea shoots|dish|8|g|plate|0
+油焖豆苗|yóumèn dòumiáo|Oil-braised pea shoots|dish|8|g|plate|0
+白灼豆苗|báizhuó dòumiáo|Blanched pea shoots|dish|8|g|plate|0
+凉拌豆苗|liángbàn dòumiáo|Cold-dressed pea shoots|dish|8|g|plate|0
+醋溜豆苗|cùliū dòumiáo|Vinegar-tossed pea shoots|dish|8|g|plate|0
+清炒荠菜|qīngchǎo jìcài|Stir-fried shepherd’s purse|dish|8|g|plate|0
+蒜蓉荠菜|suànróng jìcài|Garlic shepherd’s purse|dish|8|g|plate|0
+油焖荠菜|yóumèn jìcài|Oil-braised shepherd’s purse|dish|8|g|plate|0
+白灼荠菜|báizhuó jìcài|Blanched shepherd’s purse|dish|8|g|plate|0
+凉拌荠菜|liángbàn jìcài|Cold-dressed shepherd’s purse|dish|8|g|plate|0
+醋溜荠菜|cùliū jìcài|Vinegar-tossed shepherd’s purse|dish|8|g|plate|0
+清炒空心菜|qīngchǎo kōngxīncài|Stir-fried water spinach|dish|8|g|plate|0
+蒜蓉空心菜|suànróng kōngxīncài|Garlic water spinach|dish|8|g|plate|0
+油焖空心菜|yóumèn kōngxīncài|Oil-braised water spinach|dish|8|g|plate|0
+白灼空心菜|báizhuó kōngxīncài|Blanched water spinach|dish|8|g|plate|0
+凉拌空心菜|liángbàn kōngxīncài|Cold-dressed water spinach|dish|8|g|plate|0
+醋溜空心菜|cùliū kōngxīncài|Vinegar-tossed water spinach|dish|8|g|plate|0
+清炒茼蒿|qīngchǎo tónghāo|Stir-fried crown daisy|dish|8|g|plate|0
+蒜蓉茼蒿|suànróng tónghāo|Garlic crown daisy|dish|8|g|plate|0
+油焖茼蒿|yóumèn tónghāo|Oil-braised crown daisy|dish|8|g|plate|0
+白灼茼蒿|báizhuó tónghāo|Blanched crown daisy|dish|8|g|plate|0
+凉拌茼蒿|liángbàn tónghāo|Cold-dressed crown daisy|dish|8|g|plate|0
+醋溜茼蒿|cùliū tónghāo|Vinegar-tossed crown daisy|dish|8|g|plate|0
+清炒芥菜|qīngchǎo jiècài|Stir-fried mustard greens|dish|8|g|plate|0
+蒜蓉芥菜|suànróng jiècài|Garlic mustard greens|dish|8|g|plate|0
+油焖芥菜|yóumèn jiècài|Oil-braised mustard greens|dish|8|g|plate|0
+白灼芥菜|báizhuó jiècài|Blanched mustard greens|dish|8|g|plate|0
+凉拌芥菜|liángbàn jiècài|Cold-dressed mustard greens|dish|8|g|plate|0
+醋溜芥菜|cùliū jiècài|Vinegar-tossed mustard greens|dish|8|g|plate|0
+清炒莴笋|qīngchǎo wōsǔn|Stir-fried celtuce|dish|8|g|plate|0
+凉拌莴笋|liángbàn wōsǔn|Cold-dressed celtuce|dish|8|g|plate|0
+醋溜莴笋|cùliū wōsǔn|Vinegar-tossed celtuce|dish|8|g|plate|0
+酸辣莴笋|suānlà wōsǔn|Hot-and-sour celtuce|dish|8|g|plate|0
+油焖莴笋|yóumèn wōsǔn|Oil-braised celtuce|dish|8|g|plate|0
+蒜蓉莴笋|suànróng wōsǔn|Garlic celtuce|dish|8|g|plate|0
+清炒茭白|qīngchǎo jiāobái|Stir-fried water bamboo|dish|8|wg|plate|0
+油焖茭白|yóumèn jiāobái|Oil-braised water bamboo|dish|8|wg|plate|0
+醋溜茭白|cùliū jiāobái|Vinegar-tossed water bamboo|dish|8|wg|plate|0
+红烧茭白|hóngshāo jiāobái|Braised water bamboo|dish|8|wg|plate|0
+酸辣茭白|suānlà jiāobái|Hot-and-sour water bamboo|dish|8|wg|plate|0
+蒜蓉茭白|suànróng jiāobái|Garlic water bamboo|dish|8|wg|plate|0
+清炒芦笋|qīngchǎo lúsǔn|Stir-fried asparagus|dish|8|g|plate|0
+凉拌芦笋|liángbàn lúsǔn|Cold-dressed asparagus|dish|8|g|plate|0
+醋溜芦笋|cùliū lúsǔn|Vinegar-tossed asparagus|dish|8|g|plate|0
+酸辣芦笋|suānlà lúsǔn|Hot-and-sour asparagus|dish|8|g|plate|0
+油焖芦笋|yóumèn lúsǔn|Oil-braised asparagus|dish|8|g|plate|0
+蒜蓉芦笋|suànróng lúsǔn|Garlic asparagus|dish|8|g|plate|0
+干煸四季豆|gānbiān sìjìdòu|Dry-fried runner beans|dish|8|g|plate|0
+清炒四季豆|qīngchǎo sìjìdòu|Stir-fried runner beans|dish|8|g|plate|0
+油焖四季豆|yóumèn sìjìdòu|Oil-braised runner beans|dish|8|g|plate|0
+蒜蓉四季豆|suànróng sìjìdòu|Garlic runner beans|dish|8|g|plate|0
+凉拌四季豆|liángbàn sìjìdòu|Cold-dressed runner beans|dish|8|g|plate|0
+酸辣四季豆|suānlà sìjìdòu|Hot-and-sour runner beans|dish|8|g|plate|0
+清炒土豆|qīngchǎo tǔdòu|Stir-fried potato|dish|8|yn|plate|0
+油焖土豆|yóumèn tǔdòu|Oil-braised potato|dish|8|yn|plate|0
+醋溜土豆|cùliū tǔdòu|Vinegar-tossed potato|dish|8|yn|plate|0
+红烧土豆|hóngshāo tǔdòu|Braised potato|dish|8|yn|plate|0
+酸辣土豆|suānlà tǔdòu|Hot-and-sour potato|dish|8|yn|plate|0
+蒜蓉土豆|suànróng tǔdòu|Garlic potato|dish|8|yn|plate|0
+清炒红薯|qīngchǎo hóngshǔ|Stir-fried sweet potato|dish|8|on|plate|0
+油焖红薯|yóumèn hóngshǔ|Oil-braised sweet potato|dish|8|on|plate|0
+醋溜红薯|cùliū hóngshǔ|Vinegar-tossed sweet potato|dish|8|on|plate|0
+红烧红薯|hóngshāo hóngshǔ|Braised sweet potato|dish|8|on|plate|0
+酸辣红薯|suānlà hóngshǔ|Hot-and-sour sweet potato|dish|8|on|plate|0
+蒜蓉红薯|suànróng hóngshǔ|Garlic sweet potato|dish|8|on|plate|0
+清炒紫薯|qīngchǎo zǐshǔ|Stir-fried purple sweet potato|dish|8|pp|plate|0
+油焖紫薯|yóumèn zǐshǔ|Oil-braised purple sweet potato|dish|8|pp|plate|0
+醋溜紫薯|cùliū zǐshǔ|Vinegar-tossed purple sweet potato|dish|8|pp|plate|0
+红烧紫薯|hóngshāo zǐshǔ|Braised purple sweet potato|dish|8|pp|plate|0
+酸辣紫薯|suānlà zǐshǔ|Hot-and-sour purple sweet potato|dish|8|pp|plate|0
+蒜蓉紫薯|suànróng zǐshǔ|Garlic purple sweet potato|dish|8|pp|plate|0
+清炒南瓜|qīngchǎo nánguā|Stir-fried pumpkin|dish|8|o|plate|0
+油焖南瓜|yóumèn nánguā|Oil-braised pumpkin|dish|8|o|plate|0
+红烧南瓜|hóngshāo nánguā|Braised pumpkin|dish|8|o|plate|0
+白灼南瓜|báizhuó nánguā|Blanched pumpkin|dish|8|o|plate|0
+酸辣南瓜|suānlà nánguā|Hot-and-sour pumpkin|dish|8|o|plate|0
+醋溜南瓜|cùliū nánguā|Vinegar-tossed pumpkin|dish|8|o|plate|0
+清炒黄瓜|qīngchǎo huángguā|Stir-fried cucumber|dish|8|g|plate|0
+凉拌黄瓜|liángbàn huángguā|Cold-dressed cucumber|dish|8|g|plate|0
+醋溜黄瓜|cùliū huángguā|Vinegar-tossed cucumber|dish|8|g|plate|0
+酸辣黄瓜|suānlà huángguā|Hot-and-sour cucumber|dish|8|g|plate|0
+油焖黄瓜|yóumèn huángguā|Oil-braised cucumber|dish|8|g|plate|0
+蒜蓉黄瓜|suànróng huángguā|Garlic cucumber|dish|8|g|plate|0
+清炒番茄|qīngchǎo fānqié|Stir-fried tomato|dish|8|r|plate|0
+油焖番茄|yóumèn fānqié|Oil-braised tomato|dish|8|r|plate|0
+红烧番茄|hóngshāo fānqié|Braised tomato|dish|8|r|plate|0
+白灼番茄|báizhuó fānqié|Blanched tomato|dish|8|r|plate|0
+酸辣番茄|suānlà fānqié|Hot-and-sour tomato|dish|8|r|plate|0
+醋溜番茄|cùliū fānqié|Vinegar-tossed tomato|dish|8|r|plate|0
+清炒茄子|qīngchǎo qiézi|Stir-fried eggplant|dish|8|p|plate|0
+油焖茄子|yóumèn qiézi|Oil-braised eggplant|dish|8|p|plate|0
+红烧茄子|hóngshāo qiézi|Braised eggplant|dish|8|p|plate|0
+白灼茄子|báizhuó qiézi|Blanched eggplant|dish|8|p|plate|0
+酸辣茄子|suānlà qiézi|Hot-and-sour eggplant|dish|8|p|plate|0
+醋溜茄子|cùliū qiézi|Vinegar-tossed eggplant|dish|8|p|plate|0
+清炒辣椒|qīngchǎo làjiāo|Stir-fried chilli|dish|8|r|plate|0
+凉拌辣椒|liángbàn làjiāo|Cold-dressed chilli|dish|8|r|plate|0
+醋溜辣椒|cùliū làjiāo|Vinegar-tossed chilli|dish|8|r|plate|0
+酸辣辣椒|suānlà làjiāo|Hot-and-sour chilli|dish|8|r|plate|0
+油焖辣椒|yóumèn làjiāo|Oil-braised chilli|dish|8|r|plate|0
+蒜蓉辣椒|suànróng làjiāo|Garlic chilli|dish|8|r|plate|0
+清炒大蒜|qīngchǎo dàsuàn|Stir-fried garlic|dish|8|w|plate|0
+凉拌大蒜|liángbàn dàsuàn|Cold-dressed garlic|dish|8|w|plate|0
+醋溜大蒜|cùliū dàsuàn|Vinegar-tossed garlic|dish|8|w|plate|0
+酸辣大蒜|suānlà dàsuàn|Hot-and-sour garlic|dish|8|w|plate|0
+油焖大蒜|yóumèn dàsuàn|Oil-braised garlic|dish|8|w|plate|0
+蒜蓉大蒜|suànróng dàsuàn|Garlic garlic|dish|8|w|plate|0
+清炒生姜|qīngchǎo shēngjiāng|Stir-fried ginger|dish|8|yn|plate|0
+凉拌生姜|liángbàn shēngjiāng|Cold-dressed ginger|dish|8|yn|plate|0
+醋溜生姜|cùliū shēngjiāng|Vinegar-tossed ginger|dish|8|yn|plate|0
+酸辣生姜|suānlà shēngjiāng|Hot-and-sour ginger|dish|8|yn|plate|0
+油焖生姜|yóumèn shēngjiāng|Oil-braised ginger|dish|8|yn|plate|0
+蒜蓉生姜|suànróng shēngjiāng|Garlic ginger|dish|8|yn|plate|0
+清炒大葱|qīngchǎo dàcōng|Stir-fried scallion|dish|8|gw|plate|0
+凉拌大葱|liángbàn dàcōng|Cold-dressed scallion|dish|8|gw|plate|0
+醋溜大葱|cùliū dàcōng|Vinegar-tossed scallion|dish|8|gw|plate|0
+酸辣大葱|suānlà dàcōng|Hot-and-sour scallion|dish|8|gw|plate|0
+油焖大葱|yóumèn dàcōng|Oil-braised scallion|dish|8|gw|plate|0
+蒜蓉大葱|suànróng dàcōng|Garlic scallion|dish|8|gw|plate|0
+清炒萝卜|qīngchǎo luóbo|Stir-fried radish|dish|8|w|plate|0
+油焖萝卜|yóumèn luóbo|Oil-braised radish|dish|8|w|plate|0
+醋溜萝卜|cùliū luóbo|Vinegar-tossed radish|dish|8|w|plate|0
+红烧萝卜|hóngshāo luóbo|Braised radish|dish|8|w|plate|0
+酸辣萝卜|suānlà luóbo|Hot-and-sour radish|dish|8|w|plate|0
+蒜蓉萝卜|suànróng luóbo|Garlic radish|dish|8|w|plate|0
+清炒白菜|qīngchǎo báicài|Stir-fried Napa cabbage|dish|8|gw|plate|0
+蒜蓉白菜|suànróng báicài|Garlic Napa cabbage|dish|8|gw|plate|0
+油焖白菜|yóumèn báicài|Oil-braised Napa cabbage|dish|8|gw|plate|0
+白灼白菜|báizhuó báicài|Blanched Napa cabbage|dish|8|gw|plate|0
+凉拌白菜|liángbàn báicài|Cold-dressed Napa cabbage|dish|8|gw|plate|0
+醋溜白菜|cùliū báicài|Vinegar-tossed Napa cabbage|dish|8|gw|plate|0
+清炒竹笋|qīngchǎo zhúsǔn|Stir-fried bamboo shoot|dish|8|yn|plate|0
+油焖竹笋|yóumèn zhúsǔn|Oil-braised bamboo shoot|dish|8|yn|plate|0
+醋溜竹笋|cùliū zhúsǔn|Vinegar-tossed bamboo shoot|dish|8|yn|plate|0
+红烧竹笋|hóngshāo zhúsǔn|Braised bamboo shoot|dish|8|yn|plate|0
+酸辣竹笋|suānlà zhúsǔn|Hot-and-sour bamboo shoot|dish|8|yn|plate|0
+蒜蓉竹笋|suànróng zhúsǔn|Garlic bamboo shoot|dish|8|yn|plate|0
+清炒芋头|qīngchǎo yùtou|Stir-fried taro|dish|8|pw|plate|0
+油焖芋头|yóumèn yùtou|Oil-braised taro|dish|8|pw|plate|0
+醋溜芋头|cùliū yùtou|Vinegar-tossed taro|dish|8|pw|plate|0
+红烧芋头|hóngshāo yùtou|Braised taro|dish|8|pw|plate|0
+酸辣芋头|suānlà yùtou|Hot-and-sour taro|dish|8|pw|plate|0
+蒜蓉芋头|suànróng yùtou|Garlic taro|dish|8|pw|plate|0
+清炒西葫芦|qīngchǎo xīhúlu|Stir-fried zucchini|dish|8|gy|plate|0
+油焖西葫芦|yóumèn xīhúlu|Oil-braised zucchini|dish|8|gy|plate|0
+红烧西葫芦|hóngshāo xīhúlu|Braised zucchini|dish|8|gy|plate|0
+白灼西葫芦|báizhuó xīhúlu|Blanched zucchini|dish|8|gy|plate|0
+酸辣西葫芦|suānlà xīhúlu|Hot-and-sour zucchini|dish|8|gy|plate|0
+醋溜西葫芦|cùliū xīhúlu|Vinegar-tossed zucchini|dish|8|gy|plate|0
+干煸荷兰豆|gānbiān hélándòu|Dry-fried snow peas|dish|8|g|plate|0
+清炒荷兰豆|qīngchǎo hélándòu|Stir-fried snow peas|dish|8|g|plate|0
+油焖荷兰豆|yóumèn hélándòu|Oil-braised snow peas|dish|8|g|plate|0
+蒜蓉荷兰豆|suànróng hélándòu|Garlic snow peas|dish|8|g|plate|0
+凉拌荷兰豆|liángbàn hélándòu|Cold-dressed snow peas|dish|8|g|plate|0
+酸辣荷兰豆|suānlà hélándòu|Hot-and-sour snow peas|dish|8|g|plate|0
+干煸蚕豆|gānbiān cándòu|Dry-fried broad beans|dish|8|g|plate|0
+清炒蚕豆|qīngchǎo cándòu|Stir-fried broad beans|dish|8|g|plate|0
+油焖蚕豆|yóumèn cándòu|Oil-braised broad beans|dish|8|g|plate|0
+蒜蓉蚕豆|suànróng cándòu|Garlic broad beans|dish|8|g|plate|0
+凉拌蚕豆|liángbàn cándòu|Cold-dressed broad beans|dish|8|g|plate|0
+酸辣蚕豆|suānlà cándòu|Hot-and-sour broad beans|dish|8|g|plate|0
+干煸豌豆|gānbiān wāndòu|Dry-fried peas|dish|8|g|plate|0
+清炒豌豆|qīngchǎo wāndòu|Stir-fried peas|dish|8|g|plate|0
+油焖豌豆|yóumèn wāndòu|Oil-braised peas|dish|8|g|plate|0
+蒜蓉豌豆|suànróng wāndòu|Garlic peas|dish|8|g|plate|0
+凉拌豌豆|liángbàn wāndòu|Cold-dressed peas|dish|8|g|plate|0
+酸辣豌豆|suānlà wāndòu|Hot-and-sour peas|dish|8|g|plate|0
+红烧猪肉|hóngshāo zhūròu|Braised pork|dish|9|mn|plate|0
+糖醋猪肉|tángcù zhūròu|Sweet-and-sour pork|dish|9|mn|plate|0
+葱爆猪肉|cōngbào zhūròu|Scallion-fried pork|dish|9|mn|plate|0
+酱爆猪肉|jiàngbào zhūròu|Sauce-fried pork|dish|9|mn|plate|0
+铁板猪肉|tiěbǎn zhūròu|Sizzling pork|dish|9|mn|plate|0
+麻辣猪肉|málà zhūròu|Spicy pork|dish|9|mn|plate|0
+香酥猪肉|xiāngsū zhūròu|Crispy pork|dish|9|mn|plate|0
+清炖猪肉|qīngdùn zhūròu|Stewed pork|dish|9|mn|plate|0
+椒盐猪肉|jiāoyán zhūròu|Salt-and-pepper pork|dish|9|mn|plate|0
+红烧牛肉|hóngshāo niúròu|Braised beef|dish|9|rn|plate|0
+酱爆牛肉|jiàngbào niúròu|Sauce-fried beef|dish|9|rn|plate|0
+葱爆牛肉|cōngbào niúròu|Scallion-fried beef|dish|9|rn|plate|0
+铁板牛肉|tiěbǎn niúròu|Sizzling beef|dish|9|rn|plate|0
+麻辣牛肉|málà niúròu|Spicy beef|dish|9|rn|plate|0
+清炖牛肉|qīngdùn niúròu|Stewed beef|dish|9|rn|plate|0
+水煮牛肉|shuǐzhǔ niúròu|Boiled beef|dish|9|rn|plate|0
+椒盐牛肉|jiāoyán niúròu|Salt-and-pepper beef|dish|9|rn|plate|0
+铁板羊肉|tiěbǎn yángròu|Sizzling lamb|dish|9|rm|plate|0
+麻辣羊肉|málà yángròu|Spicy lamb|dish|9|rm|plate|0
+椒盐羊肉|jiāoyán yángròu|Salt-and-pepper lamb|dish|9|rm|plate|0
+清炖羊肉|qīngdùn yángròu|Stewed lamb|dish|9|rm|plate|0
+酱爆羊肉|jiàngbào yángròu|Sauce-fried lamb|dish|9|rm|plate|0
+红烧鸡肉|hóngshāo jīròu|Braised chicken|dish|9|yw|plate|0
+香酥鸡肉|xiāngsū jīròu|Crispy chicken|dish|9|yw|plate|0
+麻辣鸡肉|málà jīròu|Spicy chicken|dish|9|yw|plate|0
+香煎鸡肉|xiāngjiān jīròu|Pan-fried chicken|dish|9|yw|plate|0
+葱爆鸡肉|cōngbào jīròu|Scallion-fried chicken|dish|9|yw|plate|0
+酱爆鸡肉|jiàngbào jīròu|Sauce-fried chicken|dish|9|yw|plate|0
+椒盐鸡肉|jiāoyán jīròu|Salt-and-pepper chicken|dish|9|yw|plate|0
+红烧鸭肉|hóngshāo yāròu|Braised duck|dish|9|nw|plate|0
+清炖鸭肉|qīngdùn yāròu|Stewed duck|dish|9|nw|plate|0
+香酥鸭肉|xiāngsū yāròu|Crispy duck|dish|9|nw|plate|0
+麻辣鸭肉|málà yāròu|Spicy duck|dish|9|nw|plate|0
+酱爆鸭肉|jiàngbào yāròu|Sauce-fried duck|dish|9|nw|plate|0
+红烧排骨|hóngshāo páigǔ|Braised ribs|dish|9|nw|plate|0
+香酥排骨|xiāngsū páigǔ|Crispy ribs|dish|9|nw|plate|0
+麻辣排骨|málà páigǔ|Spicy ribs|dish|9|nw|plate|0
+清炖排骨|qīngdùn páigǔ|Stewed ribs|dish|9|nw|plate|0
+椒盐排骨|jiāoyán páigǔ|Salt-and-pepper ribs|dish|9|nw|plate|0
+红烧猪蹄|hóngshāo zhūtí|Braised pig trotters|dish|9|nw|plate|0
+清炖猪蹄|qīngdùn zhūtí|Stewed pig trotters|dish|9|nw|plate|0
+麻辣猪蹄|málà zhūtí|Spicy pig trotters|dish|9|nw|plate|0
+红烧鸡翅|hóngshāo jīchì|Braised chicken wings|dish|9|on|plate|0
+香酥鸡翅|xiāngsū jīchì|Crispy chicken wings|dish|9|on|plate|0
+麻辣鸡翅|málà jīchì|Spicy chicken wings|dish|9|on|plate|0
+椒盐鸡翅|jiāoyán jīchì|Salt-and-pepper chicken wings|dish|9|on|plate|0
+香煎鸡翅|xiāngjiān jīchì|Pan-fried chicken wings|dish|9|on|plate|0
+红烧鸡腿|hóngshāo jītuǐ|Braised chicken legs|dish|9|on|plate|0
+香酥鸡腿|xiāngsū jītuǐ|Crispy chicken legs|dish|9|on|plate|0
+麻辣鸡腿|málà jītuǐ|Spicy chicken legs|dish|9|on|plate|0
+椒盐鸡腿|jiāoyán jītuǐ|Salt-and-pepper chicken legs|dish|9|on|plate|0
+香煎鸡腿|xiāngjiān jītuǐ|Pan-fried chicken legs|dish|9|on|plate|0
+铁板牛排|tiěbǎn niúpái|Sizzling steak|dish|9|rn|plate|0
+香煎牛排|xiāngjiān niúpái|Pan-fried steak|dish|9|rn|plate|0
+酱爆牛排|jiàngbào niúpái|Sauce-fried steak|dish|9|rn|plate|0
+清蒸鱼|qīngzhēng yú|Steamed fish|dish|9|bw|fish|0
+红烧鱼|hóngshāo yú|Braised fish|dish|9|bw|plate|0
+糖醋鱼|tángcù yú|Sweet-and-sour fish|dish|9|bw|plate|0
+香煎鱼|xiāngjiān yú|Pan-fried fish|dish|9|bw|fish|0
+椒盐鱼|jiāoyán yú|Salt-and-pepper fish|dish|9|bw|plate|0
+麻辣鱼|málà yú|Spicy fish|dish|9|bw|plate|0
+清蒸虾|qīngzhēng xiā|Steamed shrimp|dish|9|om|fish|0
+蒜香虾|suànxiāng xiā|Garlicky shrimp|dish|9|om|plate|0
+椒盐虾|jiāoyán xiā|Salt-and-pepper shrimp|dish|9|om|plate|0
+香煎虾|xiāngjiān xiā|Pan-fried shrimp|dish|9|om|fish|0
+香酥虾|xiāngsū xiā|Crispy shrimp|dish|9|om|plate|0
+麻辣虾|málà xiā|Spicy shrimp|dish|9|om|plate|0
+椒盐螃蟹|jiāoyán pángxiè|Salt-and-pepper crab|dish|9|ro|plate|0
+蒜香螃蟹|suànxiāng pángxiè|Garlicky crab|dish|9|ro|plate|0
+麻辣螃蟹|málà pángxiè|Spicy crab|dish|9|ro|plate|0
+白灼鱿鱼|báizhuó yóuyú|Blanched squid|dish|9|wp|plate|0
+蒜香鱿鱼|suànxiāng yóuyú|Garlicky squid|dish|9|wp|plate|0
+椒盐鱿鱼|jiāoyán yóuyú|Salt-and-pepper squid|dish|9|wp|plate|0
+香煎鱿鱼|xiāngjiān yóuyú|Pan-fried squid|dish|9|wp|fish|0
+麻辣鱿鱼|málà yóuyú|Spicy squid|dish|9|wp|plate|0
+清蒸扇贝|qīngzhēng shànbèi|Steamed scallops|dish|9|wc|fish|0
+白灼扇贝|báizhuó shànbèi|Blanched scallops|dish|9|wc|plate|0
+蒜香扇贝|suànxiāng shànbèi|Garlicky scallops|dish|9|wc|plate|0
+白灼蛤蜊|báizhuó gélí|Blanched clams|dish|9|nw|plate|0
+蒜香蛤蜊|suànxiāng gélí|Garlicky clams|dish|9|nw|plate|0
+麻辣蛤蜊|málà gélí|Spicy clams|dish|9|nw|plate|0
+红烧带鱼|hóngshāo dàiyú|Braised hairtail fish|dish|9|bw|plate|0
+香煎带鱼|xiāngjiān dàiyú|Pan-fried hairtail fish|dish|9|bw|fish|0
+香酥带鱼|xiāngsū dàiyú|Crispy hairtail fish|dish|9|bw|plate|0
+糖醋带鱼|tángcù dàiyú|Sweet-and-sour hairtail fish|dish|9|bw|plate|0
+清蒸黄鱼|qīngzhēng huángyú|Steamed yellow croaker|dish|9|yw|fish|0
+红烧黄鱼|hóngshāo huángyú|Braised yellow croaker|dish|9|yw|plate|0
+香煎黄鱼|xiāngjiān huángyú|Pan-fried yellow croaker|dish|9|yw|fish|0
+清蒸草鱼|qīngzhēng cǎoyú|Steamed grass carp|dish|9|gw|fish|0
+水煮草鱼|shuǐzhǔ cǎoyú|Boiled grass carp|dish|9|gw|plate|0
+红烧草鱼|hóngshāo cǎoyú|Braised grass carp|dish|9|gw|plate|0
+清蒸鳜鱼|qīngzhēng guìyú|Steamed mandarin fish|dish|9|yw|fish|0
+糖醋鳜鱼|tángcù guìyú|Sweet-and-sour mandarin fish|dish|9|yw|plate|0
+清蒸鲤鱼|qīngzhēng lǐyú|Steamed carp|dish|9|ow|fish|0
+红烧鲫鱼|hóngshāo jìyú|Braised crucian carp|dish|9|bw|plate|0
+清炖鲫鱼|qīngdùn jìyú|Stewed crucian carp|dish|9|bw|plate|0
+瘦肉粥|shòuròu zhōu|Pork congee|meal|6|mn|bowl|0
+鱼片粥|yúpiàn zhōu|Fish slice congee|meal|6|bw|bowl|0
+青菜粥|qīngcài zhōu|Green vegetable congee|meal|6|gw|bowl|0
+南瓜粥|nánguā zhōu|Pumpkin congee|meal|6|o|bowl|0
+红豆粥|hóngdòu zhōu|Red bean congee|meal|6|rn|bowl|0
+绿豆粥|lǜdòu zhōu|Mung bean congee|meal|6|gy|bowl|0
+海鲜粥|hǎixiān zhōu|Seafood congee|meal|6|or|bowl|0
+鸡肉粥|jīròu zhōu|Chicken congee|meal|6|yw|bowl|0
+玉米粥|yùmǐ zhōu|Corn congee|meal|6|yy|bowl|0
+山药粥|shānyào zhōu|Yam congee|meal|6|ww|bowl|0
+红枣粥|hóngzǎo zhōu|Red date congee|meal|6|rn|bowl|0
+莲子粥|liánzǐ zhōu|Lotus seed congee|meal|6|wy|bowl|0
+薏米粥|yìmǐ zhōu|Job’s tears congee|meal|6|wc|bowl|0
+黑米粥|hēimǐ zhōu|Black rice congee|meal|6|kp|bowl|0
+燕麦粥|yànmài zhōu|Oat congee|meal|6|cy|bowl|0
+皮蛋粥|pídàn zhōu|Century egg congee|meal|6|kn|bowl|0
+排骨面|páigǔmiàn|Rib noodles|meal|7|nw|bowl|0
+鸡丝面|jīsīmiàn|Shredded chicken noodles|meal|7|yw|bowl|0
+肉丝面|ròusīmiàn|Shredded pork noodles|meal|7|mn|bowl|0
+海鲜面|hǎixiānmiàn|Seafood noodles|meal|7|or|bowl|0
+青菜面|qīngcàimiàn|Vegetable noodles|meal|7|gw|bowl|0
+蘑菇面|mógumiàn|Mushroom noodles|meal|7|nn|bowl|0
+鱼丸面|yúwánmiàn|Fish ball noodles|meal|7|ww|bowl|0
+牛腩面|niúnǎnmiàn|Brisket noodles|meal|7|rn|bowl|0
+三鲜面|sānxiānmiàn|Three-treasure noodles|meal|7|ow|bowl|0
+酸菜面|suāncàimiàn|Pickled cabbage noodles|meal|7|yy|bowl|0
+雪菜面|xuěcàimiàn|Potherb mustard noodles|meal|7|gw|bowl|0
+肥肠面|féichángmiàn|Intestine noodles|meal|7|nn|bowl|0
+羊肉面|yángròumiàn|Lamb noodles|meal|7|nw|bowl|0
+虾仁面|xiārénmiàn|Shrimp noodles|meal|7|om|bowl|0
+火腿炒饭|huǒtuǐ chǎofàn|Ham fried rice|meal|7|rm|bowl|0
+虾仁炒饭|xiārén chǎofàn|Shrimp fried rice|meal|7|om|bowl|0
+青菜炒饭|qīngcài chǎofàn|Vegetable fried rice|meal|7|gw|bowl|0
+牛肉炒饭|niúròu chǎofàn|Beef fried rice|meal|7|rn|bowl|0
+菠萝炒饭|bōluó chǎofàn|Pineapple fried rice|meal|7|yy|bowl|0
+咸鱼炒饭|xiányú chǎofàn|Salted fish fried rice|meal|7|bw|bowl|0
+腊肠炒饭|làcháng chǎofàn|Sausage fried rice|meal|7|rn|bowl|0
+玉米炒饭|yùmǐ chǎofàn|Corn fried rice|meal|7|yy|bowl|0
+香菇炒饭|xiānggū chǎofàn|Mushroom fried rice|meal|7|nn|bowl|0
+三鲜炒饭|sānxiān chǎofàn|Three-treasure fried rice|meal|7|ow|bowl|0
+猪肉白菜饺子|zhūròu báicài jiǎozi|Pork and cabbage dumplings|snack|7|ww|bun|0
+猪肉白菜馄饨|zhūròu báicài húntun|Pork and cabbage wontons|snack|7|ww|bowl|0
+猪肉白菜包子|zhūròu báicài bāozi|Pork and cabbage buns|snack|7|ww|bun|0
+韭菜鸡蛋饺子|jiǔcài jīdàn jiǎozi|Chive and egg dumplings|snack|7|gy|bun|0
+韭菜鸡蛋馄饨|jiǔcài jīdàn húntun|Chive and egg wontons|snack|7|gy|bowl|0
+韭菜鸡蛋包子|jiǔcài jīdàn bāozi|Chive and egg buns|snack|7|gy|bun|0
+三鲜饺子|sānxiān jiǎozi|Three-treasure dumplings|snack|7|ow|bun|0
+三鲜馄饨|sānxiān húntun|Three-treasure wontons|snack|7|ow|bowl|0
+三鲜包子|sānxiān bāozi|Three-treasure buns|snack|7|ow|bun|0
+牛肉饺子|niúròu jiǎozi|Beef dumplings|snack|7|rn|bun|0
+牛肉馄饨|niúròu húntun|Beef wontons|snack|7|rn|bowl|0
+牛肉包子|niúròu bāozi|Beef buns|snack|7|rn|bun|0
+羊肉饺子|yángròu jiǎozi|Lamb dumplings|snack|7|nw|bun|0
+羊肉馄饨|yángròu húntun|Lamb wontons|snack|7|nw|bowl|0
+羊肉包子|yángròu bāozi|Lamb buns|snack|7|nw|bun|0
+虾仁饺子|xiārén jiǎozi|Shrimp dumplings|snack|7|wm|bun|0
+虾仁馄饨|xiārén húntun|Shrimp wontons|snack|7|wm|bowl|0
+虾仁包子|xiārén bāozi|Shrimp buns|snack|7|wm|bun|0
+芹菜猪肉饺子|qíncài zhūròu jiǎozi|Celery and pork dumplings|snack|7|gw|bun|0
+芹菜猪肉馄饨|qíncài zhūròu húntun|Celery and pork wontons|snack|7|gw|bowl|0
+芹菜猪肉包子|qíncài zhūròu bāozi|Celery and pork buns|snack|7|gw|bun|0
+玉米饺子|yùmǐ jiǎozi|Corn dumplings|snack|7|yy|bun|0
+玉米馄饨|yùmǐ húntun|Corn wontons|snack|7|yy|bowl|0
+玉米包子|yùmǐ bāozi|Corn buns|snack|7|yy|bun|0
+香菇饺子|xiānggū jiǎozi|Mushroom dumplings|snack|7|nn|bun|0
+香菇馄饨|xiānggū húntun|Mushroom wontons|snack|7|nn|bowl|0
+香菇包子|xiānggū bāozi|Mushroom buns|snack|7|nn|bun|0
+茴香饺子|huíxiāng jiǎozi|Fennel dumplings|snack|7|gw|bun|0
+茴香馄饨|huíxiāng húntun|Fennel wontons|snack|7|gw|bowl|0
+茴香包子|huíxiāng bāozi|Fennel buns|snack|7|gw|bun|0
+萝卜饺子|luóbo jiǎozi|Radish dumplings|snack|7|ww|bun|0
+萝卜馄饨|luóbo húntun|Radish wontons|snack|7|ww|bowl|0
+萝卜包子|luóbo bāozi|Radish buns|snack|7|ww|bun|0
+豆腐饺子|dòufu jiǎozi|Tofu dumplings|snack|7|ww|bun|0
+豆腐馄饨|dòufu húntun|Tofu wontons|snack|7|ww|bowl|0
+豆腐包子|dòufu bāozi|Tofu buns|snack|7|ww|bun|0
+南瓜饺子|nánguā jiǎozi|Pumpkin dumplings|snack|7|o|bun|0
+南瓜馄饨|nánguā húntun|Pumpkin wontons|snack|7|o|bowl|0
+南瓜包子|nánguā bāozi|Pumpkin buns|snack|7|o|bun|0
+荠菜饺子|jìcài jiǎozi|Shepherd’s purse dumplings|snack|7|gw|bun|0
+荠菜馄饨|jìcài húntun|Shepherd’s purse wontons|snack|7|gw|bowl|0
+荠菜包子|jìcài bāozi|Shepherd’s purse buns|snack|7|gw|bun|0
+鸡肉饺子|jīròu jiǎozi|Chicken dumplings|snack|7|yw|bun|0
+鸡肉馄饨|jīròu húntun|Chicken wontons|snack|7|yw|bowl|0
+鸡肉包子|jīròu bāozi|Chicken buns|snack|7|yw|bun|0
+蟹黄饺子|xièhuáng jiǎozi|Crab roe dumplings|snack|7|oy|bun|0
+蟹黄馄饨|xièhuáng húntun|Crab roe wontons|snack|7|oy|bowl|0
+蟹黄包子|xièhuáng bāozi|Crab roe buns|snack|7|oy|bun|0
+白菜汤|báicài tāng|Napa cabbage soup|soup|7|gw|bowl|0
+南瓜汤|nánguā tāng|Pumpkin soup|soup|7|o|bowl|0
+土豆汤|tǔdòu tāng|Potato soup|soup|7|yn|bowl|0
+番茄汤|fānqié tāng|Tomato soup|soup|7|r|bowl|0
+黄瓜汤|huángguā tāng|Cucumber soup|soup|7|g|bowl|0
+丝瓜汤|sīguā tāng|Loofah soup|soup|7|gy|bowl|0
+西兰花汤|xīlánhuā tāng|Broccoli soup|soup|7|g|bowl|0
+胡萝卜汤|húluóbo tāng|Carrot soup|soup|7|o|bowl|0
+香菇汤|xiānggū tāng|Shiitake mushroom soup|soup|7|nn|bowl|0
+金针菇汤|jīnzhēngū tāng|Enoki mushroom soup|soup|7|wy|bowl|0
+海带汤|hǎidài tāng|Kelp soup|soup|7|gk|bowl|0
+紫菜汤|zǐcài tāng|Laver seaweed soup|soup|7|kp|bowl|0
+豆芽汤|dòuyá tāng|Bean sprouts soup|soup|7|wy|bowl|0
+青菜汤|qīngcài tāng|Green vegetables soup|soup|7|g|bowl|0
+芋头汤|yùtou tāng|Taro soup|soup|7|pw|bowl|0
+竹笋汤|zhúsǔn tāng|Bamboo shoot soup|soup|7|yn|bowl|0
+茄子汤|qiézi tāng|Eggplant soup|soup|7|p|bowl|0
+洋葱汤|yángcōng tāng|Onion soup|soup|7|pw|bowl|0
+豌豆汤|wāndòu tāng|Peas soup|soup|7|g|bowl|0
+毛豆汤|máodòu tāng|Edamame soup|soup|7|g|bowl|0
+荠菜汤|jìcài tāng|Shepherd’s purse soup|soup|7|g|bowl|0
+西葫芦汤|xīhúlu tāng|Zucchini soup|soup|7|gy|bowl|0
+木耳汤|mù’ěr tāng|Wood ear fungus soup|soup|7|kk|bowl|0
+菠菜炒蛋|bōcài chǎodàn|Spinach and scrambled eggs|dish|8|yg|plate|0
+西兰花炒蛋|xīlánhuā chǎodàn|Broccoli and scrambled eggs|dish|8|yg|plate|0
+黄瓜炒蛋|huángguā chǎodàn|Cucumber and scrambled eggs|dish|8|yg|plate|0
+胡萝卜炒蛋|húluóbo chǎodàn|Carrot and scrambled eggs|dish|8|yo|plate|0
+洋葱炒蛋|yángcōng chǎodàn|Onion and scrambled eggs|dish|8|yp|plate|0
+香菇炒蛋|xiānggū chǎodàn|Shiitake mushroom and scrambled eggs|dish|8|yn|plate|0
+豆芽炒蛋|dòuyá chǎodàn|Bean sprouts and scrambled eggs|dish|8|yw|plate|0
+芹菜炒蛋|qíncài chǎodàn|Celery and scrambled eggs|dish|8|yg|plate|0
+西葫芦炒蛋|xīhúlu chǎodàn|Zucchini and scrambled eggs|dish|8|yg|plate|0
+南瓜炒蛋|nánguā chǎodàn|Pumpkin and scrambled eggs|dish|8|yo|plate|0
+豌豆炒蛋|wāndòu chǎodàn|Peas and scrambled eggs|dish|8|yg|plate|0
+丝瓜炒蛋|sīguā chǎodàn|Loofah and scrambled eggs|dish|8|yg|plate|0
+苦瓜炒蛋|kǔguā chǎodàn|Bitter melon and scrambled eggs|dish|8|yg|plate|0
+蒸南瓜|zhēng nánguā|Steamed pumpkin|dish|8|o|plate|0
+烤南瓜|kǎo nánguā|Roasted pumpkin|dish|8|o|plate|0
+蒸红薯|zhēng hóngshǔ|Steamed sweet potato|dish|8|on|plate|0
+蒸山药|zhēng shānyào|Steamed Chinese yam|dish|8|wn|plate|0
+烤山药|kǎo shānyào|Roasted Chinese yam|dish|8|wn|plate|0
+蒸芋头|zhēng yùtou|Steamed taro|dish|8|pw|plate|0
+烤芋头|kǎo yùtou|Roasted taro|dish|8|pw|plate|0
+蒸土豆|zhēng tǔdòu|Steamed potato|dish|8|yn|plate|0
+烤土豆|kǎo tǔdòu|Roasted potato|dish|8|yn|plate|0
+蒸茄子|zhēng qiézi|Steamed eggplant|dish|8|p|plate|0
+烤茄子|kǎo qiézi|Roasted eggplant|dish|8|p|plate|0
+蒸青椒|zhēng qīngjiāo|Steamed green pepper|dish|8|g|plate|0
+烤青椒|kǎo qīngjiāo|Roasted green pepper|dish|8|g|plate|0
+蒸洋葱|zhēng yángcōng|Steamed onion|dish|8|pw|plate|0
+烤洋葱|kǎo yángcōng|Roasted onion|dish|8|pw|plate|0
+蒸香菇|zhēng xiānggū|Steamed shiitake mushroom|dish|8|nn|plate|0
+烤香菇|kǎo xiānggū|Roasted shiitake mushroom|dish|8|nn|plate|0
+蒸莲藕|zhēng lián’ǒu|Steamed lotus root|dish|8|nw|plate|0
+烤莲藕|kǎo lián’ǒu|Roasted lotus root|dish|8|nw|plate|0
+蒸紫薯|zhēng zǐshǔ|Steamed purple sweet potato|dish|8|pp|plate|0
+烤紫薯|kǎo zǐshǔ|Roasted purple sweet potato|dish|8|pp|plate|0
+毒蝇伞|dúyíngsǎn|fly agaric (poisonous)|bad|6|rw|skull|1
+鬼笔鹅膏|guǐbǐ égāo|death cap (poisonous)|bad|6|wg|skull|1
+红网牛肝菌|hóngwǎng niúgānjùn|red-net bolete (poisonous)|bad|6|rn|skull|1
+夹竹桃|jiāzhútáo|oleander (poisonous)|bad|6|mp|skull|1
+曼陀罗|màntuóluó|datura (poisonous)|bad|6|wp|skull|1
+乌头|wūtóu|monkshood (poisonous)|bad|6|pp|skull|1
+断肠草|duàncháng cǎo|gelsemium (poisonous)|bad|6|gy|skull|1
+蓖麻|bìmá|castor bean (poisonous)|bad|6|rn|skull|1
+毒芹|dúqín|water hemlock (poisonous)|bad|6|gw|skull|1
+马桑|mǎsāng|coriaria (poisonous)|bad|6|rp|skull|1
+洋金花|yángjīnhuā|thorn apple (poisonous)|bad|6|wp|skull|1
+颠茄|diānqié|belladonna (poisonous)|bad|6|kp|skull|1
+滴水观音|dīshuǐ guānyīn|alocasia (poisonous)|bad|6|gw|skull|1
+万年青|wànniánqīng|dieffenbachia (poisonous)|bad|6|gw|skull|1
+水仙花球|shuǐxiān huāqiú|narcissus bulb (poisonous)|bad|6|wy|skull|1
+石蒜|shísuàn|red spider lily bulb (poisonous)|bad|6|rr|skull|1
+藜芦|lílú|false hellebore (poisonous)|bad|6|gy|skull|1
+铃兰|línglán|lily of the valley (poisonous)|bad|6|ww|skull|1
+红豆杉果|hóngdòushān guǒ|yew berry (poisonous)|bad|6|rg|skull|1
+苦杏仁|kǔ xìngrén|raw bitter almond (poisonous)|bad|6|cn|skull|1
+生豆角|shēng dòujiǎo|raw green beans (unsafe)|bad|6|gg|skull|1
+发芽土豆|fāyá tǔdòu|sprouted potato (unsafe)|bad|6|yg|skull|1
+生木薯|shēng mùshǔ|raw cassava (unsafe)|bad|6|nw|skull|1
+河豚内脏|hétún nèizàng|fugu organs (poisonous)|bad|6|ww|skull|1
+未熟青柿子|wèishú qīng shìzi|unripe green persimmon (unsafe)|bad|6|gg|skull|1
+发霉面包|fāméi miànbāo|mouldy bread|bad|6|gn|mold|1
+馊饭|sōufàn|spoiled rice|bad|6|wg|mold|1
+酸坏牛奶|suānhuài niúnǎi|sour milk|bad|6|wy|mold|1
+烂苹果|làn píngguǒ|rotten apple|bad|6|rn|mold|1
+变质肉|biànzhì ròu|spoiled meat|bad|6|gn|mold|1
+过期饼干|guòqī bǐnggān|expired biscuits|bad|6|nc|mold|1
+发霉花生|fāméi huāshēng|mouldy peanuts|bad|6|gn|mold|1
+烂香蕉|làn xiāngjiāo|rotten banana|bad|6|nk|mold|1
+变质鱼|biànzhì yú|spoiled fish|bad|6|gk|mold|1
+生锈罐头|shēngxiù guàntou|rusty can|bad|6|rn|mold|1
+脏水|zāng shuǐ|dirty water|bad|6|nk|mold|1
+烧焦的饭|shāojiāo de fàn|burnt rice|bad|6|kn|mold|1
+发霉馒头|fāméi mántou|mouldy steamed bread|bad|6|gw|mold|1
+烂橘子|làn júzi|rotten tangerine|bad|6|gn|mold|1
+馊菜|sōu cài|spoiled vegetables|bad|6|gk|mold|1
+过期酸奶|guòqī suānnǎi|expired yoghurt|bad|6|wg|mold|1
+发霉奶酪|fāméi nǎilào|mouldy cheese|bad|6|yg|mold|1
+变味汤|biànwèi tāng|off soup|bad|6|ny|mold|1
+烂西红柿|làn xīhóngshì|rotten tomato|bad|6|rk|mold|1
+隔夜剩饭变质|gé yè shèngfàn biànzhì|spoiled old leftovers|bad|6|gn|mold|1
+葡萄汁|pútaozhī|grape juice|drink|6|pp|cup|0
+桃汁|táozhī|peach juice|drink|6|mo|cup|0
+芒果汁|mángguǒzhī|mango juice|drink|6|yo|cup|0
+草莓牛奶|cǎoméi niúnǎi|strawberry milk|drink|6|mw|cup|0
+香蕉牛奶|xiāngjiāo niúnǎi|banana milk|drink|6|yw|cup|0
+木瓜牛奶|mùguā niúnǎi|papaya milk|drink|6|ow|cup|0
+菠萝汁|bōluózhī|pineapple juice|drink|6|yy|cup|0
+梨汁|lízhī|pear juice|drink|6|yw|cup|0
+荔枝汁|lìzhīzhī|lychee juice|drink|6|ww|cup|0
+胡萝卜汁|húluóbo zhī|carrot juice|drink|6|oo|cup|0
+番茄汁|fānqiézhī|tomato juice|drink|6|rr|cup|0
+柠檬茶|níngméngchá|lemon tea|drink|6|yn|cup|0
+蜂蜜柚子茶|fēngmì yòuzichá|honey pomelo tea|drink|6|yy|cup|0
+菊花枸杞茶|júhuā gǒuqǐchá|chrysanthemum goji tea|drink|6|yr|cup|0
+甘蔗汁|gānzhezhī|sugarcane juice|drink|6|gy|cup|0
+椰子水|yēzishuǐ|coconut water|drink|6|ww|cup|0
+八宝茶|bābǎochá|eight-treasure tea|drink|6|rn|cup|0
+山楂茶|shānzhāchá|hawthorn tea|drink|6|rm|cup|0`;
+FOOD_DATA.split('\n').forEach((line, i) => {
+  const [zh, py, en, cat, price, cc, shape, bad] = line.split('|');
+  FOODS.push({ id:'fd' + String(i).padStart(4, '0'), zh, py, en, cat, price:+price, draw:'dish', shape, c1:FOOD_PAL[cc[0]], c2:FOOD_PAL[cc[1]] || FOOD_PAL[cc[0]], bad:bad === '1' });
+});
+const FOOD_BY_ID = Object.fromEntries(FOODS.map(f => [f.id, f]));
 const FOODS_OK = FOODS.filter(f => !f.bad), FOODS_BAD = FOODS.filter(f => f.bad);
 const foodIcon = f => f.e || (f.bad ? '☠' : '🍴');
-const packList = () => FOODS.filter(f => (prog.pack[f.id] || 0) > 0);
+const packList = () => {
+  const seen = new Set(), out = [];
+  for (const id of (prog.packOrder || [])) if ((prog.pack[id] || 0) > 0 && FOOD_BY_ID[id] && !seen.has(id)) { seen.add(id); out.push(FOOD_BY_ID[id]); }
+  for (const f of FOODS) if ((prog.pack[f.id] || 0) > 0 && !seen.has(f.id)) out.push(f);
+  return out;
+};
 function applyFood(d, x, y) {
   const p = P, name = `${d.e || ''} ${d.zh} ${d.py} (${d.en})`;
   if (d.bad) {
@@ -2331,7 +3819,7 @@ function applyFood(d, x, y) {
 function eatPack(id) {
   if (scene !== 'play' || !(prog.pack[id] > 0)) return;
   prog.pack[id]--; saveProg();
-  applyFood(FOODS.find(f => f.id === id), P.x + P.w / 2, P.y + P.h / 2);
+  applyFood(FOOD_BY_ID[id], P.x + P.w / 2, P.y + P.h / 2);
 }
 function newPlayer() { const z = prog.size ?? 1, sc = SIZES[z]; return { x:120, y:GY - 30 * sc, w:30 * sc, h:30 * sc, vx:0, vy:0, ground:false, coyote:0, dir:1, energy:100, flying:false, run:0, size:z, sc, flash:0 }; }
 function setSize(n) {
@@ -2449,7 +3937,7 @@ function portrait(c2, id) {
 }
 function openHero(from) { heroFrom = from; shopSel = prog.char; buildHero(); scene = 'hero'; show('hero'); $('hPlay').hidden = from !== 'start'; }
 let shopTab = 'all', heroQuery = '';
-const TABS = [['all','All 全部'],['owned','Owned 已拥有'],['zodiac','Zodiac 生肖'],['creature','Creatures 神兽'],['hero','Gods & Heroes 神仙英雄'],['history','History 历史人物'],['job','Jobs 职业']];
+const TABS = [['all','All 全部'],['owned','Owned 已拥有'],['zodiac','Zodiac 生肖'],['creature','Creatures 神兽'],['hero','Gods & Heroes 神仙英雄'],['history','History 历史人物'],['job','Jobs 职业'],['culture','Culture 文化']];
 function buildHero() {
   $('hCoins').innerHTML = C + ' ' + prog.coins;
   $('hCount').textContent = `${HEROES.filter(h => h.id !== 'custom' && prog.owned[h.id]).length} / ${HEROES.length - 1} collected 已收集`;
@@ -2607,37 +4095,53 @@ $('bDone').onclick = () => lockNow('done'); $('bDone2').onclick = () => lockNow(
 
 /* ---------- Food Zone ---------- */
 let foodSel = 'apple', foodFrom = 'title', foodTab = 'all';
-const FOOD_TABS = [['all', 'All 全部'], ['snack', 'Festival snacks 节日点心'], ['fruit', 'Fruit 水果'], ['meal', 'Meals 主食'], ['bad', 'Poison 有毒']];
+const FOOD_TABS = [['all', 'All 全部'], ['snack', 'Snacks 小吃'], ['fruit', 'Fruit 水果'], ['veg', 'Vegetables 蔬菜'], ['meal', 'Meals 主食'], ['dish', 'Dishes 菜肴'], ['soup', 'Soups 汤'], ['sweet', 'Sweets 甜点'], ['drink', 'Drinks 饮料'], ['protein', 'Meat & fish 肉蛋鱼'], ['bad', 'Poison 有毒']];
+let foodQuery = '', foodList = [], foodShown = 0;
 function openFood(from) { foodFrom = from; buildFood(); scene = 'food'; show('food'); }
+function makeFoodCard(f) {
+  const b = document.createElement('button'); b.className = 'hero' + (foodSel === f.id ? ' sel' : ''); b.dataset.id = f.id;
+  const c2 = document.createElement('canvas'); c2.width = c2.height = 120; b.appendChild(c2);
+  const g = c2.getContext('2d'); g.save(); g.translate(60, 68); g.scale(2.5, 2.5); foodArt(g, f, 0, 0); g.restore();
+  const nm = document.createElement('span'); nm.className = 'hn'; nm.textContent = f.zh + ' ' + f.en;
+  const tag = document.createElement('span'); tag.className = 'ht'; tag.innerHTML = `${f.bad ? '☠ ' : ''}${C} ${f.price}${prog.pack[f.id] ? ' · ×' + prog.pack[f.id] : ''}`;
+  b.append(nm, tag);
+  b.onclick = () => { foodSel = f.id; $('foodGrid').querySelectorAll('.hero.sel').forEach(x => x.classList.remove('sel')); b.classList.add('sel'); refreshFoodInfo(); };
+  return b;
+}
+function appendFoodCards() {
+  const grid = $('foodGrid'), end = Math.min(foodList.length, foodShown + 80);
+  for (let i = foodShown; i < end; i++) grid.appendChild(makeFoodCard(foodList[i]));
+  foodShown = end;
+}
 function buildFood() {
   $('fCoins').innerHTML = C + ' ' + prog.coins;
-  const have = packList().map(f => `${foodIcon(f)} ×${prog.pack[f.id]}`).join('  ');
-  $('packLine').textContent = 'Backpack 背包: ' + (have || 'empty 空');
   const ft = $('foodTabs'); ft.innerHTML = '';
   FOOD_TABS.forEach(([k, lab]) => {
     const b = document.createElement('button'); b.className = 'tab' + (foodTab === k ? ' on' : ''); b.textContent = lab;
     b.onclick = () => { foodTab = k; buildFood(); $('foodGrid').scrollTop = 0; }; ft.appendChild(b);
   });
-  const grid = $('foodGrid'), gst = grid.scrollTop; grid.innerHTML = '';
-  FOODS.filter(f => foodTab === 'all' || f.cat === foodTab).forEach(f => {
-    const b = document.createElement('button'); b.className = 'hero' + (foodSel === f.id ? ' sel' : '');
-    const c2 = document.createElement('canvas'); c2.width = c2.height = 120; b.appendChild(c2);
-    const g = c2.getContext('2d'); g.save(); g.translate(60, 68); g.scale(2.5, 2.5); foodArt(g, f, 0, 0); g.restore();
-    const nm = document.createElement('span'); nm.className = 'hn'; nm.textContent = f.zh + ' ' + f.en;
-    const tag = document.createElement('span'); tag.className = 'ht'; tag.innerHTML = `${f.bad ? '☠ ' : ''}${C} ${f.price}${prog.pack[f.id] ? ' · ×' + prog.pack[f.id] : ''}`;
-    b.append(nm, tag); b.onclick = () => { foodSel = f.id; buildFood(); };
-    grid.appendChild(b);
-  });
-  grid.scrollTop = gst;
-  const f = FOODS.find(x => x.id === foodSel), n = prog.pack[f.id] || 0;
+  foodList = FOODS.filter(f => (foodTab === 'all' || f.cat === foodTab) && (!foodQuery || (f.zh + f.py + f.en).toLowerCase().includes(foodQuery)));
+  const grid = $('foodGrid'); grid.innerHTML = ''; foodShown = 0; appendFoodCards();
+  $('foodCount').textContent = `${foodList.length} foods 种食物`;
+  refreshFoodInfo();
+}
+function refreshFoodInfo() {
+  const have = packList().slice(0, 12).map(f => `${foodIcon(f)} ×${prog.pack[f.id]}`).join('  ');
+  $('packLine').textContent = 'Backpack 背包: ' + (have || 'empty 空');
+  const f = FOOD_BY_ID[foodSel] || FOODS[0], n = prog.pack[f.id] || 0;
   $('foodInfo').innerHTML = `<h3>${foodIcon(f)} ${f.zh} <small>${f.py} · ${f.en}</small></h3>` + (f.bad
-    ? '<p>Poison! Eat it to shrink one size. Small = faster and floaty. 有毒！吃了变小一档，变小后跑得更快、落得更慢。</p>'
+    ? '<p>Poison or spoiled! Eat it to shrink one size. Small = faster and floaty. 有毒或变质！吃了变小一档，变小后跑得更快、落得更慢。</p>'
     : `<p>Healthy! Eat it to grow one size. Big = higher jump and 2× coins. 没毒！吃了变大一档，变大后跳得更高，金币翻倍。</p>${f.fest ? `<p>🎉 ${f.fest}</p>` : ''}`);
   const buy = $('fBuy');
   if (n >= 9) { buy.textContent = 'Backpack full 已满 (9)'; buy.disabled = true; }
-  else if (prog.coins >= f.price) { buy.innerHTML = `Buy 购买 · ${C} ${f.price}`; buy.disabled = false; buy.onclick = () => { prog.coins -= f.price; prog.pack[f.id] = n + 1; saveProg(); sfx.coin(); buildFood(); }; }
-  else { const m = f.price - prog.coins; buy.innerHTML = `Need ${m} more ${C} 还差 ${m} 个`; buy.disabled = true; }
+  else if (prog.coins >= f.price) {
+    buy.innerHTML = `Buy 购买 · ${C} ${f.price}`; buy.disabled = false;
+    buy.onclick = () => { prog.coins -= f.price; prog.pack[f.id] = n + 1; prog.packOrder = [f.id, ...(prog.packOrder || []).filter(x => x !== f.id)]; saveProg(); sfx.coin(); $('fCoins').innerHTML = C + ' ' + prog.coins; const card = $('foodGrid').querySelector(`[data-id="${f.id}"] .ht`); if (card) card.innerHTML = `${f.bad ? '☠ ' : ''}${C} ${f.price} · ×${prog.pack[f.id]}`; refreshFoodInfo(); };
+  } else { const m = f.price - prog.coins; buy.innerHTML = `Need ${m} more ${C} 还差 ${m} 个`; buy.disabled = true; }
 }
+$('foodGrid').addEventListener('scroll', e => { const g = e.target; if (foodShown < foodList.length && g.scrollTop + g.clientHeight > g.scrollHeight - 160) appendFoodCards(); });
+$('foodSearch').addEventListener('keydown', e => e.stopPropagation());
+$('foodSearch').addEventListener('input', e => { foodQuery = e.target.value.trim().toLowerCase(); buildFood(); $('foodGrid').scrollTop = 0; });
 $('bFood').onclick = () => openFood('title'); $('bSelFood').onclick = () => openFood('select');
 $('fBack').onclick = () => foodFrom === 'select' ? openSelect() : toTitle();
 
@@ -2689,11 +4193,11 @@ function updatePlay() {
   p.vx += ax * .9; p.vx *= ax ? .88 : .78; const vmax = p.size === 0 ? 6.8 : 5.4; p.vx = Math.max(-vmax, Math.min(vmax, p.vx));
   if (ax) p.dir = ax;
   p.run += Math.abs(p.vx) * .12;
-  if (K.jump && !K.jumpPrev && (p.ground || p.coyote > 0)) { p.vy = p.size === 2 ? -14.2 : -12.8; p.ground = false; p.coyote = 0; sfx.jump(); }
+  if (K.jump && !K.jumpPrev && (p.ground || p.coyote > 0)) { p.vy = p.size === 2 ? -15 : -13.6; p.ground = false; p.coyote = 0; sfx.jump(); }
   p.flying = false;
   if (K.jump && !p.ground && p.vy > -2.5 && p.energy > 0) { p.vy = Math.max(p.vy - 1.1, -4.6); p.energy -= 1; p.flying = true; }
   if (!K.jump && p.vy < -4.5) p.vy = -4.5;
-  p.vy = Math.min(p.vy + (p.size === 0 ? .5 : .62), 13);
+  p.vy = Math.min(p.vy + (p.size === 0 ? .42 : .5), 10);
   if (p.ground) p.energy = Math.min(100, p.energy + 2);
 
   p.x += p.vx;
@@ -3115,7 +4619,7 @@ function drawBG() { curTheme.bg(); }
 function drawLeaves() {
   const wind = .9 + Math.sin(T * .01) * .6;
   for (const f of leaves) {
-    f.y += f.s; f.x += wind * f.s * .7 + Math.sin(T * .03 + f.ph) * .5; f.rot += .03 * f.s;
+    f.y += f.s * .55; f.x += wind * f.s * .45 + Math.sin(T * .03 + f.ph) * .35; f.rot += .02 * f.s;
     if (f.y > H + 6) { f.y = -6; f.x = Math.random() * W; }
     if (f.x > W + 6) f.x = -6;
     ctx.save(); ctx.translate(f.x, f.y); ctx.rotate(f.rot); ctx.fillStyle = curTheme.leaf ? curTheme.leaf[f.k % curTheme.leaf.length] : f.c;
@@ -3147,7 +4651,50 @@ function drawPlayer(p) {
     ctx.fillStyle = '#ffffff'; rr(cx - 18, ey, 36 * p.energy / 100, 5, 3); ctx.fill();
   }
 }
+function dishArt(c, d, x, y) {
+  const c1 = d.c1, c2 = d.c2, sh = d.shape;
+  c.strokeStyle = OUT; c.lineWidth = 1.3; c.lineJoin = 'round';
+  const ell = (px, py, rx, ry, f) => { c.beginPath(); c.ellipse(px, py, rx, ry, 0, 0, 6.283); c.fillStyle = f; c.fill(); c.stroke(); };
+  if (sh === 'fruit') {
+    ell(x, y + 2, 14, 13, c1); ell(x - 4, y - 1, 5, 6, c2); c.fillStyle = '#4aa84a'; c.beginPath(); c.ellipse(x + 3, y - 14, 6, 3, -.5, 0, 6.283); c.fill(); c.stroke();
+    c.strokeStyle = '#6a4a2a'; c.beginPath(); c.moveTo(x, y - 11); c.lineTo(x, y - 16); c.stroke();
+  } else if (sh === 'veg') {
+    c.save(); c.translate(x, y); c.rotate(-.6); ell(0, 0, 8, 17, c1); c.strokeStyle = c2; c.lineWidth = 1.6; c.beginPath(); c.moveTo(0, -14); c.lineTo(0, 14); c.stroke(); c.restore();
+  } else if (sh === 'bowl') {
+    ell(x, y - 4, 16, 6, c1); c.fillStyle = '#f8f4ea'; c.beginPath(); c.ellipse(x, y - 1, 18, 14, 0, 0, Math.PI); c.fill(); c.stroke();
+    c.fillStyle = c2; c.beginPath(); c.arc(x - 6, y - 6, 2.2, 0, 6.283); c.arc(x + 4, y - 7, 2.2, 0, 6.283); c.fill();
+    c.strokeStyle = 'rgba(120,120,120,.6)'; c.beginPath(); c.moveTo(x - 5, y - 14); c.quadraticCurveTo(x - 9, y - 18, x - 5, y - 22); c.moveTo(x + 5, y - 14); c.quadraticCurveTo(x + 1, y - 18, x + 5, y - 22); c.stroke();
+  } else if (sh === 'plate') {
+    ell(x, y + 6, 19, 8, '#f8f4ea'); ell(x, y + 2, 13, 9, c1); c.fillStyle = c2; for (const [dx, dy] of [[-6, 0], [2, -3], [6, 3], [-2, 4]]) { c.beginPath(); c.arc(x + dx, y + dy, 2.4, 0, 6.283); c.fill(); }
+  } else if (sh === 'bun') {
+    ell(x, y + 6, 17, 8, c1); c.beginPath(); c.arc(x, y + 3, 15, Math.PI, 0); c.closePath(); c.fillStyle = c1; c.fill(); c.stroke();
+    c.strokeStyle = c2; c.lineWidth = 1.2; c.beginPath(); for (let k = 0; k < 5; k++) { c.moveTo(x, y - 11); c.lineTo(x + (k - 2) * 5, y - 1); } c.stroke();
+  } else if (sh === 'cup') {
+    c.fillStyle = '#f8f4ea'; c.beginPath(); c.moveTo(x - 11, y - 8); c.lineTo(x + 11, y - 8); c.lineTo(x + 8, y + 14); c.lineTo(x - 8, y + 14); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle = c1; c.beginPath(); c.moveTo(x - 10, y - 4); c.lineTo(x + 10, y - 4); c.lineTo(x + 7.5, y + 13); c.lineTo(x - 7.5, y + 13); c.closePath(); c.fill();
+    c.strokeStyle = OUT; c.beginPath(); c.arc(x + 12, y + 1, 5, -1.3, 1.3); c.stroke();
+    c.strokeStyle = c2; c.beginPath(); c.moveTo(x - 4, y - 12); c.quadraticCurveTo(x - 7, y - 16, x - 4, y - 19); c.stroke();
+  } else if (sh === 'sweet') {
+    c.fillStyle = c1; c.beginPath(); c.roundRect ? c.roundRect(x - 14, y - 8, 28, 20, 5) : c.rect(x - 14, y - 8, 28, 20); c.fill(); c.stroke();
+    c.fillStyle = c2; c.beginPath(); c.roundRect ? c.roundRect(x - 14, y - 8, 28, 8, 5) : c.rect(x - 14, y - 8, 28, 8); c.fill(); c.stroke();
+  } else if (sh === 'fish') {
+    ell(x - 2, y, 15, 9, c1); c.fillStyle = c2; c.beginPath(); c.moveTo(x + 11, y); c.lineTo(x + 20, y - 8); c.lineTo(x + 20, y + 8); c.closePath(); c.fill(); c.stroke();
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(x - 9, y - 2, 2.2, 0, 6.283); c.fill(); c.fillStyle = OUT; c.beginPath(); c.arc(x - 9, y - 2, 1, 0, 6.283); c.fill();
+  } else if (sh === 'meat') {
+    c.save(); c.translate(x, y); c.rotate(-.7); ell(0, -3, 11, 14, c1); c.fillStyle = c2; c.fillRect(-2, 8, 4, 12); c.beginPath(); c.arc(-3, 21, 3, 0, 6.283); c.arc(3, 21, 3, 0, 6.283); c.fill(); c.restore();
+  } else if (sh === 'egg') {
+    ell(x, y + 1, 12, 15, c1); ell(x, y + 3, 6, 6, c2);
+  } else if (sh === 'nut') {
+    ell(x, y + 1, 11, 14, c1); c.strokeStyle = c2; c.beginPath(); c.moveTo(x - 6, y - 8); c.quadraticCurveTo(x, y, x - 6, y + 10); c.stroke();
+  } else if (sh === 'mold') {
+    c.fillStyle = c1; c.beginPath(); c.roundRect ? c.roundRect(x - 15, y - 8, 30, 22, 7) : c.rect(x - 15, y - 8, 30, 22); c.fill(); c.stroke();
+    c.fillStyle = '#6aa84a'; for (const [dx, dy, r] of [[-7, -2, 4], [3, 3, 5], [8, -3, 3], [-3, 7, 3.5]]) { c.beginPath(); c.arc(x + dx, y + dy, r, 0, 6.283); c.fill(); }
+  } else {
+    ell(x, y + 2, 14, 12, c1); c.fillStyle = '#f4f0ff'; c.font = '16px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('☠', x, y + 2);
+  }
+}
 function foodArt(c, d, x, y) {
+  if (d.draw === 'dish') { dishArt(c, d, x, y); return; }
   c.textAlign = 'center'; c.textBaseline = 'middle';
   if (d.draw === 'purple') {
     c.fillStyle = '#f3e6d0'; c.beginPath(); c.roundRect ? c.roundRect(x - 5, y - 4, 10, 14, 3) : c.rect(x - 5, y - 4, 10, 14); c.fill();
